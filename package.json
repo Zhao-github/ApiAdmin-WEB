@@ -1,29 +1,27 @@
 {
-  "name": "iview-admin",
-  "version": "2.0.0",
-  "author": "Lison<lison.modern@gmail.com>",
+  "name": "apiadmin",
+  "version": "4.0.0",
+  "author": "zhaoxiang <zhaoxiang051405@gmail.com>",
   "private": false,
   "scripts": {
     "dev": "vue-cli-service serve --open",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
-    "test:unit": "vue-cli-service test:unit",
-    "test:e2e": "vue-cli-service test:e2e"
+    "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.18.1",
     "clipboard": "^2.0.0",
     "codemirror": "^5.47.0",
     "dayjs": "^1.8.14",
     "echarts": "^4.2.1",
-    "html2canvas": "^1.0.0-rc.1",
+    "html2canvas": "^1.0.0-rc.3",
     "iview": "^3.4.2",
     "iview-area": "^1.5.17",
     "js-cookie": "^2.2.0",
     "vue": "^2.6.10",
     "vue-i18n": "^7.8.0",
-    "vue-router": "^3.0.1",
-    "vuex": "^3.0.1"
+    "vue-router": "^3.0.6",
+    "vuex": "^3.1.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.0.1",
@@ -31,7 +29,6 @@
     "@vue/cli-plugin-unit-mocha": "^3.0.1",
     "@vue/cli-service": "^3.0.1",
     "@vue/eslint-config-standard": "^3.0.0-beta.10",
-    "@vue/test-utils": "^1.0.0-beta.10",
     "chai": "^4.1.2",
     "eslint-plugin-cypress": "^2.2.1",
     "less": "^2.7.3",
