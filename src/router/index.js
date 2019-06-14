@@ -4,6 +4,7 @@ import routes from './routers'
 import store from '@/store'
 import iView from 'iview'
 import { setToken, getToken, canTurnTo, setTitle } from '@/libs/util'
+import oneOf from '@/libs/tools'
 import config from '@/config'
 const { homeName } = config
 
@@ -15,8 +16,13 @@ const router = new Router({
 const LOGIN_PAGE_NAME = 'login'
 
 const turnTo = (to, access, next) => {
-  if (canTurnTo(to.name, access, routes)) next() // 有权限，可访问
-  else next({ replace: true, name: 'error_401' }) // 无权限，重定向到401页面
+  if (canTurnTo(to.name, access, routes)) {
+    // 有权限，可访问
+    next()
+  } else {
+    // 无权限，重定向到401页面
+    next({ replace: true, name: 'error_401' })
+  }
 }
 
 router.beforeEach((to, from, next) => {
