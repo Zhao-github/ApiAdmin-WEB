@@ -22,7 +22,7 @@ class HttpRequest {
       const { data, status } = res
       if (data.code !== 1) {
         vueObj.$Message.error(data.msg)
-        throw new Error(data.msg);
+        throw new Error(data.msg)
       } else {
         return { data, status }
       }
