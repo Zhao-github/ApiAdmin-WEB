@@ -3,18 +3,21 @@ import Cookies from 'js-cookie'
 import config from '@/config'
 import { forEach, hasOneOf, objEqual } from '@/libs/tools'
 
-const { title, cookieExpires, useI18n } = config
+const { title, useI18n } = config
 
-export const TOKEN_KEY = 'token'
+export const TOKEN_KEY = 'ApiAdmin_'
 
 export const setToken = (token) => {
-  Cookies.set(TOKEN_KEY, token, { expires: cookieExpires || 1 })
+  sessionStorage.setItem(TOKEN_KEY + 'ApiAuth', token)
 }
 
 export const getToken = () => {
-  const token = Cookies.get(TOKEN_KEY)
-  if (token) return token
-  else return false
+  const token = sessionStorage.getItem(TOKEN_KEY + 'ApiAuth')
+  if (token) {
+    return token
+  } else {
+    return false
+  }
 }
 
 export const hasChild = (item) => {

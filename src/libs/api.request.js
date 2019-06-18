@@ -1,25 +1,16 @@
 import config from '@/config'
 import axios from 'axios'
-import store from '@/store'
+import Vue from 'vue'
 
+const vueObj = new Vue()
 const baseUrl = process.env.NODE_ENV === 'development' ? config.baseUrl.dev : config.baseUrl.pro
-const addErrorLog = errorInfo => {
-  const { statusText, status, request: { responseURL } } = errorInfo
-  let info = {
-    type: 'ajax',
-    code: status,
-    mes: statusText,
-    url: responseURL
-  }
-  if (!responseURL.includes('save_error_logger')) store.dispatch('addErrorLog', info)
-}
 
 class HttpRequest {
   constructor (baseUrl) {
     this.baseUrl = baseUrl
   }
 
-  interceptors (instance, url) {
+  interceptors (instance) {
     // 请求拦截
     instance.interceptors.request.use(config => {
       return config
@@ -29,18 +20,13 @@ class HttpRequest {
     // 响应拦截
     instance.interceptors.response.use(res => {
       const { data, status } = res
-      return { data, status }
-    }, error => {
-      let errorInfo = error.response
-      if (!errorInfo) {
-        const { request: { statusText, status }, config } = JSON.parse(JSON.stringify(error))
-        errorInfo = {
-          statusText,
-          status,
-          request: { responseURL: config.url }
-        }
+      if (data.code !== 1) {
+        vueObj.$Message.error(data.msg)
+        throw new Error(data.msg);
+      } else {
+        return { data, status }
       }
-      addErrorLog(errorInfo)
+    }, error => {
       return Promise.reject(error)
     })
   }
@@ -49,11 +35,9 @@ class HttpRequest {
     const instance = axios.create()
     options = Object.assign({
       baseURL: this.baseUrl,
-      headers: {
-        //
-      }
+      headers: {}
     }, options)
-    this.interceptors(instance, options.url)
+    this.interceptors(instance)
     return instance(options)
   }
 }
