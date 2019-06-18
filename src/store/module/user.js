@@ -39,7 +39,6 @@ export default {
       return new Promise((resolve, reject) => {
         logout(state.token).then(() => {
           commit('setToken', '')
-          commit('setAccess', [])
           resolve()
         }).catch(err => {
           reject(err)
