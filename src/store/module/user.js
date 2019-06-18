@@ -9,11 +9,7 @@ export default {
   state: {
     userInfo: {},
     token: getToken(),
-    access: [],
-    messageUnreadList: [],
-    messageReadedList: [],
-    messageTrashList: [],
-    messageContentStore: {}
+    access: []
   },
   mutations: {
     setUserInfo (state, userInfo) {
