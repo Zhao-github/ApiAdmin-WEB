@@ -23,7 +23,7 @@ class HttpRequest {
       const { data, status } = res
       if (data.code !== 1) {
         if (data.code === -14) {
-          setToken('')
+          setToken('');
           (new Vue()).$route.push({ name: 'login' })
         } else {
           iView.Message.error(data.msg)
