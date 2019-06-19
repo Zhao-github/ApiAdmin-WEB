@@ -1,34 +1,34 @@
 <p align="center">
-    <a href="https://www.iviewui.com">
-        <img width="200" src="https://file.iviewui.com/logo-new.svg">
+    <a href="https://cn.vuejs.org">
+        <img width="200" src="https://cn.vuejs.org/images/logo.png">
     </a>
 </p>
 
-# iView Admin
+# ApiAdmin-WEB
+[![](https://img.shields.io/badge/build-passing-brightgreen.svg)]()
+[![ApiAdmin](https://img.shields.io/hexpm/l/plug.svg)](http://www.apiadmin.org/)
+[![ApiAdmin](https://img.shields.io/badge/ApiAdmin-v4.0.0-brightgreen.svg)](https://gitee.com/apiadmin/ApiAdmin)
+[![vue](https://img.shields.io/badge/vue-2.6.10-brightgreen.svg?style=flat-square)](https://github.com/vuejs/vue)
+[![iview ui](https://img.shields.io/badge/iview-3.4.2-brightgreen.svg?style=flat-square)](https://github.com/iview/iview)
 
-[![](https://img.shields.io/github/release/iview/iview-admin.svg)](https://github.com/iview/iview-admin/releases)
-[![](https://img.shields.io/travis/iview/iview-admin.svg?style=flat-square)](https://travis-ci.org/iview/iview-admin)
-[![vue](https://img.shields.io/badge/vue-2.5.10-brightgreen.svg?style=flat-square)](https://github.com/vuejs/vue)
-[![iview ui](https://img.shields.io/badge/iview-3.1.3-brightgreen.svg?style=flat-square)](https://github.com/iview/iview)
-[![npm](https://img.shields.io/npm/l/express.svg)]()
+# 特别提示
+本项目依赖于[ApiAdmin](https://gitee.com/apiadmin/ApiAdmin)，请确保您同时具备PHP和Vue的技能，否则使用本项目存在技术性障碍！
 
-[更新日志](https://github.com/iview/iview-admin/releases)
-
-[使用文档](https://lison16.github.io/iview-admin-doc/#/)
-
-[在线访问](https://admin.iviewui.com/)
-
-[简化版模板](https://github.com/iview/iview-admin/tree/template)
-
-[教学视频(26课时)](https://segmentfault.com/ls/1650000016221751?utm_source=banner)
-
-`注：在线版本会在开发版本新小版本发布后更新到相应版本，所以如果想体验最新版本iview-admin，请clone完整项目代码到本地运行。`
+## 线上体验
+[https://admin.apiadmin.org](https://admin.apiadmin.org)。账号请加群获取！
 
 ## Install
 ```bush
 // install dependencies
 npm install
 ```
+
+## Prepare
+```bush
+/build/webpack.prod.config.js中的publicPath参数需要变更为你自己的项目域名
+/build/config.js中的baseUrl需要换成你自己搭建的后台接口域名
+```
+
 ## Run
 ### Development
 ```bush
@@ -39,153 +39,56 @@ npm run dev
 npm run build
 ```
 
-## 加入QQ群，获取最新更新咨询，和3000+开发者交流学习
+## 愿景
 
-![image](https://github.com/iview/iview-admin/raw/2.0/src/assets/images/groups.jpg)
+> 希望有人用它，希望更多的人用它。
+> 希望它能帮助到你，希望它能帮助到更多的你。
 
 ## 简介
-&emsp;&emsp;iView admin是基于Vue.js，搭配使用[iView](https://www.iviewui.com) UI组件库形成的一套后台集成解决方案，由TalkingData前端可视化团队部分成员开发维护。iView admin遵守iView设计和开发约定，风格统一，设计考究，并且更多功能在不停开发中。
-如果您想查看iview-admin的更新动态，您可以到[更新日志](https://github.com/iview/iview-admin/releases)查看了解最新更新；如果您是新手，想快速入手iview-admin，您可以到[使用教程](https://github.com/iview/iview-admin/wiki)查看讲解；如果您想在线体验iview-admin，您可以到[在线访问](https://admin.iviewui.com/)体验。如果你只是想要一个清醒爽朗的界面，那你可以下载[简化版模板](https://github.com/iview/iview-admin/tree/template)来做开发。
 
-## 功能
+ 1. 接口文档自动生成
+ 2. 接口输入参数自动检查
+ 3. 接口输出参数数据类型自动规整
+ 4. 灵活的参数规则设定
+ 5. 支持三方Api无缝融合
+ 6. 本地二次开发友好
+ 7. ...
+ 
+ ```
+ ApiAdmin（PHP部分）
+ ├─ 系统维护
+ |  ├─ 菜单管理 - 编辑访客权限，处理菜单父子关系，被权限系统依赖（极为重要）
+ |  ├─ 用户管理 - 添加新用户，封号，删号以及给账号分配权限组
+ |  ├─ 权限管理 - 权限组管理，给权限组添加权限，将用户提出权限组
+ |  └─ 操作日志 - 记录管理员的操作，用于追责，回溯和备案
+ |  ...
+ ```
 
-- 登录/登出
-- 权限管理
-    - 列表过滤
-    - 权限切换
-- 多语言切换
-- 组件
-    - 富文本编辑器
-    - Markdown编辑器
-    - 城市级联
-    - 图片预览编辑
-    - 可拖拽列表
-    - 文件上传
-    - 数字渐变
-    - split-pane
-- 表单编辑
-    - 文章发布
-    - 工作流
-- 表格
-    - 可拖拽排序
-    - 可编辑表格
-        - 行内编辑
-        - 单元格编辑
-    - 可搜索表格
-    - 表格导出数据
-        - 导出为Csv文件
-        - 导出为Xls文件
-    - 表格转图片
-- 错误页面
-    - 403页面
-    - 404页面
-    - 500页面
-- 高级路由
-    - 动态路由
-    - 带参页面
-- 换肤
-- 收缩侧边栏
-- tag标签导航
-- 面包屑导航
-- 全屏/退出全屏
-- 锁屏
-- 消息中心
-- 个人中心
+## 鸣谢
 
-## 文件结构
-```shell
-.
-├── build  项目构建配置
-├── config  开发相关配置
-├── public  打包所需静态资源
-└── src
-    ├── api  AJAX请求
-    └── assets  项目静态资源
-        ├── icons  自定义图标资源
-        └── images  图片资源
-    ├── components  业务组件
-    ├── config  项目运行配置
-    ├── directive  自定义指令
-    ├── libs  封装工具函数
-    ├── locale  多语言文件
-    ├── mock  mock模拟数据
-    ├── router  路由配置
-    ├── store  Vuex配置
-    ├── view  页面文件
-    └── tests  测试相关
-```
-
-## Links
-
-- [TalkingData](https://github.com/TalkingData)
+- [iView-Admin](https://github.com/iview/iview-admin)
 - [iView](https://github.com/iview/iview)
 - [Vue](https://github.com/vuejs/vue)
 - [Webpack](https://github.com/webpack/webpack)
 
 ## 效果展示
 
-- 响应式布局首页
-![image](https://github.com/iview/iview-admin/raw/dev/github-gif/home.gif)
+![输入图片说明](https://gitee.com/uploads/images/2018/0224/095358_19cb42d0_110856.png "api.png")
 
-- 标签导航
-![image](https://github.com/iview/iview-admin/raw/dev/github-gif/page-tags.gif)
+![输入图片说明](https://gitee.com/uploads/images/2018/0224/095410_55dc23e1_110856.png "app.png")
 
-- 权限管理
-![image](https://github.com/iview/iview-admin/raw/dev/github-gif/access.gif)
+![输入图片说明](https://gitee.com/uploads/images/2018/0224/095420_bddff990_110856.png "auth1.png")
 
-- 可拖拽列表
-![image](https://github.com/iview/iview-admin/raw/dev/github-gif/dragable-list.gif)
+![输入图片说明](https://gitee.com/uploads/images/2018/0224/095427_fa86e42d_110856.png "auth2.png")
 
-- 图片预览编辑
-![image](https://github.com/iview/iview-admin/raw/dev/github-gif/image-editor.gif)
+![输入图片说明](https://gitee.com/uploads/images/2018/0224/095436_3600de17_110856.png "lock.png")
 
-- 文件上传
-![image](https://github.com/iview/iview-admin/raw/dev/github-gif/upload.gif)
+![输入图片说明](https://gitee.com/uploads/images/2018/0224/095444_d2a88da0_110856.png "user.png")
 
-- 数字渐变
-![image](https://github.com/iview/iview-admin/raw/dev/github-gif/count-to.gif)
-
-- split-pane
-![image](https://github.com/iview/iview-admin/raw/dev/github-gif/split-pane.gif)
-
-- 文章发布
-![image](https://github.com/iview/iview-admin/raw/dev/github-gif/article-publish.gif)
-
-- 工作流
-![image](https://github.com/iview/iview-admin/raw/dev/github-gif/workflow.gif)
-
-- 可拖拽表格
-![image](https://github.com/iview/iview-admin/raw/dev/github-gif/dragable-table.gif)
-
-- 可编辑表格
-![image](https://github.com/iview/iview-admin/raw/dev/github-gif/editable-table.gif)
-
-- 表格导出数据
-![image](https://github.com/iview/iview-admin/raw/dev/github-gif/exportable-table.gif)
-
-- 表格转图片
-![image](https://github.com/iview/iview-admin/raw/dev/github-gif/table2image.gif)
-
-- 错误页面
-![image](https://github.com/iview/iview-admin/raw/dev/github-gif/error-page.gif)
-
-- 锁屏
-![image](https://github.com/iview/iview-admin/raw/dev/github-gif/locking.gif)
-
-- 可收缩侧边栏
-![image](https://github.com/iview/iview-admin/raw/dev/github-gif/sidebarmenu.gif)
-
-- 主题切换
-![image](https://github.com/iview/iview-admin/raw/dev/github-gif/theme.gif)
-
-- 消息中心
-![image](https://github.com/iview/iview-admin/raw/dev/github-gif/message.gif)
-
-### 💖💖 If you find this project helpful, maybe you can buy me a coffee. 💖💖
-![image](https://github.com/iview/iview-admin/raw/dev/github-gif/code.png)
-
+## 联系我们
+官方唯一QQ群：221522638
 
 ## License
-[MIT](http://opensource.org/licenses/MIT)
+[Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
-Copyright (c) 2016-present, iView
+Copyright (c) 2017-present, ApiAdmin
