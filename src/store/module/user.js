@@ -8,8 +8,7 @@ import { setToken, getToken } from '@/libs/util'
 export default {
   state: {
     userInfo: {},
-    token: getToken(),
-    access: []
+    token: getToken()
   },
   mutations: {
     setUserInfo (state, userInfo) {
@@ -37,7 +36,7 @@ export default {
     // 退出登录
     handleLogOut ({ state, commit }) {
       return new Promise((resolve, reject) => {
-        logout(state.token).then(() => {
+        logout().then(() => {
           commit('setToken', '')
           resolve()
         }).catch(err => {
@@ -52,7 +51,7 @@ export default {
       } else {
         return new Promise((resolve, reject) => {
           try {
-            getUserInfo(state.token).then(res => {
+            getUserInfo().then(res => {
               commit('setUserInfo', res.data.data)
               resolve(res.data.data)
             }).catch(err => {
