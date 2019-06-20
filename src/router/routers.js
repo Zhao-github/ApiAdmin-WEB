@@ -50,21 +50,31 @@ export default [
     ]
   },
   {
-    path: '/directive',
-    name: 'directive',
+    path: '/system',
+    name: '系统配置',
     meta: {
-      hideInBread: true
+      icon: 'ios-build',
+      title: '系统配置'
     },
     component: Main,
     children: [
       {
-        path: 'directive_page',
-        name: 'directive_page',
+        path: 'menu',
+        name: '菜单维护',
         meta: {
-          icon: 'ios-navigate',
-          title: '指令'
+          icon: 'md-menu',
+          title: '菜单维护'
         },
-        component: () => import('@/view/directive/directive.vue')
+        component: () => import('@/view/system/menu.vue')
+      },
+      {
+        path: 'user',
+        name: '用户管理',
+        meta: {
+          icon: 'ios-people',
+          title: '用户管理'
+        },
+        component: () => import('@/view/system/user.vue')
       }
     ]
   },
