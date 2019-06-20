@@ -38,6 +38,7 @@ export default {
       return new Promise((resolve, reject) => {
         logout().then(() => {
           commit('setToken', '')
+          commit('setUserInfo', {})
           resolve()
         }).catch(err => {
           reject(err)

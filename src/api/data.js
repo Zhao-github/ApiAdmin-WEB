@@ -14,13 +14,6 @@ export const getDragList = () => {
   })
 }
 
-export const errorReq = () => {
-  return axios.request({
-    url: 'error_url',
-    method: 'post'
-  })
-}
-
 export const uploadImg = formData => {
   return axios.request({
     url: 'image/upload',

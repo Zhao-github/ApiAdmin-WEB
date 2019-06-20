@@ -79,9 +79,6 @@ export default {
     },
     addError (state, error) {
       state.errorList.push(error)
-    },
-    setHasReadErrorLoggerStatus (state, status = true) {
-      state.hasReadErrorPage = status
     }
   }
 }
