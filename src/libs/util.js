@@ -1,5 +1,5 @@
 import config from '@/config'
-import { forEach, hasOneOf, objEqual } from '@/libs/tools'
+import { forEach, hasOneOf, oneOf, objEqual } from '@/libs/tools'
 
 const { title, useI18n } = config
 
@@ -23,8 +23,8 @@ export const hasChild = (item) => {
 }
 
 const showThisMenuEle = (item, access) => {
-  if (item.meta && item.meta.access && item.meta.access.length) {
-    if (hasOneOf(item.meta.access, access)) {
+  if (item.meta && item.meta.access && item.meta.access.length && access) {
+    if (oneOf(item.meta.access, access)) {
       return true
     } else {
       return false
@@ -129,17 +129,17 @@ export const getTagNavListFromLocalstorage = () => {
  * @param {Array} routers 路由列表数组
  * @description 用于找到路由列表中name为home的对象
  */
-export const getHomeRoute = (routers, homeName = 'home') => {
+export const getHomeRoute = (routers) => {
   let i = -1
   let len = routers.length
   let homeRoute = {}
   while (++i < len) {
     let item = routers[i]
     if (item.children && item.children.length) {
-      let res = getHomeRoute(item.children, homeName)
+      let res = getHomeRoute(item.children, 'home')
       if (res.name) return res
     } else {
-      if (item.name === homeName) homeRoute = item
+      if (item.name === 'home') homeRoute = item
     }
   }
   return homeRoute

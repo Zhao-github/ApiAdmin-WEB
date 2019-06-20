@@ -132,7 +132,7 @@ export default {
     handleCloseTag (res, type, route) {
       if (type !== 'others') {
         if (type === 'all') {
-          this.turnToPage(this.$config.homeName)
+          this.turnToPage('home')
         } else {
           if (routeEqual(this.$route, route)) {
             this.closeTag(route)
@@ -173,7 +173,7 @@ export default {
     // 如果当前打开页面不在标签栏中，跳到homeName页
     if (!this.tagNavList.find(item => item.name === this.$route.name)) {
       this.$router.push({
-        name: this.$config.homeName
+        name: 'home'
       })
     }
   }

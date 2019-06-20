@@ -11,10 +11,11 @@ import {
   localSave,
   localRead
 } from '@/libs/util'
+import {
+  getUserInfo
+} from '@/api/user'
 import router from '@/router'
 import routers from '@/router/routers'
-import config from '@/config'
-const { homeName } = config
 
 const closePage = (state, route) => {
   const nextRoute = getNextRoute(state.tagNavList, route)
@@ -34,7 +35,14 @@ export default {
     hasReadErrorPage: false
   },
   getters: {
-    menuList: (state, getters, rootState) => getMenuByRouter(routers, rootState.user.access),
+    menuList: (state, getters, rootState) => {
+      if (!rootState.user.userInfo) {
+        getUserInfo().then(res => {
+          commit('setUserInfo', res.data.data)
+        })
+      }
+      getMenuByRouter(routers, rootState.user.userInfo.access)
+    },
     errorCount: state => state.errorList.length
   },
   mutations: {
@@ -42,15 +50,15 @@ export default {
       state.breadCrumbList = getBreadCrumbList(route, state.homeRoute)
     },
     setHomeRoute (state, routes) {
-      state.homeRoute = getHomeRoute(routes, homeName)
+      state.homeRoute = getHomeRoute(routes, 'home')
     },
     setTagNavList (state, list) {
       let tagList = []
       if (list) {
         tagList = [...list]
       } else tagList = getTagNavListFromLocalstorage() || []
-      if (tagList[0] && tagList[0].name !== homeName) tagList.shift()
-      let homeTagIndex = tagList.findIndex(item => item.name === homeName)
+      if (tagList[0] && tagList[0].name !== 'home') tagList.shift()
+      let homeTagIndex = tagList.findIndex(item => item.name === 'home')
       if (homeTagIndex > 0) {
         let homeTag = tagList.splice(homeTagIndex, 1)[0]
         tagList.unshift(homeTag)
@@ -69,7 +77,7 @@ export default {
       if (!routeHasExist(state.tagNavList, router)) {
         if (type === 'push') state.tagNavList.push(router)
         else {
-          if (router.name === homeName) state.tagNavList.unshift(router)
+          if (router.name === 'home') state.tagNavList.unshift(router)
           else state.tagNavList.splice(1, 0, router)
         }
         setTagNavListInLocalstorage([...state.tagNavList])
