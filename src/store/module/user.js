@@ -45,8 +45,8 @@ export default {
       })
     },
     // 获取用户相关信息
-    getUserInfo ({ state }) {
-      if (state.userInfo) {
+    getUserInfo ({ state, commit }) {
+      if (JSON.stringify(state.userInfo) !== '{}') {
         return state.userInfo
       } else {
         return new Promise((resolve, reject) => {

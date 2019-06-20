@@ -11,9 +11,6 @@ import {
   localSave,
   localRead
 } from '@/libs/util'
-import {
-  getUserInfo
-} from '@/api/user'
 import router from '@/router'
 import routers from '@/router/routers'
 
@@ -35,14 +32,7 @@ export default {
     hasReadErrorPage: false
   },
   getters: {
-    menuList: (state, getters, rootState) => {
-      if (!rootState.user.userInfo) {
-        getUserInfo().then(res => {
-          commit('setUserInfo', res.data.data)
-        })
-      }
-      getMenuByRouter(routers, rootState.user.userInfo.access)
-    },
+    menuList: (state, getters, rootState) => getMenuByRouter(routers, rootState.user.userInfo.access),
     errorCount: state => state.errorList.length
   },
   mutations: {
