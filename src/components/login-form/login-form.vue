@@ -14,7 +14,7 @@
         </span>
       </Input>
     </FormItem>
-    <FormItem>
+    <FormItem style="margin-bottom: 15px;">
       <Button @click="handleSubmit" type="primary" long>登录</Button>
     </FormItem>
   </Form>

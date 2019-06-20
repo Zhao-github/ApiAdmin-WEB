@@ -8,8 +8,13 @@
       <Card icon="log-in" title="欢迎登录" :bordered="false">
         <div class="form-con">
           <login-form @on-success-valid="handleSubmit"></login-form>
-          <p class="login-tip">输入任意用户名和密码即可</p>
+          <div style="padding-top:10px;font-size: 11px;border-top: 1px solid #e9eaec;">
+            <span style="vertical-align:middle;">其他登录：</span>
+            <img style="vertical-align:middle;" :src="qq_login" alt=""> &nbsp;
+            <img style="vertical-align:middle;" :src="wx_login" alt="">
+          </div>
         </div>
+
       </Card>
     </div>
   </div>
@@ -18,9 +23,17 @@
 <script>
 import LoginForm from '_c/login-form'
 import { mapActions } from 'vuex'
+import qq_login from '@/assets/images/qq_login.png'
+import wx_login from '@/assets/images/wx_login.png'
 export default {
   components: {
     LoginForm
+  },
+  data () {
+    return {
+      qq_login,
+      wx_login
+    }
   },
   methods: {
     ...mapActions([
