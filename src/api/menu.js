@@ -1,7 +1,7 @@
 import axios from '@/libs/api.request'
 
 /**
- * 获取菜单列表数据
+ * 鑾峰彇鑿滃崟鍒楄〃鏁版嵁
  * @returns {wx.RequestTask | never}
  */
 export const getList = () => {
@@ -12,7 +12,7 @@ export const getList = () => {
 }
 
 /**
- * 显示/隐藏菜单
+ * 鏄剧ず/闅愯棌鑿滃崟
  * @param status
  * @param id
  * @returns {wx.RequestTask | never}
@@ -29,7 +29,7 @@ export const changeStatus = (status, id) => {
 }
 
 /**
- * 新增菜单
+ * 鏂板鑿滃崟
  * @param data
  * @returns {wx.RequestTask | never}
  */
@@ -42,7 +42,7 @@ export const add = (data) => {
 }
 
 /**
- * 编辑菜单
+ * 缂栬緫鑿滃崟
  * @param data
  * @returns {wx.RequestTask | never}
  */
@@ -55,7 +55,7 @@ export const edit = (data) => {
 }
 
 /**
- * 删除菜单
+ * 鍒犻櫎鑿滃崟
  * @param status
  * @param id
  * @returns {wx.RequestTask | never}

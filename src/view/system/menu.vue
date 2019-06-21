@@ -82,7 +82,7 @@ const deleteButton = (vm, h, currentRow, index) => {
     },
     on: {
       'on-ok': () => {
-        del(currentRow.id).then(res => {
+        del(currentRow.id).then(response => {
           currentRow.loading = false
           vm.tableData.splice(index, 1)
           vm.$Message.success(response.data.msg)

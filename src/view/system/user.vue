@@ -75,8 +75,8 @@
   </div>
 </template>
 <script>
-import axios from 'axios'
-import { getUserIndex } from '@/api/user'
+import { getUserIndex, changeStatus, add, edit, del } from '@/api/user'
+import { getGroups } from '@/api/auth'
 
 const editButton = (vm, h, currentRow, index) => {
   return h('Button', {
@@ -92,20 +92,8 @@ const editButton = (vm, h, currentRow, index) => {
         vm.formItem.username = currentRow.username
         vm.formItem.nickname = currentRow.nickname
         vm.formItem.password = 'ApiAdmin'
-        axios.get('Auth/getGroups').then(function (response) {
-          let res = response.data
-          if (res.code === 1) {
-            vm.groupList = res.data.list
-          } else {
-            if (res.code === -14) {
-              vm.$store.commit('logout', vm)
-              vm.$router.push({
-                name: 'login'
-              })
-            } else {
-              vm.$Message.error(res.msg)
-            }
-          }
+        getGroups().then(response => {
+          vm.groupList = response.data.data.list
         })
         vm.formItem.groupId = currentRow.groupId
         vm.modalSetting.show = true
@@ -123,18 +111,10 @@ const deleteButton = (vm, h, currentRow, index) => {
     },
     on: {
       'on-ok': () => {
-        axios.get('User/del', {
-          params: {
-            id: currentRow.id
-          }
-        }).then(function (response) {
+        del(currentRow.id).then(response => {
           currentRow.loading = false
-          if (response.data.code === 1) {
-            vm.tableData.splice(index, 1)
-            vm.$Message.success(response.data.msg)
-          } else {
-            vm.$Message.error(response.data.msg)
-          }
+          vm.tableData.splice(index, 1)
+          vm.$Message.success(response.data.data.msg)
         })
       }
     }
@@ -166,19 +146,20 @@ export default {
         {
           title: '用户账号',
           align: 'center',
-          key: 'username'
+          key: 'username',
+          minWidth: 120
         },
         {
           title: '真实姓名',
           align: 'center',
           key: 'nickname',
-          width: 120
+          width: 120,
         },
         {
           title: '登录次数',
           align: 'center',
           render: (h, params) => {
-            return h('span', params.row.userData.login_times)
+            return h('span', params.row.userData.login_times ? params.row.userData.login_times : '')
           },
           key: 'userData',
           width: 90
@@ -187,7 +168,7 @@ export default {
           title: '最后登录时间',
           align: 'center',
           render: (h, params) => {
-            return h('span', params.row.userData.last_login_time)
+            return h('span', params.row.userData.last_login_time ? params.row.userData.last_login_time : '')
           },
           key: 'lastLoginTime',
           width: 160
@@ -197,7 +178,7 @@ export default {
           align: 'center',
           key: 'lastLoginIp',
           render: (h, params) => {
-            return h('span', params.row.userData.last_login_ip)
+            return h('span', params.row.userData.last_login_ip ? params.row.userData.last_login_ip : '')
           },
           width: 160
         },
@@ -219,27 +200,9 @@ export default {
               },
               on: {
                 'on-change': function (status) {
-                  axios.get('User/changeStatus', {
-                    params: {
-                      status: status,
-                      id: params.row.id
-                    }
-                  }).then(function (response) {
-                    let res = response.data
-                    if (res.code === 1) {
-                      vm.$Message.success(res.msg)
-                    } else {
-                      if (res.code === -14) {
-                        vm.$store.commit('logout', vm)
-                        vm.$router.push({
-                          name: 'login'
-                        })
-                      } else {
-                        vm.$Message.error(res.msg)
-                        vm.getList()
-                      }
-                    }
-                    vm.cancel()
+                  changeStatus(status, params.row.id).then(response => {
+                    vm.$Message.success(response.data.msg)
+                    vm.getList()
                   })
                 }
               }
@@ -309,43 +272,29 @@ export default {
   methods: {
     alertAdd () {
       let vm = this
-      axios.get('Auth/getGroups').then(function (response) {
-        let res = response.data
-        if (res.code === 1) {
-          vm.groupList = res.data.list
-        } else {
-          if (res.code === -14) {
-            vm.$store.commit('logout', vm)
-            vm.$router.push({
-              name: 'login'
-            })
-          } else {
-            vm.$Message.error(res.msg)
-          }
-        }
+      getGroups().then(response => {
+        vm.groupList = response.data.data.list
       })
       this.modalSetting.show = true
     },
     submit () {
-      let self = this
+      let vm = this
       this.$refs['myForm'].validate((valid) => {
         if (valid) {
-          self.modalSetting.loading = true
-          let target = ''
-          if (this.formItem.id === 0) {
-            target = 'User/add'
+          vm.modalSetting.loading = true
+          if (vm.formItem.id === 0) {
+            add(vm.formItem).then(response => {
+              vm.$Message.success(response.data.data.msg)
+              vm.getList()
+              vm.cancel()
+            })
           } else {
-            target = 'User/edit'
+            edit(vm.formItem).then(response => {
+              vm.$Message.success(response.data.data.msg)
+              vm.getList()
+              vm.cancel()
+            })
           }
-          axios.post(target, this.formItem).then(function (response) {
-            if (response.data.code === 1) {
-              self.$Message.success(response.data.msg)
-            } else {
-              self.$Message.error(response.data.msg)
-            }
-            self.getList()
-            self.cancel()
-          })
         }
       })
     },
