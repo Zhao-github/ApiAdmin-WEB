@@ -7,13 +7,6 @@ export const getTableData = () => {
   })
 }
 
-export const getDragList = () => {
-  return axios.request({
-    url: 'get_drag_list',
-    method: 'get'
-  })
-}
-
 export const uploadImg = formData => {
   return axios.request({
     url: 'image/upload',

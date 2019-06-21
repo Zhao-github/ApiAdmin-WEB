@@ -42,6 +42,7 @@
 import { mapActions } from 'vuex'
 import qq_login from '@/assets/images/qq_login.png'
 import wx_login from '@/assets/images/wx_login.png'
+
 export default {
   data () {
     return {
@@ -53,10 +54,10 @@ export default {
       },
       rules: {
         username: [
-          {required: true, message: '账号不能为空', trigger: 'blur'}
+          { required: true, message: '账号不能为空', trigger: 'blur' }
         ],
         password: [
-          {required: true, message: '密码不能为空', trigger: 'blur'}
+          { required: true, message: '密码不能为空', trigger: 'blur' }
         ]
       }
     }
@@ -66,9 +67,9 @@ export default {
       'handleLogin'
     ]),
     handleSubmit () {
-      let vm = this;
-      let username = vm.form.username;
-      let password = vm.form.password;
+      let vm = this
+      let username = vm.form.username
+      let password = vm.form.password
       vm.$refs.loginForm.validate((valid) => {
         if (valid) {
           vm.handleLogin({ username, password }).then(res => {
@@ -82,7 +83,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>

@@ -51,7 +51,7 @@ export default [
   },
   {
     path: '/system',
-    name: '系统配置',
+    name: 'system_setting',
     meta: {
       icon: 'ios-build',
       title: '系统配置'
@@ -60,7 +60,7 @@ export default [
     children: [
       {
         path: 'menu',
-        name: '菜单维护',
+        name: 'menu_setting',
         meta: {
           icon: 'md-menu',
           title: '菜单维护'
@@ -69,7 +69,7 @@ export default [
       },
       {
         path: 'user',
-        name: '用户管理',
+        name: 'user_setting',
         meta: {
           icon: 'ios-people',
           title: '用户管理'
