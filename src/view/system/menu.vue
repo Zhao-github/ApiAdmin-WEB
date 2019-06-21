@@ -50,8 +50,7 @@
 </template>
 
 <script>
-import axios from 'axios'
-import { getMenuList } from '@/api/menu'
+import { getList, changeStatus, add, edit, del } from '@/api/menu'
 
 const editButton = (vm, h, currentRow, index) => {
   return h('Button', {
@@ -83,18 +82,10 @@ const deleteButton = (vm, h, currentRow, index) => {
     },
     on: {
       'on-ok': () => {
-        axios.get('Menu/del', {
-          params: {
-            id: currentRow.id
-          }
-        }).then(function (response) {
+        del(currentRow.id).then(res => {
           currentRow.loading = false
-          if (response.data.code === 1) {
-            vm.tableData.splice(index, 1)
-            vm.$Message.success(response.data.msg)
-          } else {
-            vm.$Message.error(response.data.msg)
-          }
+          vm.tableData.splice(index, 1)
+          vm.$Message.success(response.data.msg)
         })
       }
     }
@@ -204,27 +195,9 @@ export default {
               },
               on: {
                 'on-change': function (status) {
-                  axios.get('Menu/changeStatus', {
-                    params: {
-                      status: status,
-                      id: currentRowData.id
-                    }
-                  }).then(function (response) {
-                    let res = response.data
-                    if (res.code === 1) {
-                      vm.$Message.success(res.msg)
-                    } else {
-                      if (res.code === -14) {
-                        vm.$store.commit('logout', vm)
-                        vm.$router.push({
-                          name: 'login'
-                        })
-                      } else {
-                        vm.$Message.error(res.msg)
-                        vm.getList()
-                      }
-                    }
-                    vm.cancel()
+                  changeStatus(status, currentRowData.id).then(response => {
+                    vm.$Message.success(response.data.msg)
+                    vm.getList()
                   })
                 }
               }
@@ -244,25 +217,23 @@ export default {
       this.modalSetting.show = true
     },
     submit () {
-      let self = this
+      let vm = this
       this.$refs['myForm'].validate((valid) => {
         if (valid) {
-          self.modalSetting.loading = true
-          let target = ''
-          if (this.formItem.id === 0) {
-            target = 'Menu/add'
+          vm.modalSetting.loading = true
+          if (vm.formItem.id === 0) {
+            add(vm.formItem).then(response => {
+              vm.$Message.success(response.data.msg)
+              vm.getList()
+              vm.cancel()
+            })
           } else {
-            target = 'Menu/edit'
+            edit(vm.formItem).then(response => {
+              vm.$Message.success(response.data.msg)
+              vm.getList()
+              vm.cancel()
+            })
           }
-          axios.post(target, this.formItem).then(function (response) {
-            if (response.data.code === 1) {
-              self.$Message.success(response.data.msg)
-            } else {
-              self.$Message.error(response.data.msg)
-            }
-            self.getList()
-            self.cancel()
-          })
         }
       })
     },
@@ -279,7 +250,7 @@ export default {
     },
     getList () {
       let vm = this
-      getMenuList().then(response => {
+      getList().then(response => {
         vm.tableData = response.data.data.list
       })
     }
