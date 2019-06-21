@@ -8,7 +8,7 @@
       <Col span="24">
         <Card>
           <p slot="title" style="height: 32px">
-            <Button type="primary" @click="alertAdd" icon="plus-round">新增</Button>
+            <Button type="primary" @click="alertAdd" icon="md-add">新增</Button>
           </p>
           <div>
             <Table :columns="columnsList" :data="tableData" border disabled-hover></Table>
@@ -18,7 +18,7 @@
     </Row>
     <Modal v-model="modalSetting.show" width="668" :styles="{top: '30px'}" @on-visible-change="doCancel">
       <p slot="header" style="color:#2d8cf0">
-        <Icon type="information-circled"></Icon>
+        <Icon type="md-alert" />
         <span>{{formItem.id ? '编辑' : '新增'}}菜单</span>
       </p>
       <Form ref="myForm" :rules="ruleValidate" :model="formItem" :label-width="80">
