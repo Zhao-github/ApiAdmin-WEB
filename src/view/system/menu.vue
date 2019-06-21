@@ -38,7 +38,7 @@
         </FormItem>
         <FormItem label="菜单排序" prop="sort">
           <InputNumber :min="0" v-model="formItem.sort"></InputNumber>
-          <Tag color="error">数字越小越靠前</Tag>
+          <Tag color="error" class="margin-left-5">数字越小越靠前</Tag>
         </FormItem>
       </Form>
       <div slot="footer">
@@ -134,14 +134,47 @@ export default {
           title: '状态',
           align: 'center',
           key: 'hide',
-          width: 100
+          width: 100,
+          render: (h, params) => {
+            let vm = this
+            return h('i-switch', {
+              attrs: {
+                size: 'large'
+              },
+              props: {
+                'true-value': 1,
+                'false-value': 0,
+                value: params.row.hide
+              },
+              on: {
+                'on-change': function (status) {
+                  changeStatus(status, params.row.id).then(response => {
+                    vm.$Message.success(response.data.msg)
+                    vm.getList()
+                  })
+                }
+              }
+            }, [
+              h('span', {
+                slot: 'open'
+              }, '隐藏'),
+              h('span', {
+                slot: 'close'
+              }, '显示')
+            ])
+          }
         },
         {
           title: '操作',
           align: 'center',
           key: 'handle',
           width: 200,
-          handle: ['edit', 'delete']
+          render: (h, params) => {
+            return h('div', [
+              editButton(this, h, params.row, params.index),
+              deleteButton(this, h, params.row, params.index)
+            ])
+          }
         }
       ],
       tableData: [],
@@ -165,54 +198,9 @@ export default {
     }
   },
   created () {
-    this.init()
     this.getList()
   },
   methods: {
-    init () {
-      let vm = this
-      this.columnsList.forEach(item => {
-        if (item.handle) {
-          item.render = (h, param) => {
-            let currentRowData = vm.tableData[param.index]
-            return h('div', [
-              editButton(vm, h, currentRowData, param.index),
-              deleteButton(vm, h, currentRowData, param.index)
-            ])
-          }
-        }
-        if (item.key === 'hide') {
-          item.render = (h, param) => {
-            let currentRowData = vm.tableData[param.index]
-            return h('i-switch', {
-              attrs: {
-                size: 'large'
-              },
-              props: {
-                'true-value': 1,
-                'false-value': 0,
-                value: currentRowData.hide
-              },
-              on: {
-                'on-change': function (status) {
-                  changeStatus(status, currentRowData.id).then(response => {
-                    vm.$Message.success(response.data.msg)
-                    vm.getList()
-                  })
-                }
-              }
-            }, [
-              h('span', {
-                slot: 'open'
-              }, '隐藏'),
-              h('span', {
-                slot: 'close'
-              }, '显示')
-            ])
-          }
-        }
-      })
-    },
     alertAdd () {
       this.modalSetting.show = true
     },

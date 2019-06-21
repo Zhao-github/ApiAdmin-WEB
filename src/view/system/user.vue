@@ -76,6 +76,7 @@
 </template>
 <script>
 import axios from 'axios'
+import { getUserIndex } from '@/api/user'
 
 const editButton = (vm, h, currentRow, index) => {
   return h('Button', {
@@ -176,12 +177,18 @@ export default {
         {
           title: '登录次数',
           align: 'center',
-          key: 'loginTimes',
+          render: (h, params) => {
+            return h('span', params.row.userData.login_times)
+          },
+          key: 'userData',
           width: 90
         },
         {
           title: '最后登录时间',
           align: 'center',
+          render: (h, params) => {
+            return h('span', params.row.userData.last_login_time)
+          },
           key: 'lastLoginTime',
           width: 160
         },
@@ -189,20 +196,74 @@ export default {
           title: '最后登录IP',
           align: 'center',
           key: 'lastLoginIp',
+          render: (h, params) => {
+            return h('span', params.row.userData.last_login_ip)
+          },
           width: 160
         },
         {
           title: '状态',
           align: 'center',
           key: 'status',
-          width: 100
+          width: 100,
+          render: (h, params) => {
+            let vm = this
+            return h('i-switch', {
+              attrs: {
+                size: 'large'
+              },
+              props: {
+                'true-value': 1,
+                'false-value': 0,
+                value: params.row.status
+              },
+              on: {
+                'on-change': function (status) {
+                  axios.get('User/changeStatus', {
+                    params: {
+                      status: status,
+                      id: params.row.id
+                    }
+                  }).then(function (response) {
+                    let res = response.data
+                    if (res.code === 1) {
+                      vm.$Message.success(res.msg)
+                    } else {
+                      if (res.code === -14) {
+                        vm.$store.commit('logout', vm)
+                        vm.$router.push({
+                          name: 'login'
+                        })
+                      } else {
+                        vm.$Message.error(res.msg)
+                        vm.getList()
+                      }
+                    }
+                    vm.cancel()
+                  })
+                }
+              }
+            }, [
+              h('span', {
+                slot: 'open'
+              }, '启用'),
+              h('span', {
+                slot: 'close'
+              }, '禁用')
+            ])
+          }
         },
         {
           title: '操作',
           align: 'center',
           key: 'handle',
           width: 175,
-          handle: ['edit', 'delete']
+          render: (h, params) => {
+            return h('div', [
+              editButton(this, h, params.row, params.index),
+              deleteButton(this, h, params.row, params.index)
+            ])
+          }
         }
       ],
       tableData: [],
@@ -243,72 +304,9 @@ export default {
     }
   },
   created () {
-    this.init()
     this.getList()
   },
   methods: {
-    init () {
-      let vm = this
-      this.columnsList.forEach(item => {
-        if (item.handle) {
-          item.render = (h, param) => {
-            let currentRowData = vm.tableData[param.index]
-            return h('div', [
-              editButton(vm, h, currentRowData, param.index),
-              deleteButton(vm, h, currentRowData, param.index)
-            ])
-          }
-        }
-        if (item.key === 'status') {
-          item.render = (h, param) => {
-            let currentRowData = vm.tableData[param.index]
-            return h('i-switch', {
-              attrs: {
-                size: 'large'
-              },
-              props: {
-                'true-value': 1,
-                'false-value': 0,
-                value: currentRowData.status
-              },
-              on: {
-                'on-change': function (status) {
-                  axios.get('User/changeStatus', {
-                    params: {
-                      status: status,
-                      id: currentRowData.id
-                    }
-                  }).then(function (response) {
-                    let res = response.data
-                    if (res.code === 1) {
-                      vm.$Message.success(res.msg)
-                    } else {
-                      if (res.code === -14) {
-                        vm.$store.commit('logout', vm)
-                        vm.$router.push({
-                          name: 'login'
-                        })
-                      } else {
-                        vm.$Message.error(res.msg)
-                        vm.getList()
-                      }
-                    }
-                    vm.cancel()
-                  })
-                }
-              }
-            }, [
-              h('span', {
-                slot: 'open'
-              }, '启用'),
-              h('span', {
-                slot: 'close'
-              }, '禁用')
-            ])
-          }
-        }
-      })
-    },
     alertAdd () {
       let vm = this
       axios.get('Auth/getGroups').then(function (response) {
@@ -376,29 +374,16 @@ export default {
     },
     getList () {
       let vm = this
-      axios.get('User/index', {
-        params: {
-          page: vm.tableShow.currentPage,
-          size: vm.tableShow.pageSize,
-          type: vm.searchConf.type,
-          keywords: vm.searchConf.keywords,
-          status: vm.searchConf.status
-        }
-      }).then(function (response) {
-        let res = response.data
-        if (res.code === 1) {
-          vm.tableData = res.data.list
-          vm.tableShow.listCount = res.data.count
-        } else {
-          if (res.code === -14) {
-            vm.$store.commit('logout', vm)
-            vm.$router.push({
-              name: 'login'
-            })
-          } else {
-            vm.$Message.error(res.msg)
-          }
-        }
+      let params = {
+        page: vm.tableShow.currentPage,
+        size: vm.tableShow.pageSize,
+        type: vm.searchConf.type,
+        keywords: vm.searchConf.keywords,
+        status: vm.searchConf.status
+      }
+      getUserIndex(params).then(response => {
+        vm.tableData = response.data.data.list
+        vm.tableShow.listCount = response.data.data.count
       })
     }
   }

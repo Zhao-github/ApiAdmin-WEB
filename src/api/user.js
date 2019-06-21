@@ -25,3 +25,11 @@ export const logout = () => {
     method: 'get'
   })
 }
+
+export const getUserIndex = (params) => {
+  return axios.request({
+    url: 'User/index',
+    method: 'get',
+    params: params
+  })
+}
