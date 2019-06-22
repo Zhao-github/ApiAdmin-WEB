@@ -11,10 +11,11 @@ export const getGroups = () => {
  * 获取权限列表数据
  * @returns {wx.RequestTask | never}
  */
-export const getList = () => {
+export const getList = (params) => {
   return axios.request({
     url: 'Auth/index',
-    method: 'get'
+    method: 'get',
+    params: params
   })
 }
 
