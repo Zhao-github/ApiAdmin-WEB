@@ -2,7 +2,7 @@ import config from '@/config'
 import axios from 'axios'
 import iView from 'iview'
 import { setToken, getToken } from '@/libs/util'
-import Vue from 'vue'
+import router from '@/router'
 
 const baseUrl = process.env.NODE_ENV === 'development' ? config.baseUrl.dev : config.baseUrl.pro
 
@@ -24,11 +24,11 @@ class HttpRequest {
       if (data.code !== 1) {
         if (data.code === -14) {
           setToken('');
-          (new Vue()).$route.push({ name: 'login' })
+          router.push({ name: 'login' })
         } else {
           iView.Message.error(data.msg)
-          throw new Error(data.msg)
         }
+        throw new Error(data.msg)
       } else {
         return { data, status }
       }
