@@ -1,5 +1,5 @@
 <style lang="less" scoped>
-  @import './auth.less'
+  @import './auth.less';
 </style>
 <template>
   <div>
@@ -27,7 +27,7 @@
       <Col span="24">
         <Card>
           <p slot="title" style="height: 32px">
-            <Button type="primary" @click="alertAdd" icon="plus-round">新增</Button>
+            <Button type="primary" @click="alertAdd" icon="md-add">新增</Button>
           </p>
           <div>
             <Table :columns="columnsList" :data="tableData" border disabled-hover></Table>
@@ -42,7 +42,7 @@
     </Row>
     <Modal v-model="modalSetting.show" width="668" :styles="{top: '30px'}" @on-visible-change="doCancel">
       <p slot="header" style="color:#2d8cf0">
-        <Icon type="information-circled"></Icon>
+        <Icon type="md-alert"></Icon>
         <span>{{formItem.id ? '编辑' : '新增'}}权限组</span>
       </p>
       <Form ref="myForm" :rules="ruleValidate" :model="formItem" :label-width="80">
@@ -81,7 +81,8 @@
   </div>
 </template>
 <script>
-import axios from 'axios'
+import { getUsers } from '@/api/user'
+import { getList, add, edit, del, delMember, getRuleList, changeStatus } from '@/api/auth'
 
 const editButton = (vm, h, currentRow, index) => {
   return h('Button', {
@@ -96,22 +97,8 @@ const editButton = (vm, h, currentRow, index) => {
         vm.formItem.id = currentRow.id
         vm.formItem.name = currentRow.name
         vm.formItem.description = currentRow.description
-        axios.get('Auth/getRuleList', {
-          params: { 'groupId': currentRow.id }
-        }).then(function (response) {
-          let res = response.data
-          if (res.code === 1) {
-            vm.ruleList = res.data.list
-          } else {
-            if (res.code === -14) {
-              vm.$store.commit('logout', vm)
-              vm.$router.push({
-                name: 'login'
-              })
-            } else {
-              vm.$Message.error(res.msg)
-            }
-          }
+        getRuleList({ 'group_id': currentRow.id }).then(response => {
+          vm.ruleList = response.data.data.list
         })
         vm.modalSetting.show = true
         vm.modalSetting.index = index
@@ -128,18 +115,9 @@ const deleteButton = (vm, h, currentRow, index) => {
     },
     on: {
       'on-ok': () => {
-        axios.get('Auth/del', {
-          params: {
-            id: currentRow.id
-          }
-        }).then(function (response) {
-          currentRow.loading = false
-          if (response.data.code === 1) {
-            vm.tableData.splice(index, 1)
-            vm.$Message.success(response.data.msg)
-          } else {
-            vm.$Message.error(response.data.msg)
-          }
+        del(currentRow.id).then(response => {
+          vm.tableData.splice(index, 1)
+          vm.$Message.success(response.data.msg)
         })
       }
     }
@@ -182,19 +160,12 @@ const memberDelButton = (vm, h, currentRow, index) => {
     },
     on: {
       'on-ok': () => {
-        axios.get('Auth/delMember', {
-          params: {
-            uid: currentRow.id,
-            gid: vm.memberShow.gid
-          }
-        }).then(function (response) {
-          currentRow.loading = false
-          if (response.data.code === 1) {
-            vm.memberData.splice(index, 1)
-            vm.$Message.success(response.data.msg)
-          } else {
-            vm.$Message.error(response.data.msg)
-          }
+        delMember({
+          uid: currentRow.id,
+          gid: vm.memberShow.gid
+        }).then(response => {
+          vm.memberData.splice(index, 1)
+          vm.$Message.success(response.data.msg)
         })
       }
     }
@@ -238,22 +209,57 @@ export default {
         {
           title: '成员授权',
           align: 'center',
-          key: 'member',
           width: 116,
-          handle: ['member']
+          render: (h, params) => {
+            return h('div', [
+              memberButton(this, h, params.row, params.index)
+            ])
+          }
         },
         {
           title: '状态',
           align: 'center',
-          key: 'status',
-          width: 100
+          width: 100,
+          render: (h, params) => {
+            let vm = this
+            return h('i-switch', {
+              attrs: {
+                size: 'large'
+              },
+              props: {
+                'true-value': 1,
+                'false-value': 0,
+                value: params.row.status
+              },
+              on: {
+                'on-change': function (status) {
+                  changeStatus(status, params.row.id).then(response => {
+                    vm.$Message.success(response.data.msg)
+                    vm.getList()
+                    vm.cancel()
+                  })
+                }
+              }
+            }, [
+              h('span', {
+                slot: 'open'
+              }, '启用'),
+              h('span', {
+                slot: 'close'
+              }, '禁用')
+            ])
+          }
         },
         {
           title: '操作',
           align: 'center',
-          key: 'handle',
           width: 175,
-          handle: ['edit', 'delete']
+          render: (h, params) => {
+            return h('div', [
+              editButton(this, h, params.row, params.index),
+              deleteButton(this, h, params.row, params.index)
+            ])
+          }
         }
       ],
       memberColumns: [
@@ -277,33 +283,50 @@ export default {
         {
           title: '登录次数',
           align: 'center',
-          key: 'loginTimes',
+          key: 'login_times',
           width: 90
         },
         {
           title: '最后登录时间',
           align: 'center',
-          key: 'lastLoginTime',
+          key: 'last_login_time',
           width: 160
         },
         {
           title: '最后登录IP',
           align: 'center',
-          key: 'lastLoginIp',
+          key: 'last_login_ip',
           width: 160
         },
         {
           title: '状态',
           align: 'center',
-          key: 'status',
-          width: 100
+          width: 100,
+          render: (h, params) => {
+            if (params.row.status === 1) {
+              return h('Tag', {
+                props: {
+                  'color': 'green'
+                }
+              }, '启用')
+            } else {
+              return h('Tag', {
+                props: {
+                  'color': 'red'
+                }
+              }, '禁用')
+            }
+          }
         },
         {
           title: '操作',
           align: 'center',
-          key: 'handle',
           width: 175,
-          handle: ['delete']
+          render: (h, params) => {
+            return h('div', [
+              memberDelButton(this, h, params.row, params.index)
+            ])
+          }
         }
       ],
       tableData: [],
@@ -347,124 +370,13 @@ export default {
     }
   },
   created () {
-    this.init()
     this.getList()
   },
   methods: {
-    init () {
-      let vm = this
-      this.columnsList.forEach(item => {
-        if (item.key === 'handle') {
-          item.render = (h, param) => {
-            let currentRowData = vm.tableData[param.index]
-            return h('div', [
-              editButton(vm, h, currentRowData, param.index),
-              deleteButton(vm, h, currentRowData, param.index)
-            ])
-          }
-        }
-        if (item.key === 'member') {
-          item.render = (h, param) => {
-            let currentRowData = vm.tableData[param.index]
-            return h('div', [
-              memberButton(vm, h, currentRowData, param.index)
-            ])
-          }
-        }
-        if (item.key === 'status') {
-          item.render = (h, param) => {
-            let currentRowData = vm.tableData[param.index]
-            return h('i-switch', {
-              attrs: {
-                size: 'large'
-              },
-              props: {
-                'true-value': 1,
-                'false-value': 0,
-                value: currentRowData.status
-              },
-              on: {
-                'on-change': function (status) {
-                  axios.get('Auth/changeStatus', {
-                    params: {
-                      status: status,
-                      id: currentRowData.id
-                    }
-                  }).then(function (response) {
-                    let res = response.data
-                    if (res.code === 1) {
-                      vm.$Message.success(res.msg)
-                    } else {
-                      if (res.code === -14) {
-                        vm.$store.commit('logout', vm)
-                        vm.$router.push({
-                          name: 'login'
-                        })
-                      } else {
-                        vm.$Message.error(res.msg)
-                        vm.getList()
-                      }
-                    }
-                    vm.cancel()
-                  })
-                }
-              }
-            }, [
-              h('span', {
-                slot: 'open'
-              }, '启用'),
-              h('span', {
-                slot: 'close'
-              }, '禁用')
-            ])
-          }
-        }
-      })
-      this.memberColumns.forEach(item => {
-        if (item.key === 'handle') {
-          item.render = (h, param) => {
-            let currentRowData = vm.memberData[param.index]
-            return h('div', [
-              memberDelButton(vm, h, currentRowData, param.index)
-            ])
-          }
-        }
-        if (item.key === 'status') {
-          item.render = (h, param) => {
-            let currentRowData = vm.memberData[param.index]
-            if (currentRowData.status === 1) {
-              return h('Tag', {
-                props: {
-                  'color': 'green'
-                }
-              }, '启用')
-            } else {
-              return h('Tag', {
-                props: {
-                  'color': 'red'
-                }
-              }, '禁用')
-            }
-          }
-        }
-      })
-    },
     alertAdd () {
       let vm = this
-      axios.get('Auth/getRuleList').then(function (response) {
-        let res = response.data
-        if (res.code === 1) {
-          vm.ruleList = res.data.list
-        } else {
-          if (res.code === -14) {
-            vm.$store.commit('logout', vm)
-            vm.$router.push({
-              name: 'login'
-            })
-          } else {
-            vm.$Message.error(res.msg)
-          }
-        }
+      getRuleList().then(response => {
+        vm.ruleList = response.data.data.list
       })
       this.modalSetting.show = true
     },
@@ -478,25 +390,23 @@ export default {
         }
       }
 
-      let self = this
+      let vm = this
       this.$refs['myForm'].validate((valid) => {
         if (valid) {
-          self.modalSetting.loading = true
-          let target = ''
-          if (this.formItem.id === 0) {
-            target = 'Auth/add'
+          vm.modalSetting.loading = true
+          if (vm.formItem.id === 0) {
+            add(vm.formItem).then(response => {
+              vm.$Message.success(response.data.msg)
+              vm.getList()
+              vm.cancel()
+            })
           } else {
-            target = 'Auth/edit'
+            edit(vm.formItem).then(response => {
+              vm.$Message.success(response.data.msg)
+              vm.getList()
+              vm.cancel()
+            })
           }
-          axios.post(target, this.formItem).then(function (response) {
-            if (response.data.code === 1) {
-              self.$Message.success(response.data.msg)
-            } else {
-              self.$Message.error(response.data.msg)
-            }
-            self.getList()
-            self.cancel()
-          })
         }
       })
     },
@@ -533,53 +443,27 @@ export default {
     },
     getList () {
       let vm = this
-      axios.get('Auth/index', {
-        params: {
-          page: vm.tableShow.currentPage,
-          size: vm.tableShow.pageSize,
-          keywords: vm.searchConf.keywords,
-          status: vm.searchConf.status
-        }
-      }).then(function (response) {
-        let res = response.data
-        if (res.code === 1) {
-          vm.tableData = res.data.list
-          vm.tableShow.listCount = res.data.count
-        } else {
-          if (res.code === -14) {
-            vm.$store.commit('logout', vm)
-            vm.$router.push({
-              name: 'login'
-            })
-          } else {
-            vm.$Message.error(res.msg)
-          }
-        }
+      let params = {
+        page: vm.tableShow.currentPage,
+        size: vm.tableShow.pageSize,
+        keywords: vm.searchConf.keywords,
+        status: vm.searchConf.status
+      }
+      getList(params).then(response => {
+        vm.tableData = response.data.data.list
+        vm.tableShow.listCount = response.data.data.count
       })
     },
     getMemberList () {
       let vm = this
-      axios.get('User/getUsers', {
-        params: {
-          page: vm.memberShow.currentPage,
-          size: vm.memberShow.pageSize,
-          gid: vm.memberShow.gid
-        }
-      }).then(function (response) {
-        let res = response.data
-        if (res.code === 1) {
-          vm.memberData = res.data.list
-          vm.memberShow.listCount = res.data.count
-        } else {
-          if (res.code === -14) {
-            vm.$store.commit('logout', vm)
-            vm.$router.push({
-              name: 'login'
-            })
-          } else {
-            vm.$Message.error(res.msg)
-          }
-        }
+      let params = {
+        page: vm.memberShow.currentPage,
+        size: vm.memberShow.pageSize,
+        gid: vm.memberShow.gid
+      }
+      getUsers(params).then(response => {
+        vm.memberData = response.data.data.list
+        vm.memberShow.listCount = response.data.data.count
       })
     }
   }

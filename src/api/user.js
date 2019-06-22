@@ -18,6 +18,14 @@ export const login = ({ username, password }) => {
   })
 }
 
+export const getUsers = (params) => {
+  return axios.request({
+    url: 'User/getUsers',
+    method: 'get',
+    params: params
+  })
+}
+
 /**
  * 获取当前用户信息
  * @returns {never}

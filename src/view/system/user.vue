@@ -153,7 +153,7 @@ export default {
           title: '真实姓名',
           align: 'center',
           key: 'nickname',
-          width: 120,
+          width: 120
         },
         {
           title: '登录次数',

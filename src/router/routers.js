@@ -75,6 +75,15 @@ export default [
           title: '用户管理'
         },
         component: () => import('@/view/system/user.vue')
+      },
+      {
+        path: 'auth',
+        name: 'auth_setting',
+        meta: {
+          icon: 'md-lock',
+          title: '权限管理'
+        },
+        component: () => import('@/view/system/auth.vue')
       }
     ]
   },
