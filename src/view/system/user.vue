@@ -61,8 +61,8 @@
         <FormItem label="用户密码" prop="password">
           <Input v-model="formItem.password" type="password" placeholder="用户密码"></Input>
         </FormItem>
-        <FormItem label="权限组" prop="groupId">
-          <CheckboxGroup v-model="formItem.groupId">
+        <FormItem label="权限组" prop="group_id">
+          <CheckboxGroup v-model="formItem.group_id">
             <Checkbox v-for="group in groupList" :key="group.id" :label="group.id + ''">{{ group.name }}</Checkbox>
           </CheckboxGroup>
         </FormItem>
@@ -95,7 +95,7 @@ const editButton = (vm, h, currentRow, index) => {
         getGroups().then(response => {
           vm.groupList = response.data.data.list
         })
-        vm.formItem.groupId = currentRow.groupId
+        vm.formItem.group_id = currentRow.group_id
         vm.modalSetting.show = true
         vm.modalSetting.index = index
       }
@@ -114,7 +114,7 @@ const deleteButton = (vm, h, currentRow, index) => {
         del(currentRow.id).then(response => {
           currentRow.loading = false
           vm.tableData.splice(index, 1)
-          vm.$Message.success(response.data.data.msg)
+          vm.$Message.success(response.data.msg)
         })
       }
     }
@@ -159,33 +159,29 @@ export default {
           title: '登录次数',
           align: 'center',
           render: (h, params) => {
-            return h('span', params.row.userData.login_times ? params.row.userData.login_times : '')
+            return h('span', params.row.userData === null ? '' : params.row.userData.login_times)
           },
-          key: 'userData',
           width: 90
         },
         {
           title: '最后登录时间',
           align: 'center',
           render: (h, params) => {
-            return h('span', params.row.userData.last_login_time ? params.row.userData.last_login_time : '')
+            return h('span', params.row.userData === null ? '' : params.row.userData.last_login_time)
           },
-          key: 'lastLoginTime',
           width: 160
         },
         {
           title: '最后登录IP',
           align: 'center',
-          key: 'lastLoginIp',
           render: (h, params) => {
-            return h('span', params.row.userData.last_login_ip ? params.row.userData.last_login_ip : '')
+            return h('span', params.row.userData === null ? '' : params.row.userData.last_login_ip)
           },
           width: 160
         },
         {
           title: '状态',
           align: 'center',
-          key: 'status',
           width: 100,
           render: (h, params) => {
             let vm = this
@@ -219,7 +215,6 @@ export default {
         {
           title: '操作',
           align: 'center',
-          key: 'handle',
           width: 175,
           render: (h, params) => {
             return h('div', [
@@ -250,7 +245,7 @@ export default {
         username: '',
         nickname: '',
         password: '',
-        groupId: [],
+        group_id: [],
         id: 0
       },
       ruleValidate: {
@@ -284,13 +279,13 @@ export default {
           vm.modalSetting.loading = true
           if (vm.formItem.id === 0) {
             add(vm.formItem).then(response => {
-              vm.$Message.success(response.data.data.msg)
+              vm.$Message.success(response.data.msg)
               vm.getList()
               vm.cancel()
             })
           } else {
             edit(vm.formItem).then(response => {
-              vm.$Message.success(response.data.data.msg)
+              vm.$Message.success(response.data.msg)
               vm.getList()
               vm.cancel()
             })
