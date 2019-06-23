@@ -84,6 +84,15 @@ export default [
           title: '权限管理'
         },
         component: () => import('@/view/system/auth.vue')
+      },
+      {
+        path: 'log',
+        name: 'logs',
+        meta: {
+          icon: 'md-clipboard',
+          title: '操作日志'
+        },
+        component: () => import('@/view/system/log.vue')
       }
     ]
   },

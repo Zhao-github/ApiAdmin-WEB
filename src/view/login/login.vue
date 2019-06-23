@@ -3,7 +3,7 @@
 </style>
 
 <template>
-  <div class="login">
+  <div class="login" @keydown.enter="handleSubmit">
     <div class="login-con">
       <Card icon="log-in" title="欢迎登录" :bordered="false">
         <div class="form-con">
@@ -32,7 +32,6 @@
             <img style="vertical-align:middle;" :src="wx_login" alt="">
           </div>
         </div>
-
       </Card>
     </div>
   </div>

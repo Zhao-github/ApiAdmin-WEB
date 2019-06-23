@@ -1,5 +1,5 @@
 <style scoped>
-  @import './log.less'
+  @import './log.less';
 </style>
 <template>
   <div>
@@ -41,9 +41,9 @@
   </div>
 </template>
 <script>
-import axios from 'axios'
+import { getList, del } from '@/api/log'
 import expandRow from './table_expand.vue'
-import util from '../../libs/util'
+import { getDate } from '@/libs/tools'
 
 const deleteButton = (vm, h, currentRow, index) => {
   return h('Poptip', {
@@ -54,18 +54,10 @@ const deleteButton = (vm, h, currentRow, index) => {
     },
     on: {
       'on-ok': () => {
-        axios.get('Log/del', {
-          params: {
-            id: currentRow.id
-          }
-        }).then(function (response) {
+        del(currentRow.id).then(response => {
           currentRow.loading = false
-          if (response.data.code === 1) {
-            vm.tableData.splice(index, 1)
-            vm.$Message.success(response.data.msg)
-          } else {
-            vm.$Message.error(response.data.msg)
-          }
+          vm.tableData.splice(index, 1)
+          vm.$Message.success(response.data.msg)
         })
       }
     }
@@ -103,7 +95,7 @@ export default {
         {
           title: '行为名称',
           align: 'center',
-          key: 'actionName'
+          key: 'action_name'
         },
         {
           title: '用户ID',
@@ -126,15 +118,20 @@ export default {
         {
           title: '执行时间',
           align: 'center',
-          key: 'addTime',
-          width: 160
+          width: 160,
+          render: (h, params) => {
+            return h('span', getDate(params.row.add_time, 'year'))
+          }
         },
         {
           title: '操作',
           align: 'center',
-          key: 'handle',
           width: 125,
-          handle: ['delete']
+          render: (h, params) => {
+            return h('div', [
+              deleteButton(this, h, params.row, params.index)
+            ])
+          }
         }
       ],
       tableData: [],
@@ -156,29 +153,9 @@ export default {
     }
   },
   created () {
-    this.init()
     this.getList()
   },
   methods: {
-    init () {
-      let vm = this
-      this.columnsList.forEach(item => {
-        if (item.handle) {
-          item.render = (h, param) => {
-            let currentRowData = vm.tableData[param.index]
-            return h('div', [
-              deleteButton(vm, h, currentRowData, param.index)
-            ])
-          }
-        }
-        if (item.key === 'addTime') {
-          item.render = (h, param) => {
-            let currentRowData = vm.tableData[param.index]
-            return h('span', util.formatDate(currentRowData.addTime))
-          }
-        }
-      })
-    },
     changePage (page) {
       this.tableShow.currentPage = page
       this.getList()
@@ -193,28 +170,15 @@ export default {
     },
     getList () {
       let vm = this
-      axios.get('Log/index', {
-        params: {
-          page: vm.tableShow.currentPage,
-          size: vm.tableShow.pageSize,
-          type: vm.searchConf.type,
-          keywords: vm.searchConf.keywords
-        }
-      }).then(function (response) {
-        let res = response.data
-        if (res.code === 1) {
-          vm.tableData = res.data.list
-          vm.tableShow.listCount = res.data.count
-        } else {
-          if (res.code === -14) {
-            vm.$store.commit('logout', vm)
-            vm.$router.push({
-              name: 'login'
-            })
-          } else {
-            vm.$Message.error(res.msg)
-          }
-        }
+      let params = {
+        page: vm.tableShow.currentPage,
+        size: vm.tableShow.pageSize,
+        type: vm.searchConf.type,
+        keywords: vm.searchConf.keywords
+      }
+      getList(params).then(response => {
+        vm.tableData = response.data.data.list
+        vm.tableShow.listCount = response.data.data.count
       })
     }
   }

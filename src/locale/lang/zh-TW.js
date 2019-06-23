@@ -4,5 +4,6 @@ export default {
   system_setting: '系統配置',
   menu_setting: '菜單維護',
   user_setting: '用戶管理',
-  auth_setting: '權限管理'
+  auth_setting: '權限管理',
+  logs: '操作日誌'
 }
