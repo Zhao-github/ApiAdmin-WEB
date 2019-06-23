@@ -5,7 +5,7 @@
 <template>
   <div class="login" @keydown.enter="handleSubmit">
     <div class="login-con">
-      <Card icon="log-in" title="欢迎登录" :bordered="false">
+      <Card icon="md-log-in" title="欢迎登录ApiAdmin后台管理系统" :bordered="false">
         <div class="form-con">
           <Form ref="loginForm" :model="form" :rules="rules">
             <FormItem prop="username">
