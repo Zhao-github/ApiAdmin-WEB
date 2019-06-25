@@ -97,6 +97,35 @@ export default [
     ]
   },
   {
+    path: '/apps',
+    name: 'apps_setting',
+    meta: {
+      icon: 'md-cloud',
+      title: '应用接入'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'menu',
+        name: 'apps_group',
+        meta: {
+          icon: 'ios-archive',
+          title: '应用分组'
+        },
+        component: () => import('@/view/app/group.vue')
+      },
+      {
+        path: 'user',
+        name: 'apps_list',
+        meta: {
+          icon: 'md-list-box',
+          title: '应用列表'
+        },
+        component: () => import('@/view/app/list.vue')
+      }
+    ]
+  },
+  {
     path: '/401',
     name: 'error_401',
     meta: {

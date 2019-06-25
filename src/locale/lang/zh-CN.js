@@ -5,5 +5,8 @@ export default {
   menu_setting: '菜单维护',
   user_setting: '用户管理',
   auth_setting: '权限管理',
-  logs: '操作日志'
+  logs: '操作日志',
+  apps_setting: '应用接入',
+  apps_group: '应用分组',
+  apps_list: '应用列表'
 }

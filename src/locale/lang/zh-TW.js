@@ -5,5 +5,8 @@ export default {
   menu_setting: '菜單維護',
   user_setting: '用戶管理',
   auth_setting: '權限管理',
-  logs: '操作日誌'
+  logs: '操作日誌',
+  apps_setting: '應用接入',
+  apps_group: '應用分組',
+  apps_list: '應用列表'
 }
