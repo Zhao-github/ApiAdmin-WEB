@@ -33,7 +33,7 @@
             <Col span="24">
             <Card>
                 <p slot="title" style="height: 32px">
-                    <Button type="primary" @click="alertAdd" icon="plus-round">新增</Button>
+                    <Button type="primary" @click="alertAdd" icon="md-add">新增</Button>
                 </p>
                 <div>
                     <Table :columns="columnsList" :data="tableData" border disabled-hover></Table>
@@ -48,7 +48,7 @@
         </Row>
         <Modal v-model="modalSetting.show" width="668" :styles="{top: '30px'}" @on-visible-change="doCancel">
             <p slot="header" style="color:#2d8cf0;">
-                <Icon type="information-circled"></Icon>
+                <Icon type="md-alert"></Icon>
                 <span>{{formItem.id ? '编辑' : '新增'}}应用组</span>
             </p>
             <Form ref="myForm" :rules="ruleValidate" :model="formItem" :label-width="80">
@@ -72,6 +72,8 @@
 </template>
 <script>
     import axios from 'axios';
+    import { getList, changeStatus, add, edit, del } from '@/api/app-group'
+    import { getHash } from '@/api/interface'
 
     const editButton = (vm, h, currentRow, index) => {
         return h('Button', {
@@ -102,19 +104,10 @@
             },
             on: {
                 'on-ok': () => {
-                    axios.get('AppGroup/del', {
-                        params: {
-                            hash: currentRow.hash
-                        }
-                    }).then(function (response) {
-                        currentRow.loading = false;
-                        if (response.data.code === 1) {
-                            vm.tableData.splice(index, 1);
-                            vm.$Message.success(response.data.msg);
-                        } else {
-                            vm.$Message.error(response.data.msg);
-                        }
-                    });
+                    del(currentRow.hash).then(response => {
+                        vm.tableData.splice(index, 1);
+                        vm.$Message.success(response.data.msg);
+                    })
                 }
             }
         }, [
@@ -161,15 +154,47 @@
                     {
                         title: '应用组状态',
                         align: 'center',
-                        key: 'status',
-                        width: 100
+                        width: 100,
+                        render: (h, params) => {
+                            let vm = this
+                            return h('i-switch', {
+                                attrs: {
+                                    size: 'large'
+                                },
+                                props: {
+                                    'true-value': 1,
+                                    'false-value': 0,
+                                    value: params.row.status
+                                },
+                                on: {
+                                    'on-change': function (status) {
+                                        changeStatus(status, params.row.id).then(response => {
+                                            vm.$Message.success(response.data.msg);
+                                            vm.getList();
+                                            vm.cancel();
+                                        })
+                                    }
+                                }
+                            }, [
+                                h('span', {
+                                    slot: 'open'
+                                }, '启用'),
+                                h('span', {
+                                    slot: 'close'
+                                }, '禁用')
+                            ]);
+                        }
                     },
                     {
                         title: '操作',
                         align: 'center',
-                        key: 'handle',
                         width: 180,
-                        handle: ['edit', 'delete']
+                        render: (h, params) => {
+                            return h('div', [
+                                editButton(this, h, params.row, params.index),
+                                deleteButton(this, h, params.row, params.index)
+                            ])
+                        }
                     }
                 ],
                 tableData: [],
@@ -209,104 +234,35 @@
             init () {
                 let vm = this;
                 this.columnsList.forEach(item => {
-                    if (item.handle) {
-                        item.render = (h, param) => {
-                            let currentRowData = vm.tableData[param.index];
-                            return h('div', [
-                                editButton(vm, h, currentRowData, param.index),
-                                deleteButton(vm, h, currentRowData, param.index)
-                            ]);
-                        };
-                    }
                     if (item.key === 'status') {
-                        item.render = (h, param) => {
-                            let currentRowData = vm.tableData[param.index];
-                            return h('i-switch', {
-                                attrs: {
-                                    size: 'large'
-                                },
-                                props: {
-                                    'true-value': 1,
-                                    'false-value': 0,
-                                    value: currentRowData.status
-                                },
-                                on: {
-                                    'on-change': function (status) {
-                                        axios.get('AppGroup/changeStatus', {
-                                            params: {
-                                                status: status,
-                                                id: currentRowData.id
-                                            }
-                                        }).then(function (response) {
-                                            let res = response.data;
-                                            if (res.code === 1) {
-                                                vm.$Message.success(res.msg);
-                                            } else {
-                                                if (res.code === -14) {
-                                                    vm.$store.commit('logout', vm);
-                                                    vm.$router.push({
-                                                        name: 'login'
-                                                    });
-                                                } else {
-                                                    vm.$Message.error(res.msg);
-                                                    vm.getList();
-                                                }
-                                            }
-                                            vm.cancel();
-                                        });
-                                    }
-                                }
-                            }, [
-                                h('span', {
-                                    slot: 'open'
-                                }, '启用'),
-                                h('span', {
-                                    slot: 'close'
-                                }, '禁用')
-                            ]);
-                        };
                     }
                 });
             },
             alertAdd () {
                 let vm = this;
-                axios.get('InterfaceList/getHash').then(function (response) {
-                    let res = response.data;
-                    if (res.code === 1) {
-                        vm.formItem.hash = res.data.hash;
-                    } else {
-                        if (res.code === -14) {
-                            vm.$store.commit('logout', vm);
-                            vm.$router.push({
-                                name: 'login'
-                            });
-                        } else {
-                            vm.$Message.error(res.msg);
-                        }
-                    }
-                });
-                this.modalSetting.show = true;
+                getHash().then(response => {
+                    vm.formItem.hash = response.data.data.hash;
+                })
+                vm.modalSetting.show = true;
             },
             submit () {
-                let self = this;
+                let vm = this;
                 this.$refs['myForm'].validate((valid) => {
                     if (valid) {
-                        self.modalSetting.loading = true;
-                        let target = '';
+                        vm.modalSetting.loading = true;
                         if (this.formItem.id === 0) {
-                            target = 'AppGroup/add';
+                            add(vm.formItem).then(response => {
+                                vm.$Message.success(response.data.msg);
+                                vm.getList();
+                                vm.cancel();
+                            })
                         } else {
-                            target = 'AppGroup/edit';
+                            edit(vm.formItem).then(response => {
+                                vm.$Message.success(response.data.msg);
+                                vm.getList();
+                                vm.cancel();
+                            })
                         }
-                        axios.post(target, self.formItem).then(function (response) {
-                            if (response.data.code === 1) {
-                                self.$Message.success(response.data.msg);
-                            } else {
-                                self.$Message.error(response.data.msg);
-                            }
-                            self.getList();
-                            self.cancel();
-                        });
                     }
                 });
             },
@@ -327,30 +283,16 @@
             },
             getList () {
                 let vm = this;
-                axios.get('AppGroup/index', {
-                    params: {
-                        page: vm.tableShow.currentPage,
-                        size: vm.tableShow.pageSize,
-                        type: vm.searchConf.type,
-                        keywords: vm.searchConf.keywords,
-                        status: vm.searchConf.status
-                    }
-                }).then(function (response) {
-                    let res = response.data;
-                    if (res.code === 1) {
-                        vm.tableData = res.data.list;
-                        vm.tableShow.listCount = res.data.count;
-                    } else {
-                        if (res.code === -14) {
-                            vm.$store.commit('logout', vm);
-                            vm.$router.push({
-                                name: 'login'
-                            });
-                        } else {
-                            vm.$Message.error(res.msg);
-                        }
-                    }
-                });
+                getList({
+                    page: vm.tableShow.currentPage,
+                    size: vm.tableShow.pageSize,
+                    type: vm.searchConf.type,
+                    keywords: vm.searchConf.keywords,
+                    status: vm.searchConf.status
+                }).then(response => {
+                    vm.tableData = response.data.data.list;
+                    vm.tableShow.listCount = response.data.data.count;
+                })
             },
             doCancel (data) {
                 if (!data) {
