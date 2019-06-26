@@ -223,6 +223,7 @@ export default {
           align: 'center',
           width: 120,
           render: (h, params) => {
+            let vm = this
             return h('i-switch', {
               attrs: {
                 size: 'large'
@@ -234,7 +235,6 @@ export default {
               },
               on: {
                 'on-change': function (status) {
-                  let vm = this
                   changeStatus(status, params.row.id).then(response => {
                     vm.$Message.success(response.data.msg)
                     vm.getList()
