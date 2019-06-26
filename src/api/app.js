@@ -1,36 +1,62 @@
 import axios from '@/libs/api.request'
 
 /**
- * èŽ·å–åº”ç”¨ç»„æ•°æ®
+ * »ñÈ¡Ó¦ÓÃÊý¾Ý
  * @returns {wx.RequestTask | never}
  */
 export const getList = (params) => {
   return axios.request({
-    url: 'AppGroup/index',
+    url: 'App/index',
     method: 'get',
     params: params
   })
 }
 
-export const del = (hash) => {
+/**
+ * Ë¢ÐÂÃØÔ¿
+ * @returns {wx.RequestTask | never}
+ */
+export const refreshAppSecretApi = (id) => {
   return axios.request({
-    url: 'AppGroup/del',
+    url: 'App/refreshAppSecret',
+    method: 'get',
+    id: id
+  })
+}
+
+/**
+ * »ñÈ¡Ó¦ÓÃÈ¨ÏÞÐÅÏ¢
+ * @returns {wx.RequestTask | never}
+ */
+export const getAppInfo = (id) => {
+  return axios.request({
+    url: 'App/getAppInfo',
     method: 'get',
     params: {
-      hash: hash
+      id: id
+    }
+  })
+}
+
+export const del = (id) => {
+  return axios.request({
+    url: 'App/del',
+    method: 'get',
+    params: {
+      id: id
     }
   })
 }
 
 /**
- * æ˜¾ç¤º/éšè—åº”ç”¨ç»„
+ * ÏÔÊ¾/Òþ²ØÓ¦ÓÃ
  * @param status
  * @param id
  * @returns {wx.RequestTask | never}
  */
 export const changeStatus = (status, id) => {
   return axios.request({
-    url: 'AppGroup/changeStatus',
+    url: 'App/changeStatus',
     method: 'get',
     params: {
       status: status,
@@ -40,34 +66,27 @@ export const changeStatus = (status, id) => {
 }
 
 /**
- * æ–°å¢žåº”ç”¨ç»„
+ * ÐÂÔöÓ¦ÓÃ
  * @param data
  * @returns {wx.RequestTask | never}
  */
 export const add = (data) => {
   return axios.request({
-    url: 'AppGroup/add',
+    url: 'App/add',
     method: 'post',
     data
   })
 }
 
 /**
- * ç¼–è¾‘åº”ç”¨ç»„
+ * ±à¼­Ó¦ÓÃ
  * @param data
  * @returns {wx.RequestTask | never}
  */
 export const edit = (data) => {
   return axios.request({
-    url: 'AppGroup/edit',
+    url: 'App/edit',
     method: 'post',
     data
-  })
-}
-
-export const getAll = () => {
-  return axios.request({
-    url: 'AppGroup/getAll',
-    method: 'get'
   })
 }
