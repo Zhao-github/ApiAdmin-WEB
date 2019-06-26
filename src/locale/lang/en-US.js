@@ -8,5 +8,8 @@ export default {
   logs: 'Logs',
   apps_setting: 'Apps Setting',
   apps_group: 'Apps Group',
-  apps_list: 'Apps List'
+  apps_list: 'Apps List',
+  interface_setting: 'Interface Setting',
+  interface_group: 'Interface Group',
+  interface_list: 'Interface List'
 }

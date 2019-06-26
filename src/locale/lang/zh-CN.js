@@ -8,5 +8,8 @@ export default {
   logs: '操作日志',
   apps_setting: '应用接入',
   apps_group: '应用分组',
-  apps_list: '应用列表'
+  apps_list: '应用列表',
+  interface_setting: '接口设置',
+  interface_group: '接口分组',
+  interface_list: '接口列表'
 }

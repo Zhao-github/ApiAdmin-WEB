@@ -106,7 +106,7 @@ export default [
     component: Main,
     children: [
       {
-        path: 'menu',
+        path: 'appsGroup',
         name: 'apps_group',
         meta: {
           icon: 'ios-archive',
@@ -115,13 +115,42 @@ export default [
         component: () => import('@/view/app/group.vue')
       },
       {
-        path: 'user',
+        path: 'appsList',
         name: 'apps_list',
         meta: {
           icon: 'md-list-box',
           title: '应用列表'
         },
         component: () => import('@/view/app/list.vue')
+      }
+    ]
+  },
+  {
+    path: '/interface',
+    name: 'interface_setting',
+    meta: {
+      icon: 'ios-link',
+      title: '接口管理'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'interfaceGroup',
+        name: 'interface_group',
+        meta: {
+          icon: 'md-archive',
+          title: '接口分组'
+        },
+        component: () => import('@/view/interface/group.vue')
+      },
+      {
+        path: 'interfaceList',
+        name: 'interface_list',
+        meta: {
+          icon: 'md-infinite',
+          title: '接口列表'
+        },
+        component: () => import('@/view/interface/list.vue')
       }
     ]
   },
