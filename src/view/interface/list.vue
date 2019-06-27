@@ -24,7 +24,7 @@
               <Input v-model="searchConf.keywords" placeholder=""></Input>
             </FormItem>
             <FormItem style="margin-bottom: 0">
-              <Button type="primary" @click="search">查询/刷新</Button>
+              <Button type="primary" @click="search">{{ $t('find_button') }}/{{ $t('refresh_button') }}</Button>
             </FormItem>
           </Form>
         </Card>
@@ -140,7 +140,7 @@ const editButton = (vm, h, currentRow, index) => {
         vm.modalSetting.index = index
       }
     }
-  }, '编辑')
+  }, vm.$t('edit_button'))
 }
 const deleteButton = (vm, h, currentRow, index) => {
   return h('Poptip', {
@@ -176,7 +176,7 @@ const deleteButton = (vm, h, currentRow, index) => {
         placement: 'top',
         loading: currentRow.isDeleting
       }
-    }, '删除')
+    }, vm.$t('delete_button'))
   ])
 }
 const requestButton = (vm, h, currentRow, index) => {
@@ -261,7 +261,7 @@ export default {
           title: '接口状态',
           align: 'center',
           key: 'status',
-          width: 90
+          width: 130
         },
         {
           title: '操作',
@@ -429,10 +429,10 @@ export default {
             }, [
               h('span', {
                 slot: 'open'
-              }, '启用'),
+              }, vm.$t('open_choose')),
               h('span', {
                 slot: 'close'
-              }, '禁用')
+              }, vm.$t('close_choose'))
             ])
           }
         }

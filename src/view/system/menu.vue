@@ -8,7 +8,7 @@
       <Col span="24">
         <Card>
           <p slot="title" style="height: 32px">
-            <Button type="primary" @click="alertAdd" icon="md-add">新增</Button>
+            <Button type="primary" @click="alertAdd" icon="md-add">{{ $t('add_button') }}</Button>
           </p>
           <div>
             <Table :columns="columnsList" :data="tableData" border disabled-hover></Table>
@@ -71,7 +71,7 @@ const editButton = (vm, h, currentRow, index) => {
         vm.modalSetting.index = index
       }
     }
-  }, '编辑')
+  }, vm.$t('edit_button'))
 }
 const deleteButton = (vm, h, currentRow, index) => {
   return h('Poptip', {
@@ -99,7 +99,7 @@ const deleteButton = (vm, h, currentRow, index) => {
         placement: 'top',
         loading: currentRow.isDeleting
       }
-    }, '删除')
+    }, vm.$t('delete_button'))
   ])
 }
 export default {
@@ -134,7 +134,7 @@ export default {
           title: '状态',
           align: 'center',
           key: 'hide',
-          width: 100,
+          width: 130,
           render: (h, params) => {
             let vm = this
             return h('i-switch', {
@@ -157,10 +157,10 @@ export default {
             }, [
               h('span', {
                 slot: 'open'
-              }, '隐藏'),
+              }, vm.$t('hide_choose')),
               h('span', {
                 slot: 'close'
-              }, '显示')
+              }, vm.$t('show_choose'))
             ])
           }
         },

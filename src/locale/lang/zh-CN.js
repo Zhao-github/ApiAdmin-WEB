@@ -11,5 +11,14 @@ export default {
   apps_list: '应用列表',
   interface_setting: '接口设置',
   interface_group: '接口分组',
-  interface_list: '接口列表'
+  interface_list: '接口列表',
+  add_button: '新增',
+  find_button: '查询',
+  refresh_button: '刷新',
+  delete_button: '删除',
+  edit_button: '编辑',
+  open_choose: '启用',
+  close_choose: '禁用',
+  show_choose: '显示',
+  hide_choose: '隐藏'
 }

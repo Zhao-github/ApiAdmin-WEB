@@ -18,7 +18,7 @@
               <Input v-model="searchConf.keywords" placeholder=""></Input>
             </FormItem>
             <FormItem style="margin-bottom: 0">
-              <Button type="primary" @click="search">查询/刷新</Button>
+              <Button type="primary" @click="search">{{ $t('find_button') }}/{{ $t('refresh_button') }}</Button>
             </FormItem>
           </Form>
         </Card>
@@ -71,7 +71,7 @@ const deleteButton = (vm, h, currentRow, index) => {
         placement: 'top',
         loading: currentRow.isDeleting
       }
-    }, '删除')
+    }, vm.$t('delete_button'))
   ])
 }
 

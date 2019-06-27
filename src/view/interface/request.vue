@@ -82,7 +82,7 @@ const editButton = (vm, h, currentRow, index) => {
         vm.modalSetting.index = index
       }
     }
-  }, '编辑')
+  }, vm.$t('edit_button'))
 }
 const deleteButton = (vm, h, currentRow, index) => {
   return h('Poptip', {
@@ -118,7 +118,7 @@ const deleteButton = (vm, h, currentRow, index) => {
         placement: 'top',
         loading: currentRow.isDeleting
       }
-    }, '删除')
+    }, vm.$t('delete_button'))
   ])
 }
 export default {

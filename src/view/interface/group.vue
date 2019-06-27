@@ -23,7 +23,7 @@
               <Input v-model="searchConf.keywords" placeholder=""></Input>
             </FormItem>
             <FormItem style="margin-bottom: 0">
-              <Button type="primary" @click="search">查询/刷新</Button>
+              <Button type="primary" @click="search">{{ $t('find_button') }}/{{ $t('refresh_button') }}</Button>
             </FormItem>
           </Form>
         </Card>
@@ -33,7 +33,7 @@
       <Col span="24">
         <Card>
           <p slot="title" style="height: 32px">
-            <Button type="primary" @click="alertAdd" icon="md-add">新增</Button>
+            <Button type="primary" @click="alertAdd" icon="md-add">{{ $t('add_button') }}</Button>
           </p>
           <div>
             <Table :columns="columnsList" :data="tableData" border disabled-hover></Table>
@@ -119,7 +119,7 @@ const editButton = (vm, h, currentRow, index) => {
         vm.modalSetting.index = index
       }
     }
-  }, '编辑')
+  }, vm.$t('edit_button'))
 }
 const deleteButton = (vm, h, currentRow, index) => {
   return h('Poptip', {
@@ -147,7 +147,7 @@ const deleteButton = (vm, h, currentRow, index) => {
         placement: 'top',
         loading: currentRow.isDeleting
       }
-    }, '删除')
+    }, vm.$t('delete_button'))
   ])
 }
 
@@ -196,7 +196,7 @@ export default {
         {
           title: '接口组状态',
           align: 'center',
-          width: 100,
+          width: 130,
           render: (h, params) => {
             let vm = this
             return h('i-switch', {
@@ -220,10 +220,10 @@ export default {
             }, [
               h('span', {
                 slot: 'open'
-              }, '启用'),
+              }, vm.$t('open_choose')),
               h('span', {
                 slot: 'close'
-              }, '禁用')
+              }, vm.$t('close_choose'))
             ])
           }
         },

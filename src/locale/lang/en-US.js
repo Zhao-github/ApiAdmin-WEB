@@ -11,5 +11,14 @@ export default {
   apps_list: 'Apps List',
   interface_setting: 'Interface Setting',
   interface_group: 'Interface Group',
-  interface_list: 'Interface List'
+  interface_list: 'Interface List',
+  add_button: 'Add',
+  find_button: 'Find',
+  refresh_button: 'Refresh',
+  delete_button: 'Delete',
+  edit_button: 'Edit',
+  open_choose: 'Open',
+  close_choose: 'Close',
+  show_choose: 'Show',
+  hide_choose: 'Hide'
 }
