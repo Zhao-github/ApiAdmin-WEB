@@ -196,7 +196,7 @@ export default {
         {
           title: '接口组状态',
           align: 'center',
-          width: 130,
+          width: 100,
           render: (h, params) => {
             let vm = this
             return h('i-switch', {

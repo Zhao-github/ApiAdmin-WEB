@@ -134,7 +134,7 @@ export default {
           title: '状态',
           align: 'center',
           key: 'hide',
-          width: 130,
+          width: 100,
           render: (h, params) => {
             let vm = this
             return h('i-switch', {

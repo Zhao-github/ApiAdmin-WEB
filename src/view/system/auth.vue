@@ -219,7 +219,7 @@ export default {
         {
           title: '状态',
           align: 'center',
-          width: 130,
+          width: 100,
           render: (h, params) => {
             let vm = this
             return h('i-switch', {
@@ -301,7 +301,7 @@ export default {
         {
           title: '状态',
           align: 'center',
-          width: 130,
+          width: 100,
           render: (h, params) => {
             if (params.row.status === 1) {
               return h('Tag', {
