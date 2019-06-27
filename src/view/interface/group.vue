@@ -74,13 +74,13 @@
                   :on-exceeded-size="handleImgMaxSize"
                   style="display: inline-block;width:58px">
             <div style="width: 58px;height:58px;line-height: 58px">
-              <Icon type="camera" size="20"></Icon>
+              <Icon type="md-camera" size="20"></Icon>
             </div>
           </Upload>
         </FormItem>
         <FormItem label="组标识" prop="hash">
           <Input style="width: 300px" disabled v-model="formItem.hash"></Input>
-          <Badge count="系统自动生成，不允许修改" style="margin-left:5px"></Badge>
+          <Tag color="error" class="margin-left-5">系统自动生成，不允许修改</Tag>
         </FormItem>
         <FormItem label="组描述" prop="description">
           <Input v-model="formItem.description" :autosize="{maxRows: 10, minRows: 4}" type="textarea"
@@ -95,7 +95,6 @@
   </div>
 </template>
 <script>
-import axios from 'axios'
 import { getList, changeStatus, add, edit, del } from '@/api/interface-group'
 import { baseUrl } from '@/libs/api.request'
 import { getToken } from '@/libs/util'
@@ -214,8 +213,8 @@ export default {
                   changeStatus(status, params.row.id).then(response => {
                     vm.$Message.success(response.data.msg)
                     vm.getList()
+                    vm.cancel()
                   })
-                  vm.cancel()
                 }
               }
             }, [
@@ -290,14 +289,19 @@ export default {
             add(vm.formItem).then(response => {
               vm.$Message.success(response.data.msg)
               vm.getList()
+              vm.cancel()
+            }).catch(() => {
+              vm.cancel()
             })
           } else {
             edit(vm.formItem).then(response => {
               vm.$Message.success(response.data.msg)
               vm.getList()
+              vm.cancel()
+            }).catch(() => {
+              vm.cancel()
             })
           }
-          vm.cancel()
         }
       })
     },
@@ -318,29 +322,15 @@ export default {
     },
     getList () {
       let vm = this
-      axios.get('InterfaceGroup/index', {
-        params: {
-          page: vm.tableShow.currentPage,
-          size: vm.tableShow.pageSize,
-          type: vm.searchConf.type,
-          keywords: vm.searchConf.keywords,
-          status: vm.searchConf.status
-        }
-      }).then(function (response) {
-        let res = response.data
-        if (res.code === 1) {
-          vm.tableData = res.data.list
-          vm.tableShow.listCount = res.data.count
-        } else {
-          if (res.code === -14) {
-            vm.$store.commit('logout', vm)
-            vm.$router.push({
-              name: 'login'
-            })
-          } else {
-            vm.$Message.error(res.msg)
-          }
-        }
+      getList({
+        page: vm.tableShow.currentPage,
+        size: vm.tableShow.pageSize,
+        type: vm.searchConf.type,
+        keywords: vm.searchConf.keywords,
+        status: vm.searchConf.status
+      }).then(response => {
+        vm.tableData = response.data.data.list
+        vm.tableShow.listCount = response.data.data.count
       })
     },
     handleImgFormatError (file) {

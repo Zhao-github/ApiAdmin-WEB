@@ -6,7 +6,7 @@ import axios from '@/libs/api.request'
  */
 export const getList = () => {
   return axios.request({
-    url: 'InterfaceList/getHash',
+    url: 'InterfaceGroup/index',
     method: 'get'
   })
 }
