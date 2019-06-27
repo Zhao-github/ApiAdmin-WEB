@@ -96,6 +96,7 @@
 </template>
 <script>
 import axios from 'axios'
+import { getList, changeStatus, add, edit, del } from '@/api/interface-group'
 
 const editButton = (vm, h, currentRow, index) => {
   return h('Button', {
@@ -127,19 +128,11 @@ const deleteButton = (vm, h, currentRow, index) => {
     },
     on: {
       'on-ok': () => {
-        axios.get('InterfaceGroup/del', {
-          params: {
-            hash: currentRow.hash
-          }
-        }).then(function (response) {
-          currentRow.loading = false
-          if (response.data.code === 1) {
-            vm.tableData.splice(index, 1)
-            vm.$Message.success(response.data.msg)
-          } else {
-            vm.$Message.error(response.data.msg)
-          }
+        del(currentRow.hash).then(response => {
+          vm.tableData.splice(index, 1)
+          vm.$Message.success(response.data.msg)
         })
+        currentRow.loading = false
       }
     }
   }, [
