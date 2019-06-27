@@ -238,8 +238,8 @@ export default {
                   changeStatus(status, params.row.id).then(response => {
                     vm.$Message.success(response.data.msg)
                     vm.getList()
-                    vm.cancel()
                   })
+                  vm.cancel()
                 }
               }
             }, [
@@ -332,15 +332,14 @@ export default {
             add(vm.formItem).then(response => {
               vm.$Message.success(response.data.msg)
               vm.getList()
-              vm.cancel()
             })
           } else {
             edit(vm.formItem).then(response => {
               vm.$Message.success(response.data.msg)
               vm.getList()
-              vm.cancel()
             })
           }
+          vm.cancel()
         }
       })
     },

@@ -29,7 +29,7 @@ export const del = (hash) => {
  */
 export const changeStatus = (status, id) => {
   return axios.request({
-    url: 'AppGroup/changeStatus',
+    url: 'InterfaceGroup/changeStatus',
     method: 'get',
     params: {
       status: status,
@@ -45,7 +45,7 @@ export const changeStatus = (status, id) => {
  */
 export const add = (data) => {
   return axios.request({
-    url: 'AppGroup/add',
+    url: 'InterfaceGroup/add',
     method: 'post',
     data
   })
@@ -58,7 +58,7 @@ export const add = (data) => {
  */
 export const edit = (data) => {
   return axios.request({
-    url: 'AppGroup/edit',
+    url: 'InterfaceGroup/edit',
     method: 'post',
     data
   })

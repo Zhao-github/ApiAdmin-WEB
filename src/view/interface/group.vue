@@ -97,6 +97,9 @@
 <script>
 import axios from 'axios'
 import { getList, changeStatus, add, edit, del } from '@/api/interface-group'
+import { baseUrl } from '@/libs/api.request'
+import { getToken } from '@/libs/util'
+import { getHash } from '@/api/interface'
 
 const editButton = (vm, h, currentRow, index) => {
   return h('Button', {
@@ -153,8 +156,8 @@ export default {
   name: 'interface_group',
   data () {
     return {
-      uploadUrl: '',
-      uploadHeader: {},
+      uploadUrl: baseUrl + 'Index/upload',
+      uploadHeader: { 'apiAuth': getToken() },
       columnsList: [
         {
           title: '序号',
@@ -175,8 +178,15 @@ export default {
         {
           title: '接口组热度',
           align: 'center',
-          key: 'hot',
-          width: 120
+          width: 120,
+          render: (h, params) => {
+            if (params.row.hot > 10000) {
+              let hot = (parseInt(params.row.hot) / 10000).toFixed(1) + '万'
+              return h('span', hot)
+            } else {
+              return h('span', params.row.hot)
+            }
+          }
         },
         {
           title: '接口组标识',
@@ -187,15 +197,47 @@ export default {
         {
           title: '接口组状态',
           align: 'center',
-          key: 'status',
-          width: 100
+          width: 100,
+          render: (h, params) => {
+            let vm = this
+            return h('i-switch', {
+              attrs: {
+                size: 'large'
+              },
+              props: {
+                'true-value': 1,
+                'false-value': 0,
+                value: params.row.status
+              },
+              on: {
+                'on-change': function (status) {
+                  changeStatus(status, params.row.id).then(response => {
+                    vm.$Message.success(response.data.msg)
+                    vm.getList()
+                  })
+                  vm.cancel()
+                }
+              }
+            }, [
+              h('span', {
+                slot: 'open'
+              }, '启用'),
+              h('span', {
+                slot: 'close'
+              }, '禁用')
+            ])
+          }
         },
         {
           title: '操作',
           align: 'center',
-          key: 'handle',
           width: 180,
-          handle: ['edit', 'delete']
+          render: (h, params) => {
+            return h('div', [
+              editButton(this, h, params.row, params.index),
+              deleteButton(this, h, params.row, params.index)
+            ])
+          }
         }
       ],
       tableData: [],
@@ -229,124 +271,33 @@ export default {
     }
   },
   created () {
-    this.init()
     this.getList()
   },
   methods: {
-    init () {
-      let vm = this
-      this.uploadUrl = config.baseUrl + 'Index/upload'
-      this.uploadHeader = { 'ApiAuth': sessionStorage.getItem('apiAuth') }
-      this.columnsList.forEach(item => {
-        if (item.handle) {
-          item.render = (h, param) => {
-            let currentRowData = vm.tableData[param.index]
-            return h('div', [
-              editButton(vm, h, currentRowData, param.index),
-              deleteButton(vm, h, currentRowData, param.index)
-            ])
-          }
-        }
-        if (item.key === 'status') {
-          item.render = (h, param) => {
-            let currentRowData = vm.tableData[param.index]
-            return h('i-switch', {
-              attrs: {
-                size: 'large'
-              },
-              props: {
-                'true-value': 1,
-                'false-value': 0,
-                value: currentRowData.status
-              },
-              on: {
-                'on-change': function (status) {
-                  axios.get('InterfaceGroup/changeStatus', {
-                    params: {
-                      status: status,
-                      id: currentRowData.id
-                    }
-                  }).then(function (response) {
-                    let res = response.data
-                    if (res.code === 1) {
-                      vm.$Message.success(res.msg)
-                    } else {
-                      if (res.code === -14) {
-                        vm.$store.commit('logout', vm)
-                        vm.$router.push({
-                          name: 'login'
-                        })
-                      } else {
-                        vm.$Message.error(res.msg)
-                        vm.getList()
-                      }
-                    }
-                    vm.cancel()
-                  })
-                }
-              }
-            }, [
-              h('span', {
-                slot: 'open'
-              }, '启用'),
-              h('span', {
-                slot: 'close'
-              }, '禁用')
-            ])
-          }
-        }
-        if (item.key === 'hot') {
-          item.render = (h, param) => {
-            let currentRowData = vm.tableData[param.index]
-            if (currentRowData.hot > 10000) {
-              let hot = (parseInt(currentRowData.hot) / 10000).toFixed(1) + '万'
-              return h('span', hot)
-            } else {
-              return h('span', currentRowData.hot)
-            }
-          }
-        }
-      })
-    },
     alertAdd () {
       let vm = this
-      axios.get('InterfaceList/getHash').then(function (response) {
-        let res = response.data
-        if (res.code === 1) {
-          vm.formItem.hash = res.data.hash
-        } else {
-          if (res.code === -14) {
-            vm.$store.commit('logout', vm)
-            vm.$router.push({
-              name: 'login'
-            })
-          } else {
-            vm.$Message.error(res.msg)
-          }
-        }
+      getHash().then(response => {
+        vm.formItem.hash = response.data.data.hash
       })
-      this.modalSetting.show = true
+      vm.modalSetting.show = true
     },
     submit () {
-      let self = this
+      let vm = this
       this.$refs['myForm'].validate((valid) => {
         if (valid) {
-          self.modalSetting.loading = true
-          let target = ''
-          if (this.formItem.id === 0) {
-            target = 'InterfaceGroup/add'
+          vm.modalSetting.loading = true
+          if (vm.formItem.id === 0) {
+            add(vm.formItem).then(response => {
+              vm.$Message.success(response.data.msg)
+              vm.getList()
+            })
           } else {
-            target = 'InterfaceGroup/edit'
+            edit(vm.formItem).then(response => {
+              vm.$Message.success(response.data.msg)
+              vm.getList()
+            })
           }
-          axios.post(target, self.formItem).then(function (response) {
-            if (response.data.code === 1) {
-              self.$Message.success(response.data.msg)
-            } else {
-              self.$Message.error(response.data.msg)
-            }
-            self.getList()
-            self.cancel()
-          })
+          vm.cancel()
         }
       })
     },
