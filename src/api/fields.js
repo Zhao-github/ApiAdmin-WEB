@@ -12,7 +12,7 @@ export const getDataType = (params) => {
   })
 }
 
-export const upJson = (params) => {
+export const upJson = (data) => {
   return axios.request({
     url: 'Fields/upload',
     method: 'post',

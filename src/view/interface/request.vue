@@ -7,7 +7,7 @@
       <Col span="24">
         <Card>
           <p slot="title" style="height: 32px">
-            <Button type="primary" @click="alertAdd" icon="plus-round">新增</Button>
+            <Button type="primary" @click="alertAdd" icon="md-add">{{ $t('add_button') }}</Button>
           </p>
           <Alert show-icon>
             {{ apiInfo.info }} | {{ apiInfo.hash }} | {{ apiInfo.api_class }}
@@ -27,7 +27,7 @@
     </Row>
     <Modal v-model="modalSetting.show" width="668" :styles="{top: '30px'}" @on-visible-change="doCancel">
       <p slot="header" style="color:#2d8cf0">
-        <Icon type="information-circled"></Icon>
+        <Icon type="md-alert"></Icon>
         <span>{{formItem.id ? '编辑' : '新增'}}请求字段</span>
       </p>
       <Form ref="myForm" :rules="ruleValidate" :model="formItem" :label-width="80">
@@ -47,7 +47,7 @@
         </FormItem>
         <FormItem label="默认值" prop="default" v-if="formItem.is_must.toString() === '0'">
           <Input style="width: 300px" v-model="formItem.defaults"></Input>
-          <Badge count="仅在字段非必填的情况下生效" style="margin-left:5px"></Badge>
+          <Tag color="error" class="margin-left-5"> 仅在字段非必填的情况下生效 </Tag>
         </FormItem>
         <FormItem label="规则细节" prop="range">
           <Input v-model="formItem.range" type="textarea" placeholder="请输入符合要求的JSON字符串"></Input>
@@ -139,12 +139,15 @@ export default {
         {
           title: '数据类型',
           align: 'center',
-          width: 90,
+          width: 100,
           render: (h, params) => {
             let type = params.row.data_type
             return h('Tag', {
               attrs: {
                 color: 'primary'
+              },
+              style: {
+                width: '60px'
               }
             }, this.tableShow.dataType[type])
           }
@@ -222,7 +225,7 @@ export default {
       }
     }
   },
-  created() {
+  created () {
     this.hash = this.$route.params.hash.toString()
     this.getList()
   },
