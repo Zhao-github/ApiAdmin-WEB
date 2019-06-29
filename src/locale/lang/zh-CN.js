@@ -20,5 +20,7 @@ export default {
   open_choose: '启用',
   close_choose: '禁用',
   show_choose: '显示',
-  hide_choose: '隐藏'
+  hide_choose: '隐藏',
+  interface_request: '请求参数',
+  interface_response: '返回参数'
 }

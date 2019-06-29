@@ -20,5 +20,7 @@ export default {
   open_choose: 'Open',
   close_choose: 'Close',
   show_choose: 'Show',
-  hide_choose: 'Hide'
+  hide_choose: 'Hide',
+  interface_request: 'Request Params',
+  interface_response: 'Response Params'
 }

@@ -151,6 +151,25 @@ export default [
           title: '接口列表'
         },
         component: () => import('@/view/interface/list.vue')
+      },
+      {
+        path: 'request/:hash',
+        meta: {
+          title: '请求参数',
+          hideInMenu: true
+        },
+        name: 'interface_request',
+        component: () => import('@/view/interface/request.vue')
+      },
+      {
+        path: 'response/:hash',
+        hideInMenu: true,
+        meta: {
+          hideInMenu: true,
+          title: '返回参数'
+        },
+        name: 'interface_response',
+        component: () => import('@/view/interface/response.vue')
       }
     ]
   },

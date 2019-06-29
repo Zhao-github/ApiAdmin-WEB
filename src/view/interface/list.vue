@@ -115,7 +115,6 @@
   </div>
 </template>
 <script>
-import axios from 'axios'
 import { getList, changeStatus, add, edit, del, getHash, refresh } from '@/api/interface'
 import { getAll } from '@/api/interface-group'
 
