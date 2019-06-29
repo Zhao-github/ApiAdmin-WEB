@@ -1,7 +1,7 @@
 import axios from '@/libs/api.request'
 
 /**
- * 获取应用数据
+ * 鑾峰彇搴旂敤鏁版嵁
  * @returns {wx.RequestTask | never}
  */
 export const getList = (params) => {
@@ -13,7 +13,7 @@ export const getList = (params) => {
 }
 
 /**
- * 刷新秘钥
+ * 鍒锋柊绉橀挜
  * @returns {wx.RequestTask | never}
  */
 export const refreshAppSecretApi = (id) => {
@@ -25,7 +25,7 @@ export const refreshAppSecretApi = (id) => {
 }
 
 /**
- * 获取应用权限信息
+ * 鑾峰彇搴旂敤鏉冮檺淇℃伅
  * @returns {wx.RequestTask | never}
  */
 export const getAppInfo = (id) => {
@@ -49,7 +49,7 @@ export const del = (id) => {
 }
 
 /**
- * 显示/隐藏应用
+ * 鏄剧ず/闅愯棌搴旂敤
  * @param status
  * @param id
  * @returns {wx.RequestTask | never}
@@ -66,7 +66,7 @@ export const changeStatus = (status, id) => {
 }
 
 /**
- * 新增应用
+ * 鏂板搴旂敤
  * @param data
  * @returns {wx.RequestTask | never}
  */
@@ -79,7 +79,7 @@ export const add = (data) => {
 }
 
 /**
- * 编辑应用
+ * 缂栬緫搴旂敤
  * @param data
  * @returns {wx.RequestTask | never}
  */

@@ -1,7 +1,7 @@
 import axios from '@/libs/api.request'
 
 /**
- * »ñÈ¡Ó¦ÓÃ×éÊý¾Ý
+ * èŽ·å–åº”ç”¨ç»„æ•°æ®
  * @returns {wx.RequestTask | never}
  */
 export const getList = (params) => {
@@ -23,7 +23,7 @@ export const del = (hash) => {
 }
 
 /**
- * ÏÔÊ¾/Òþ²ØÓ¦ÓÃ×é
+ * æ˜¾ç¤º/éšè—åº”ç”¨ç»„
  * @param status
  * @param id
  * @returns {wx.RequestTask | never}
@@ -40,7 +40,19 @@ export const changeStatus = (status, id) => {
 }
 
 /**
- * ÐÂÔöÓ¦ÓÃ×é
+ * èŽ·å–åˆ—è¡¨ã€ç­›é€‰é¡¹ã€‘
+ * @param data
+ * @returns {wx.RequestTask | never}
+ */
+export const getAll = () => {
+  return axios.request({
+    url: 'InterfaceGroup/getAll',
+    method: 'get'
+  })
+}
+
+/**
+ * æ–°å¢žåº”ç”¨ç»„
  * @param data
  * @returns {wx.RequestTask | never}
  */
@@ -53,7 +65,7 @@ export const add = (data) => {
 }
 
 /**
- * ±à¼­Ó¦ÓÃ×é
+ * ç¼–è¾‘åº”ç”¨ç»„
  * @param data
  * @returns {wx.RequestTask | never}
  */

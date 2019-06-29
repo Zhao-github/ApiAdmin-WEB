@@ -34,8 +34,8 @@
       <Col span="24">
         <Card>
           <p slot="title" style="height: 32px">
-            <Button type="primary" @click="alertAdd" icon="plus-round">新增</Button>
-            <Button type="warning" @click="confirmRefresh = true" icon="refresh">刷新路由</Button>
+            <Button type="primary" @click="alertAdd" icon="md-add">{{ $t('add_button') }}</Button>
+            <Button type="warning" class="margin-left-5" @click="confirmRefresh = true" icon="md-refresh">刷新路由</Button>
           </p>
           <div>
             <Table :columns="columnsList" :data="tableData" border disabled-hover></Table>
@@ -50,18 +50,18 @@
     </Row>
     <Modal v-model="modalSetting.show" width="668" :styles="{top: '30px'}" @on-visible-change="doCancel">
       <p slot="header" style="color:#2d8cf0">
-        <Icon type="information-circled"></Icon>
+        <Icon type="md-alert"></Icon>
         <span>{{formItem.id ? '编辑' : '新增'}}接口</span>
       </p>
       <Form ref="myForm" :rules="ruleValidate" :model="formItem" :label-width="80">
         <FormItem label="接口名称" prop="info">
           <Input v-model="formItem.info" placeholder="请输入接口名称"></Input>
         </FormItem>
-        <FormItem label="真实类库" prop="apiClass">
-          <Input v-model="formItem.apiClass" placeholder="请输入真实类库"></Input>
+        <FormItem label="真实类库" prop="api_class">
+          <Input v-model="formItem.api_class" placeholder="请输入真实类库"></Input>
         </FormItem>
-        <FormItem label="接口分组" prop="groupHash">
-          <Select v-model="formItem.groupHash" style="width:200px">
+        <FormItem label="接口分组" prop="group_hash">
+          <Select v-model="formItem.group_hash" style="width:200px">
             <Option v-for="(v, i) in apiGroup" :value="v.hash" :kk="i" :key="v.hash"> {{v.name}}</Option>
           </Select>
         </FormItem>
@@ -74,22 +74,22 @@
         </FormItem>
         <FormItem label="接口映射" prop="hash">
           <Input style="width: 300px" disabled v-model="formItem.hash"></Input>
-          <Badge count="系统自动生成，不允许修改" style="margin-left:5px"></Badge>
+          <Tag color="error" class="margin-left-5">系统自动生成，不允许修改</Tag>
         </FormItem>
-        <FormItem label="AccessToken" prop="accessToken">
-          <Select v-model="formItem.accessToken" style="width:200px">
+        <FormItem label="AccessToken" prop="access_token">
+          <Select v-model="formItem.access_token" style="width:200px">
             <Option :value="0" :key="0"> 忽略Token</Option>
             <Option :value="1" :key="1"> 验证Token</Option>
           </Select>
         </FormItem>
-        <FormItem label="用户登录" prop="needLogin">
-          <Select v-model="formItem.needLogin" style="width:200px">
+        <FormItem label="用户登录" prop="need_login">
+          <Select v-model="formItem.need_login" style="width:200px">
             <Option :value="0" :key="0"> 忽略登录</Option>
             <Option :value="1" :key="1"> 验证登录</Option>
           </Select>
         </FormItem>
-        <FormItem label="测试模式" prop="isTest">
-          <Select v-model="formItem.isTest" style="width:200px">
+        <FormItem label="测试模式" prop="is_test">
+          <Select v-model="formItem.is_test" style="width:200px">
             <Option :value="0" :key="0"> 生产模式</Option>
             <Option :value="1" :key="1"> 测试模式</Option>
           </Select>
@@ -101,7 +101,7 @@
       </div>
     </Modal>
     <Modal v-model="confirmRefresh" width="360">
-      <p slot="header" style="color:#f60text-align:center">
+      <p slot="header" style="color:#f60;text-align:center">
         <Icon type="information-circled"></Icon>
         <span>确定要刷新路由么</span>
       </p>
@@ -116,6 +116,8 @@
 </template>
 <script>
 import axios from 'axios'
+import { getList, changeStatus, add, edit, del, getHash, refresh } from '@/api/interface'
+import { getAll } from '@/api/interface-group'
 
 const editButton = (vm, h, currentRow, index) => {
   return h('Button', {
@@ -128,14 +130,14 @@ const editButton = (vm, h, currentRow, index) => {
     on: {
       'click': () => {
         vm.formItem.id = currentRow.id
-        vm.formItem.apiClass = currentRow.apiClass
+        vm.formItem.api_class = currentRow.api_class
         vm.formItem.info = currentRow.info
         vm.formItem.method = currentRow.method
         vm.formItem.hash = currentRow.hash
-        vm.formItem.groupHash = currentRow.groupHash
-        vm.formItem.accessToken = currentRow.accessToken
-        vm.formItem.isTest = currentRow.isTest
-        vm.formItem.needLogin = currentRow.needLogin
+        vm.formItem.group_hash = currentRow.group_hash
+        vm.formItem.access_token = currentRow.access_token
+        vm.formItem.is_test = currentRow.is_test
+        vm.formItem.need_login = currentRow.need_login
         vm.modalSetting.show = true
         vm.modalSetting.index = index
       }
@@ -151,18 +153,10 @@ const deleteButton = (vm, h, currentRow, index) => {
     },
     on: {
       'on-ok': () => {
-        axios.get('InterfaceList/del', {
-          params: {
-            hash: currentRow.hash
-          }
-        }).then(function (response) {
+        del(currentRow.hash).then(response => {
           currentRow.loading = false
-          if (response.data.code === 1) {
-            vm.tableData.splice(index, 1)
-            vm.$Message.success(response.data.msg)
-          } else {
-            vm.$Message.error(response.data.msg)
-          }
+          vm.tableData.splice(index, 1)
+          vm.$Message.success(response.data.msg)
         })
       }
     }
@@ -237,12 +231,13 @@ export default {
         {
           title: '接口名称',
           align: 'center',
+          minWidth: 190,
           key: 'info'
         },
         {
           title: '真实类库',
           align: 'center',
-          key: 'apiClass',
+          key: 'api_class',
           width: 190
         },
         {
@@ -254,21 +249,84 @@ export default {
         {
           title: '请求方式',
           align: 'center',
-          key: 'method',
-          width: 90
+          width: 90,
+          render: (h, params) => {
+            if (params.row.isTest === 1) {
+              return h('tag', {
+                attrs: {
+                  color: 'error'
+                }
+              }, '测试')
+            } else {
+              switch (params.row.method) {
+                case 1:
+                  return h('Tag', {
+                    attrs: {
+                      color: 'success'
+                    }
+                  }, 'POST')
+                case 2:
+                  return h('Tag', {
+                    attrs: {
+                      color: 'primary'
+                    }
+                  }, 'GET')
+                case 0:
+                  return h('Tag', {
+                    attrs: {
+                      color: 'warning'
+                    }
+                  }, '不限')
+              }
+            }
+          }
         },
         {
           title: '接口状态',
           align: 'center',
-          key: 'status',
-          width: 130
+          width: 130,
+          render: (h, params) => {
+            let vm = this
+            return h('i-switch', {
+              attrs: {
+                size: 'large'
+              },
+              props: {
+                'true-value': 1,
+                'false-value': 0,
+                value: params.row.status
+              },
+              on: {
+                'on-change': function (status) {
+                  changeStatus(status, params.row.hash).then(response => {
+                    vm.$Message.success(response.data.msg)
+                    vm.getList()
+                    vm.cancel()
+                  })
+                }
+              }
+            }, [
+              h('span', {
+                slot: 'open'
+              }, vm.$t('open_choose')),
+              h('span', {
+                slot: 'close'
+              }, vm.$t('close_choose'))
+            ])
+          }
         },
         {
           title: '操作',
           align: 'center',
-          key: 'handle',
-          width: 355,
-          handle: ['edit', 'delete']
+          minWidth: 355,
+          render: (h, params) => {
+            return h('div', [
+              editButton(this, h, params.row, params.index),
+              requestButton(this, h, params.row, params.index),
+              responseButton(this, h, params.row, params.index),
+              deleteButton(this, h, params.row, params.index)
+            ])
+          }
         }
       ],
       tableData: [],
@@ -289,14 +347,14 @@ export default {
         index: 0
       },
       formItem: {
-        apiClass: '',
+        api_class: '',
         info: '',
-        groupHash: 'default',
+        group_hash: 'default',
         method: 2,
         hash: '',
-        accessToken: 1,
-        isTest: 0,
-        needLogin: 0,
+        access_token: 1,
+        is_test: 0,
+        need_login: 0,
         id: 0
       },
       ruleValidate: {
@@ -310,174 +368,46 @@ export default {
     }
   },
   created () {
-    this.init()
     this.getList()
   },
   activated () {
     let vm = this
-    axios.get('InterfaceGroup/getAll').then(function (response) {
-      let res = response.data
-      if (res.code === 1) {
-        vm.apiGroup = res.data.list
-      } else {
-        if (res.code === -14) {
-          vm.$store.commit('logout', vm)
-          vm.$router.push({
-            name: 'login'
-          })
-        } else {
-          vm.$Message.error(res.msg)
-        }
-      }
+    getAll().then(response => {
+      vm.apiGroup = response.data.data.list
     })
   },
   methods: {
-    init () {
-      let vm = this
-      this.columnsList.forEach(item => {
-        if (item.handle) {
-          item.render = (h, param) => {
-            let currentRowData = vm.tableData[param.index]
-            return h('div', [
-              editButton(vm, h, currentRowData, param.index),
-              requestButton(vm, h, currentRowData, param.index),
-              responseButton(vm, h, currentRowData, param.index),
-              deleteButton(vm, h, currentRowData, param.index)
-            ])
-          }
-        }
-        if (item.key === 'method') {
-          item.render = (h, param) => {
-            let currentRowData = vm.tableData[param.index]
-            if (currentRowData.isTest === 1) {
-              return h('Badge', {
-                attrs: {
-                  count: '测试'
-                }
-              })
-            } else {
-              switch (currentRowData.method) {
-                case 1:
-                  return h('Badge', {
-                    attrs: {
-                      count: 'POST'
-                    },
-                    props: {
-                      'class-name': 'badge-success'
-                    }
-                  })
-                case 2:
-                  return h('Badge', {
-                    attrs: {
-                      count: 'GET'
-                    },
-                    props: {
-                      'class-name': 'badge-info'
-                    }
-                  })
-                case 0:
-                  return h('Badge', {
-                    attrs: {
-                      count: '不限'
-                    },
-                    props: {
-                      'class-name': 'badge-warning'
-                    }
-                  })
-              }
-            }
-          }
-        }
-        if (item.key === 'status') {
-          item.render = (h, param) => {
-            let currentRowData = vm.tableData[param.index]
-            return h('i-switch', {
-              attrs: {
-                size: 'large'
-              },
-              props: {
-                'true-value': 1,
-                'false-value': 0,
-                value: currentRowData.status
-              },
-              on: {
-                'on-change': function (status) {
-                  axios.get('InterfaceList/changeStatus', {
-                    params: {
-                      status: status,
-                      hash: currentRowData.hash
-                    }
-                  }).then(function (response) {
-                    let res = response.data
-                    if (res.code === 1) {
-                      vm.$Message.success(res.msg)
-                    } else {
-                      if (res.code === -14) {
-                        vm.$store.commit('logout', vm)
-                        vm.$router.push({
-                          name: 'login'
-                        })
-                      } else {
-                        vm.$Message.error(res.msg)
-                        vm.getList()
-                      }
-                    }
-                    vm.cancel()
-                  })
-                }
-              }
-            }, [
-              h('span', {
-                slot: 'open'
-              }, vm.$t('open_choose')),
-              h('span', {
-                slot: 'close'
-              }, vm.$t('close_choose'))
-            ])
-          }
-        }
-      })
-    },
     alertAdd () {
       let vm = this
-      axios.get('InterfaceList/getHash').then(function (response) {
-        let res = response.data
-        if (res.code === 1) {
-          vm.formItem.hash = res.data.hash
-        } else {
-          if (res.code === -14) {
-            vm.$store.commit('logout', vm)
-            vm.$router.push({
-              name: 'login'
-            })
-          } else {
-            vm.$Message.error(res.msg)
-          }
-        }
+      getHash().then(response => {
+        vm.formItem.hash = response.data.data.hash
       })
-      this.modalSetting.show = true
+      vm.modalSetting.show = true
     },
     submit () {
-      let self = this
+      let vm = this
       this.$refs['myForm'].validate((valid) => {
         if (valid) {
-          self.modalSetting.loading = true
-          let target = ''
-          if (this.formItem.id === 0) {
-            target = 'InterfaceList/add'
+          vm.modalSetting.loading = true
+          if (vm.formItem.id === 0) {
+            add(vm.formItem).then(response => {
+              vm.modalSetting.loading = false
+              vm.$Message.success(response.data.msg)
+              vm.getList()
+              vm.cancel()
+            }).catch(() => {
+              vm.cancel()
+            })
           } else {
-            target = 'InterfaceList/edit'
+            edit(vm.formItem).then(response => {
+              vm.modalSetting.loading = false
+              vm.$Message.success(response.data.msg)
+              vm.getList()
+              vm.cancel()
+            }).catch(() => {
+              vm.cancel()
+            })
           }
-          axios.post(target, self.formItem).then(function (response) {
-            self.modalSetting.loading = false
-            if (response.data.code === 1) {
-              self.$Message.success(response.data.msg)
-              self.getList()
-              self.cancel()
-            } else {
-              self.$Message.error(response.data.msg)
-            }
-          })
         }
       })
     },
@@ -498,29 +428,15 @@ export default {
     },
     getList () {
       let vm = this
-      axios.get('InterfaceList/index', {
-        params: {
-          page: vm.tableShow.currentPage,
-          size: vm.tableShow.pageSize,
-          type: vm.searchConf.type,
-          keywords: vm.searchConf.keywords,
-          status: vm.searchConf.status
-        }
-      }).then(function (response) {
-        let res = response.data
-        if (res.code === 1) {
-          vm.tableData = res.data.list
-          vm.tableShow.listCount = res.data.count
-        } else {
-          if (res.code === -14) {
-            vm.$store.commit('logout', vm)
-            vm.$router.push({
-              name: 'login'
-            })
-          } else {
-            vm.$Message.error(res.msg)
-          }
-        }
+      getList({
+        page: vm.tableShow.currentPage,
+        size: vm.tableShow.pageSize,
+        type: vm.searchConf.type,
+        keywords: vm.searchConf.keywords,
+        status: vm.searchConf.status
+      }).then(response => {
+        vm.tableData = response.data.data.list
+        vm.tableShow.listCount = response.data.data.count
       })
     },
     doCancel (data) {
@@ -533,20 +449,10 @@ export default {
     },
     refreshRoute () {
       let vm = this
-      axios.get('InterfaceList/refresh').then(function (response) {
-        let res = response.data
-        if (res.code === 1) {
-          vm.$Message.success(res.msg)
-        } else {
-          if (res.code === -14) {
-            vm.$store.commit('logout', vm)
-            vm.$router.push({
-              name: 'login'
-            })
-          } else {
-            vm.$Message.error(res.msg)
-          }
-        }
+      refresh().then(response => {
+        vm.$Message.success(response.data.msg)
+        vm.confirmRefresh = false
+      }).catch(() => {
         vm.confirmRefresh = false
       })
     }
