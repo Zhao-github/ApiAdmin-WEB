@@ -198,7 +198,8 @@ export default {
         {
           title: '应用名称',
           align: 'center',
-          key: 'app_name'
+          key: 'app_name',
+          minWidth: 130
         },
         {
           title: 'AppId',
