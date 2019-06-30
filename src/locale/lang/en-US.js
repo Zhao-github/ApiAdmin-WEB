@@ -22,5 +22,6 @@ export default {
   show_choose: 'Show',
   hide_choose: 'Hide',
   interface_request: 'Request Params',
-  interface_response: 'Response Params'
+  interface_response: 'Response Params',
+  user_center: 'User Center'
 }

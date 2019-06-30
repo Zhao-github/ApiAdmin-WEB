@@ -39,8 +39,8 @@
 
 <script>
 import { mapActions } from 'vuex'
-import qq_login from '@/assets/images/qq_login.png'
-import wx_login from '@/assets/images/wx_login.png'
+import qq_login from '@/assets/images/qq-login.png'
+import wx_login from '@/assets/images/wx-login.png'
 
 export default {
   data () {

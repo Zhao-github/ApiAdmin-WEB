@@ -22,5 +22,6 @@ export default {
   show_choose: '显示',
   hide_choose: '隐藏',
   interface_request: '请求参数',
-  interface_response: '返回参数'
+  interface_response: '返回参数',
+  user_center: '个人中心'
 }

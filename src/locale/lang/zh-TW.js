@@ -22,5 +22,6 @@ export default {
   show_choose: '顯示',
   hide_choose: '隱藏',
   interface_request: '請求參數',
-  interface_response: '返回參數'
+  interface_response: '返回參數',
+  user_center: '個人中心'
 }
