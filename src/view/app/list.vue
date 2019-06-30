@@ -105,6 +105,9 @@ import { getList, changeStatus, add, edit, del, getAppInfo, refreshAppSecretApi 
 import { getAll } from '@/api/app-group'
 
 const editButton = (vm, h, currentRow, index) => {
+  getAll().then(response => {
+    vm.appGroup = response.data.data.list
+  })
   return h('Button', {
     props: {
       type: 'primary'

@@ -94,7 +94,7 @@ export default {
   data () {
     const checkPassword = (rule, value, callback) => {
       let password = this.formItem.password
-      if (password !== this.rePassword){
+      if (password !== this.rePassword) {
         callback(new Error('两次输入密码不一致'))
       } else {
         callback()
@@ -102,8 +102,8 @@ export default {
     }
     const checkOldPassword = (rule, value, callback) => {
       let password = this.formItem.password
-      if (password){
-        if (!this.formItem.oldPassword){
+      if (password) {
+        if (!this.formItem.oldPassword) {
           callback(new Error('初始密码不得为空'))
         } else {
           callback()
@@ -150,7 +150,7 @@ export default {
       this.$store.commit('removeTag', 'own_index')
       localStorage.pageOpenedList = JSON.stringify(this.$store.state.app.pageOpenedList)
       let lastPageName = ''
-      if (this.$store.state.app.pageOpenedList.length > 1){
+      if (this.$store.state.app.pageOpenedList.length > 1) {
         lastPageName = this.$store.state.app.pageOpenedList[1].name
       } else {
         lastPageName = this.$store.state.app.pageOpenedList[0].name
@@ -165,7 +165,7 @@ export default {
     submit () {
       let vm = this
       this.$refs['myForm'].validate((valid) => {
-        if (valid){
+        if (valid) {
           vm.saveLoading = true
           own(vm.formItem).then(response => {
             vm.$Message.success(response.data.msg)
@@ -195,7 +195,7 @@ export default {
       this.formItem.head_img = ''
     },
     handleImgSuccess (response) {
-      if (response.code === 1){
+      if (response.code === 1) {
         this.$Message.success(response.msg)
         this.formItem.head_img = response.data.fileUrl
       } else {
