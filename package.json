@@ -11,7 +11,7 @@
   "dependencies": {
     "axios": "^0.18.1",
     "clipboard": "^2.0.0",
-    "codemirror": "^5.47.0",
+    "codemirror": "^5.48.0",
     "dayjs": "^1.8.14",
     "echarts": "^4.2.1",
     "html2canvas": "^1.0.0-rc.3",
