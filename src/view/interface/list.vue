@@ -78,15 +78,17 @@
         </FormItem>
         <FormItem label="AccessToken" prop="access_token">
           <Select v-model="formItem.access_token" style="width:200px">
-            <Option :value="0" :key="0"> 忽略Token</Option>
-            <Option :value="1" :key="1"> 验证Token</Option>
+            <Option :value="0" :key="0"> 简易认证</Option>
+            <Option :value="1" :key="1"> 复杂认证</Option>
           </Select>
-        </FormItem>
-        <FormItem label="用户登录" prop="need_login">
-          <Select v-model="formItem.need_login" style="width:200px">
-            <Option :value="0" :key="0"> 忽略登录</Option>
-            <Option :value="1" :key="1"> 验证登录</Option>
-          </Select>
+          <Tooltip placement="right" max-width="800">
+            <Icon type="md-help-circle" class="margin-left-5" color="#2d8cf0" size="20"/>
+            <div slot="content">
+              <p>新版本的全部接口都必须在Header中传递access-token字段，所以AccessToken必须要验证。</p>
+              <p>简易认证：在请求这类接口时候，请直接在header中传递AppSecret即可，终身有效。</p>
+              <p>复杂认证：在请求这类接口时候，先请求getAccessToken接口获取可用的AccessToken，记住这里的AccessToken默认只有2小时的有效期。</p>
+            </div>
+          </Tooltip>
         </FormItem>
         <FormItem label="测试模式" prop="is_test">
           <Select v-model="formItem.is_test" style="width:200px">
@@ -351,9 +353,8 @@ export default {
         group_hash: 'default',
         method: 2,
         hash: '',
-        access_token: 1,
+        access_token: 0,
         is_test: 0,
-        need_login: 0,
         id: 0
       },
       ruleValidate: {
