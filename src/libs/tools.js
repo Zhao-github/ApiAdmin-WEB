@@ -25,6 +25,19 @@ export const getIntersection = (arr1, arr2) => {
 }
 
 /**
+ * 判断当前变量是不是数组
+ * @param param
+ * @returns {arg is Array<any>|boolean}
+ */
+export const isArr = (param) => {
+  if (typeof Array.isArray === 'function') {
+    return Array.isArray(param)
+  } else {
+    return Object.prototype.toString.call(param) === '[object Array]'
+  }
+}
+
+/**
  * @param {Array} arr1
  * @param {Array} arr2
  * @description 得到两个数组的并集, 两个数组的元素为数值或字符串

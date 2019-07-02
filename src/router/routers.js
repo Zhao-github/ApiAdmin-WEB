@@ -66,7 +66,8 @@ export default [
     name: 'system_setting',
     meta: {
       icon: 'ios-build',
-      title: '系统配置'
+      title: '系统配置',
+      access: ['admin/Menu/index', 'admin/User/index', 'admin/Auth/index', 'admin/Log/index']
     },
     component: Main,
     children: [
@@ -117,7 +118,8 @@ export default [
     name: 'apps_setting',
     meta: {
       icon: 'md-cloud',
-      title: '应用接入'
+      title: '应用接入',
+      access: ['admin/AppGroup/index', 'admin/App/index']
     },
     component: Main,
     children: [
@@ -148,7 +150,8 @@ export default [
     name: 'interface_setting',
     meta: {
       icon: 'ios-link',
-      title: '接口管理'
+      title: '接口管理',
+      access: ['admin/InterfaceList/index', 'admin/InterfaceGroup/index']
     },
     component: Main,
     children: [

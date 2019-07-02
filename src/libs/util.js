@@ -1,5 +1,5 @@
 import config from '@/config'
-import { forEach, hasOneOf, oneOf, objEqual } from '@/libs/tools'
+import { forEach, hasOneOf, oneOf, objEqual, isArr } from '@/libs/tools'
 
 const { title, useI18n } = config
 
@@ -23,11 +23,19 @@ export const hasChild = (item) => {
 }
 
 const showThisMenuEle = (item, access) => {
-  if (item.meta && item.meta.access && item.meta.access.length && access) {
-    if (oneOf(item.meta.access, access)) {
-      return true
+  if (item.meta && item.meta.access && access) {
+    if (isArr(item.meta.access)) {
+      if (hasOneOf(item.meta.access, access)) {
+        return true
+      } else {
+        return false
+      }
     } else {
-      return false
+      if (oneOf(item.meta.access, access)) {
+        return true
+      } else {
+        return false
+      }
     }
   } else {
     return true
