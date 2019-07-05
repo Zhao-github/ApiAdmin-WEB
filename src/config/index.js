@@ -14,7 +14,7 @@ export default {
    */
   baseUrl: {
     dev: 'https://api.our-dream.cn/admin/',
-    pro: 'https://api.our-dream.cn/admin/'
+    pro: 'https://pet.apiadmin.net/admin/'
   },
   /**
    * @description 需要加载的插件
