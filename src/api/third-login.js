@@ -1,7 +1,7 @@
 import axios from '@/libs/api.request'
 
 /**
- * 使用QQ数据登录
+ * 浣跨敤QQ鏁版嵁鐧诲綍
  * @param params
  * @returns {wx.RequestTask | never | *}
  */

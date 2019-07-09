@@ -140,14 +140,16 @@ export default {
       getQr().then(function (response) {
         vm.wxQrUrl = response.data.data.qrUrl
         let checkWx = setInterval(function () {
-          checkWxLogin({ state: response.data.data.state }).then(response => {
-            vm.$store.commit('setUserInfo', response.data.data)
-            vm.$store.commit('setToken', response.data.data.apiAuth)
-            vm.$Message.success(response.data.msg)
-            vm.$router.push({
-              name: 'home'
-            })
-            clearInterval(checkWx)
+          checkWxLogin({ state: response.data.data.state }).then(res => {
+            if (res.data.code === 1) {
+              vm.$store.commit('setUserInfo', res.data.data)
+              vm.$store.commit('setToken', res.data.data.apiAuth)
+              vm.$Message.success(res.data.msg)
+              vm.$router.push({
+                name: 'home'
+              })
+              clearInterval(checkWx)
+            }
           }).catch(() => {
             clearInterval(checkWx)
           })
