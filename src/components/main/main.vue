@@ -75,7 +75,7 @@ export default {
       return this.$store.state.app.tagRouter
     },
     userAvator () {
-      return this.$store.state.user.userInfo.userData.head_img ? this.$store.state.user.userInfo.userData.head_img : defaultImg
+      return typeof this.$store.state.user.userInfo.userData.head_img !== 'undefined' && this.$store.state.user.userInfo.userData.head_img ? this.$store.state.user.userInfo.userData.head_img : defaultImg
     },
     cacheList () {
       const list = ['ParentView', ...this.tagNavList.length ? this.tagNavList.filter(item => !(item.meta && item.meta.notCache)).map(item => item.name) : []]
