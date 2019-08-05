@@ -84,7 +84,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapMutations } from 'vuex'
 import { own } from '@/api/user'
 import { baseUrl } from '@/libs/api.request'
 import { getToken } from '@/libs/util'
@@ -146,17 +146,12 @@ export default {
     ...mapActions([
       'handleLogOut'
     ]),
+    ...mapMutations([
+      'closeTag'
+    ]),
     cancel () {
-      this.$store.commit('removeTag', 'own_index')
-      localStorage.pageOpenedList = JSON.stringify(this.$store.state.app.pageOpenedList)
-      let lastPageName = ''
-      if (this.$store.state.app.pageOpenedList.length > 1) {
-        lastPageName = this.$store.state.app.pageOpenedList[1].name
-      } else {
-        lastPageName = this.$store.state.app.pageOpenedList[0].name
-      }
-      this.$router.push({
-        name: lastPageName
+      this.closeTag({
+        name: 'user_center'
       })
     },
     confirmSubmit () {
