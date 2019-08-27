@@ -13,8 +13,8 @@ export default {
    * @description api请求基础路径
    */
   baseUrl: {
-    dev: 'https://api.our-dream.cn/admin/',
-    pro: 'https://pet.apiadmin.net/admin/'
+    dev: 'https://api.our-dream.cn/',
+    pro: 'https://api.apiadmin.org/'
   },
   /**
    * @description 需要加载的插件

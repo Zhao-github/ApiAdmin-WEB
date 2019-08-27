@@ -8,7 +8,7 @@ export const baseUrl = process.env.NODE_ENV === 'development' ? config.baseUrl.d
 
 class HttpRequest {
   constructor (baseUrl) {
-    this.baseUrl = baseUrl
+    this.baseUrl = baseUrl + 'admin/'
   }
 
   interceptors (instance) {
