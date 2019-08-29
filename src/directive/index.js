@@ -19,6 +19,11 @@ const importDirective = Vue => {
    * }
    */
   Vue.directive('clipboard', directive.clipboard)
+
+  /**
+   * 代码高亮指令
+   */
+  Vue.directive('highlight', directive.highlight)
 }
 
 export default importDirective

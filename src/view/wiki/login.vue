@@ -1,0 +1,59 @@
+<style lang="less">
+  @import 'login.less';
+</style>
+
+<template>
+  <div class="wiki-login" @keydown.enter="handleSubmit">
+    <div class="wiki-login-con">
+      <div class="form-con">
+        <span style="font-size: 20px;">ApiAdmin文档中心</span>
+        <Form ref="loginForm" :model="form" :rules="rules" class="margin-top-15">
+          <FormItem prop="username">
+            <Input v-model="form.username" placeholder="请输入AppId">
+                <span slot="prepend">
+                  <Icon :size="16" type="ios-person"></Icon>
+                </span>
+            </Input>
+          </FormItem>
+          <FormItem prop="password">
+            <Input type="password" v-model="form.password" placeholder="请输入AppSecret">
+                <span slot="prepend">
+                  <Icon :size="14" type="md-lock"></Icon>
+                </span>
+            </Input>
+          </FormItem>
+          <FormItem style="margin-bottom: 15px;">
+            <Button @click="handleSubmit" type="primary" long>登录</Button>
+          </FormItem>
+        </Form>
+        <div class="wiki-login-tip">
+          如没有账号请联系管理员
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+
+export default {
+  data () {
+    return {
+      form: {
+        username: '',
+        password: ''
+      },
+      rules: {
+        username: [
+          { required: true, message: '账号不能为空', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '密码不能为空', trigger: 'blur' }
+        ]
+      }
+    }
+  },
+  methods: {
+  }
+}
+</script>
