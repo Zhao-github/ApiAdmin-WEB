@@ -23,5 +23,9 @@ export default {
   hide_choose: '隱藏',
   interface_request: '請求參數',
   interface_response: '返回參數',
-  user_center: '個人中心'
+  user_center: '個人中心',
+  wiki_list: '文檔中心',
+  wiki_error: '錯誤碼',
+  wiki_calculation: '算法詳解',
+  wiki_login: '文檔登錄'
 }

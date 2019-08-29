@@ -35,6 +35,7 @@
 </template>
 
 <script>
+import { login } from '@/api/wiki'
 
 export default {
   data () {
@@ -45,15 +46,25 @@ export default {
       },
       rules: {
         username: [
-          { required: true, message: '账号不能为空', trigger: 'blur' }
+          { required: true, message: 'AppId不能为空', trigger: 'blur' }
         ],
         password: [
-          { required: true, message: '密码不能为空', trigger: 'blur' }
+          { required: true, message: 'AppSecret不能为空', trigger: 'blur' }
         ]
       }
     }
   },
   methods: {
+    handleSubmit () {
+      let vm = this
+      this.$refs['loginForm'].validate((valid) => {
+        if (valid) {
+          login(vm.form).then(response => {
+            vm.$Message.success(response.data.msg)
+          })
+        }
+      })
+    }
   }
 }
 </script>

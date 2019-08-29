@@ -23,5 +23,9 @@ export default {
   hide_choose: 'Hide',
   interface_request: 'Request Params',
   interface_response: 'Response Params',
-  user_center: 'User Center'
+  user_center: 'User Center',
+  wiki_list: 'Wiki Center',
+  wiki_error: 'Wiki Error',
+  wiki_calculation: 'Wiki Calculation',
+  wiki_login: 'Wiki Login'
 }
