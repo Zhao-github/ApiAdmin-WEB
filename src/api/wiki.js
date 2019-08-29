@@ -21,6 +21,19 @@ export const apiGroup = () => {
 }
 
 /**
+ * 获取接口详情
+ * @param params
+ * @returns {wx.RequestTask | never}
+ */
+export const detail = (params) => {
+  return axios.request({
+    url: 'Api/detail',
+    method: 'get',
+    params
+  })
+}
+
+/**
  * 新增用户
  * @param data
  * @returns {wx.RequestTask | never}

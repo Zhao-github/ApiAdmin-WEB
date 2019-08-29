@@ -63,6 +63,8 @@ router.beforeEach((to, from, next) => {
       next({
         name: 'wiki_list'
       })
+    } else {
+      next()
     }
   }
 })

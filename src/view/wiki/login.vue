@@ -36,6 +36,7 @@
 
 <script>
 import { login } from '@/api/wiki'
+import { setToken } from '@/libs/util'
 
 export default {
   data () {
@@ -61,6 +62,11 @@ export default {
         if (valid) {
           login(vm.form).then(response => {
             vm.$Message.success(response.data.msg)
+            setToken(response.data.data.apiAuth)
+            sessionStorage.setItem('ApiAdmin_AppInfo', response.data.data.app_id)
+            vm.$router.push({
+              name: 'wiki_list'
+            })
           })
         }
       })

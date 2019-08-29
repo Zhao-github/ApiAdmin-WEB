@@ -26,7 +26,7 @@
         </MenuItem>
         <MenuItem name="4">
           <Icon type="ios-contact" />
-          58282746
+          {{app_id}}
         </MenuItem>
       </div>
     </Menu>
@@ -41,71 +41,30 @@
       </Card>
       <div class="wiki-layout-con">
         <Collapse>
-          <Panel name="1">
-            史蒂夫·乔布斯【2019-10-20 20:30:33】 <span style="float: right;margin-right: 20px;">接口数量20 | 项目热度20</span>
+          <Panel  v-bind:key="index" v-for="(item, index) in groupInfo" :name="index.toString()">
+            {{item.name}}【{{item.create_time}}】 <span style="float: right;margin-right: 20px;">接口数量{{item.api_info.length}} | 项目热度{{item.hot}}</span>
             <p slot="content">
-              <span @click="value3 = true">
-                <Alert>
-                  <h3>/api/5d2d89ec8bffc</h3>
-                  <template slot="desc"><Tag color="primary">GET</Tag>获取手机号/固定电话归属地</template>
+              <span v-bind:key="api_index" v-for="(api_item, api_index) in item.api_info" @click="showApiDetail(api_item.hash)" style="cursor:pointer">
+                <Alert type="warning" v-if="api_item.method === 0">
+                  <h3>/api/{{api_item.hash}}</h3>
+                  <template slot="desc">
+                    <Tag color="warning">不限</Tag>
+                    {{api_item.info}}
+                  </template>
                 </Alert>
-              </span>
-              <span @click="value3 = true">
-                <Alert>
-                  <h3>/api/5d2d89ec8bffc</h3>
-                  <template slot="desc"><Tag color="primary">GET</Tag>获取手机号/固定电话归属地</template>
+                <Alert v-if="api_item.method === 2">
+                  <h3>/api/{{api_item.hash}}</h3>
+                  <template slot="desc">
+                    <Tag color="primary">GET</Tag>
+                    {{api_item.info}}
+                  </template>
                 </Alert>
-              </span>
-              <span @click="value3 = true">
-                <Alert>
-                  <h3>/api/5d2d89ec8bffc</h3>
-                  <template slot="desc"><Tag color="primary">GET</Tag>获取手机号/固定电话归属地</template>
-                </Alert>
-              </span>
-            </p>
-          </Panel>
-          <Panel name="2">
-            史蒂夫·乔布斯【2019-10-20 20:30:33】 <span style="float: right;margin-right: 20px;">接口数量20 | 项目热度20</span>
-            <p slot="content">
-              <span @click="value3 = true">
-                <Alert>
-                  <h3>/api/5d2d89ec8bffc</h3>
-                  <template slot="desc"><Tag color="primary">GET</Tag>获取手机号/固定电话归属地</template>
-                </Alert>
-              </span>
-              <span @click="value3 = true">
-                <Alert>
-                  <h3>/api/5d2d89ec8bffc</h3>
-                  <template slot="desc"><Tag color="primary">GET</Tag>获取手机号/固定电话归属地</template>
-                </Alert>
-              </span>
-              <span @click="value3 = true">
-                <Alert>
-                  <h3>/api/5d2d89ec8bffc</h3>
-                  <template slot="desc"><Tag color="primary">GET</Tag>获取手机号/固定电话归属地</template>
-                </Alert>
-              </span>
-            </p>
-          </Panel>
-          <Panel name="3">
-            史蒂夫·乔布斯【2019-10-20 20:30:33】 <span style="float: right;margin-right: 20px;">接口数量20 | 项目热度20</span>
-            <p slot="content">
-              <span @click="value3 = true">
-                <Alert>
-                  <h3>/api/5d2d89ec8bffc</h3>
-                  <template slot="desc"><Tag color="primary">GET</Tag>获取手机号/固定电话归属地</template>
-                </Alert>
-              </span>
-              <span @click="value3 = true">
-                <Alert>
-                  <h3>/api/5d2d89ec8bffc</h3>
-                  <template slot="desc"><Tag color="primary">GET</Tag>获取手机号/固定电话归属地</template>
-                </Alert>
-              </span>
-              <span @click="value3 = true">
-                <Alert>
-                  <h3>/api/5d2d89ec8bffc</h3>
-                  <template slot="desc"><Tag color="primary">GET</Tag>获取手机号/固定电话归属地</template>
+                <Alert type="success" v-if="api_item.method === 1">
+                  <h3>/api/{{api_item.hash}}</h3>
+                  <template slot="desc">
+                    <Tag color="success">POST</Tag>
+                    {{api_item.info}}
+                  </template>
                 </Alert>
               </span>
             </p>
@@ -118,22 +77,22 @@
     <Drawer title="获取手机号/固定电话归属地" v-model="show_detail" width="820" :mask-closable="false">
       <Tabs type="card">
         <TabPane label="接口说明">
-          <Form :model="formData" :label-width="80">
+          <Form :label-width="80">
             <FormItem label="接口地址">
-              <Tag color="primary">DELETE</Tag> <Alert class="url">{{formData.url}}</Alert>
+              <Tag color="primary">DELETE</Tag> <Alert class="url">{{url}}</Alert>
             </FormItem>
             <FormItem label="请求头部">
-              <Table border :columns="columns1" :data="data1"></Table>
+              <Table border :columns="header_columns" :data="data1"></Table>
             </FormItem>
             <FormItem label="请求参数">
-              <Table border :columns="columns1" :data="data1"></Table>
+              <Table border :columns="request_columns" :data="data1"></Table>
             </FormItem>
             <FormItem label="返回参数">
-              <Table border :columns="columns1" :data="data1"></Table>
+              <Table border :columns="response_columns" :data="data1"></Table>
             </FormItem>
             <FormItem label="返回示例">
               <div style="width: 100%" v-highlight>
-                <pre><code>{{s}}</code></pre>
+                <pre><code>{{code}}</code></pre>
               </div>
             </FormItem>
           </Form>
@@ -152,6 +111,7 @@
 </template>
 <script>
 import './list.less'
+import { apiGroup, detail } from '@/api/wiki'
 import ABackTop from '@/components/main/components/a-back-top'
 
 export default {
@@ -162,49 +122,67 @@ export default {
   data () {
     return {
       show_detail: true,
-      s: '',
-      styles: {
-        height: 'calc(100% - 55px)',
-        overflow: 'auto',
-        paddingBottom: '53px',
-        position: 'static'
-      },
-      formData: {
-        url: 'https://api.apiadmin.org/api/5d2d89ec8bffc',
-        owner: '',
-        type: '',
-        approver: '',
-        date: '',
-        desc: ''
-      },
-      columns1: [
+      app_id: sessionStorage.getItem('ApiAdmin_AppInfo'),
+      code: '',
+      url: '',
+      groupInfo: [],
+      header_columns: [
         {
-          title: 'Name',
-          key: 'name'
+          title: '参数名称',
+          key: 'field_name'
         },
         {
-          title: 'Age',
-          key: 'age'
+          title: '类型',
+          key: 'data_type'
         },
         {
-          title: 'Address',
-          key: 'address'
+          title: '字段状态',
+          key: 'is_must'
+        },
+        {
+          title: '字段说明',
+          key: 'info'
         }
       ],
-      data1: [
+      request_columns: [
         {
-          name: 'John Brown',
-          age: 18,
-          address: 'New York No. 1 Lake Park',
-          date: '2016-10-03'
+          title: '字段名称',
+          key: 'field_name'
         },
         {
-          name: 'Jim Green',
-          age: 24,
-          address: 'London No. 1 Lake Park',
-          date: '2016-10-01'
+          title: '类型',
+          key: 'data_type'
+        },
+        {
+          title: '字段属性',
+          key: 'is_must'
+        },
+        {
+          title: '默认值',
+          key: 'default'
+        },
+        {
+          title: '字段说明',
+          key: 'info'
         }
-      ]
+      ],
+      response_columns: [
+        {
+          title: '字段名称',
+          key: 'field_name'
+        },
+        {
+          title: '类型',
+          key: 'data_type'
+        },
+        {
+          title: '字段说明',
+          key: 'info'
+        }
+      ],
+      header_data: [],
+      request_data: [],
+      response_data: []
     }
   },
   created () {
@@ -213,7 +191,20 @@ export default {
   methods: {
     getList () {
       let vm = this
-      vm.s = JSON.parse('{"code":1,"msg":"\u64cd\u4f5c\u6210\u529f","data":{"list":[{"id":4,"uid":1,"value":50,"type":2,"time":1563631820,"note":"\u7b7e\u5230\u79ef\u5206","sub_type":4},{"id":5,"uid":1,"value":20,"type":2,"time":1563520210,"note":"\u7b7e\u5230\u79ef\u5206","sub_type":4},{"id":7,"uid":1,"value":5,"type":2,"time":1564503842,"note":"","sub_type":4}],"pointInfo":{"uid":1,"point":70}}}')
+      apiGroup().then(response => {
+        vm.groupInfo = response.data.data
+      })
+    },
+    showApiDetail (hash) {
+      let vm = this
+      detail({
+        hash: hash
+      }).then(response => {
+        let res = response.data.data
+        vm.show_detail = true
+        vm.url = res.url
+        vm.code = JSON.parse(res.code)
+      })
     }
   }
 }
