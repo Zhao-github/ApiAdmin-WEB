@@ -79,16 +79,18 @@
         <TabPane label="接口说明">
           <Form :label-width="80">
             <FormItem label="接口地址">
-              <Tag color="primary">DELETE</Tag> <Alert class="url">{{url}}</Alert>
+              <Tag v-if="api_detail.method === 1" color="success">POST</Tag>
+              <Tag v-if="api_detail.method === 2" color="primary">GET</Tag>
+              <Tag v-if="api_detail.method === 0" color="warning">不限</Tag> <Alert class="url">{{url}}</Alert>
             </FormItem>
             <FormItem label="请求头部">
-              <Table border :columns="header_columns" :data="data1"></Table>
+              <Table border :columns="header_columns" :data="header_data"></Table>
             </FormItem>
             <FormItem label="请求参数">
-              <Table border :columns="request_columns" :data="data1"></Table>
+              <Table border :columns="request_columns" :data="request_data"></Table>
             </FormItem>
             <FormItem label="返回参数">
-              <Table border :columns="response_columns" :data="data1"></Table>
+              <Table border :columns="response_columns" :data="response_data"></Table>
             </FormItem>
             <FormItem label="返回示例">
               <div style="width: 100%" v-highlight>
@@ -121,7 +123,7 @@ export default {
   },
   data () {
     return {
-      show_detail: true,
+      show_detail: false,
       app_id: sessionStorage.getItem('ApiAdmin_AppInfo'),
       code: '',
       url: '',
@@ -182,7 +184,8 @@ export default {
       ],
       header_data: [],
       request_data: [],
-      response_data: []
+      response_data: [],
+      api_detail: {}
     }
   },
   created () {
@@ -203,7 +206,7 @@ export default {
         let res = response.data.data
         vm.show_detail = true
         vm.url = res.url
-        vm.code = JSON.parse(res.code)
+        vm.api_detail = res.apiList
       })
     }
   }
