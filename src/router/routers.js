@@ -228,5 +228,41 @@ export default [
       hideInMenu: true
     },
     component: () => import('@/view/error-page/404.vue')
+  },
+  {
+    path: '/wiki/list',
+    name: 'wiki_list',
+    meta: {
+      title: '文档列表',
+      hideInMenu: true
+    },
+    component: () => import('@/view/wiki/list.vue')
+  },
+  {
+    path: '/wiki/error',
+    name: 'wiki_error',
+    meta: {
+      title: '错误码',
+      hideInMenu: true
+    },
+    component: () => import('@/view/wiki/error-code.vue')
+  },
+  {
+    path: '/wiki/calculation',
+    name: 'wiki_calculation',
+    meta: {
+      title: '算法详解',
+      hideInMenu: true
+    },
+    component: () => import('@/view/wiki/calculation.vue')
+  },
+  {
+    path: '/wiki/login',
+    name: 'wiki_login',
+    meta: {
+      title: '文档登录',
+      hideInMenu: true
+    },
+    component: () => import('@/view/wiki/login.vue')
   }
 ]
