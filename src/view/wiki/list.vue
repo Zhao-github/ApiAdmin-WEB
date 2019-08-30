@@ -75,7 +75,7 @@
       </div>
     </Content>
     <Footer class="wiki-footer-center">&copy; Powered  By <Tag color="primary">{{co}}</Tag></Footer>
-    <Drawer title="获取手机号/固定电话归属地" v-model="show_detail" width="820" :mask-closable="false" @on-close="closeDrawer">
+    <Drawer :title="api_detail.info" v-model="show_detail" width="820" :mask-closable="false" @on-close="closeDrawer">
       <Tabs type="card">
         <TabPane label="接口说明">
           <Form :label-width="80">
