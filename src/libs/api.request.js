@@ -4,7 +4,7 @@ import iView from 'iview'
 import { setToken, getToken } from '@/libs/util'
 import router from '@/router'
 
-export const baseUrl = process.env.NODE_ENV === 'development' ? config.baseUrl.dev : config.baseUrl.pro + 'admin/'
+export const baseUrl = (process.env.NODE_ENV === 'development' ? config.baseUrl.dev : config.baseUrl.pro) + 'admin/'
 
 class HttpRequest {
   constructor (baseUrl) {
