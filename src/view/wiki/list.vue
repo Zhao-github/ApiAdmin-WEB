@@ -85,7 +85,7 @@
               <Tag v-if="api_detail.method === 0" color="warning">不限</Tag> <Alert class="url">{{url}}</Alert>
             </FormItem>
             <FormItem label="请求头部">
-              <Table border :columns="header_columns" :data="detail_info.request"></Table>
+              <Table border :columns="header_columns" :data="header_data"></Table>
             </FormItem>
             <FormItem label="请求参数">
               <Table border :columns="request_columns" :data="detail_info.request"></Table>
@@ -147,7 +147,21 @@ export default {
         },
         {
           title: '字段状态',
-          key: 'is_must'
+          render: (h, params) => {
+            if (params.row.is_must === 1) {
+              return h('Tag', {
+                props: {
+                  'color': 'red'
+                }
+              }, '复杂认证')
+            } else {
+              return h('Tag', {
+                props: {
+                  'color': 'blue'
+                }
+              }, '简易认证')
+            }
+          }
         },
         {
           title: '字段说明',
@@ -249,7 +263,7 @@ export default {
       response_columns: [
         {
           title: '字段名称',
-          key: 'field_name'
+          key: 'show_name'
         },
         {
           title: '类型',
@@ -292,6 +306,7 @@ export default {
       ],
       detail_info: {},
       api_detail: {},
+      header_data: [],
       co: ''
     }
   },
@@ -324,6 +339,12 @@ export default {
         if (res.apiList.return_str) {
           vm.code = JSON.parse(res.apiList.return_str)
         }
+        vm.header_data = [{
+          is_must: res.apiList.access_token,
+          field_name: 'access_token',
+          info: 'APP认证秘钥【请在Header头里面传递】',
+          data_type: 2
+        }]
       })
     }
   }
