@@ -54,11 +54,12 @@
         <ABackTop :height="100" :bottom="80" :right="60" container=".wiki-layout-con"></ABackTop>
       </div>
     </Content>
-    <Footer class="wiki-footer-center">&copy; Powered  By ApiAdmin</Footer>
+    <Footer class="wiki-footer-center">&copy; Powered  By <Tag color="primary">{{co}}</Tag></Footer>
   </Layout>
 </template>
 <script>
 import './list.less'
+import { errorCode } from '@/api/wiki'
 import ABackTop from '@/components/main/components/a-back-top'
 
 export default {
@@ -66,9 +67,15 @@ export default {
   components: {
     ABackTop
   },
+  created () {
+    let vm = this
+    errorCode().then(response => {
+      vm.co = response.data.data.co
+    })
+  },
   data () {
     return {
-
+      co: ''
     }
   }
 }

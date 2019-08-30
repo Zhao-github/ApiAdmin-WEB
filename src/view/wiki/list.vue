@@ -74,7 +74,7 @@
         <ABackTop :height="100" :bottom="80" :right="60" container=".wiki-layout-con"></ABackTop>
       </div>
     </Content>
-    <Footer class="wiki-footer-center">&copy; Powered  By ApiAdmin</Footer>
+    <Footer class="wiki-footer-center">&copy; Powered  By <Tag color="primary">{{co}}</Tag></Footer>
     <Drawer title="获取手机号/固定电话归属地" v-model="show_detail" width="820" :mask-closable="false" @on-close="closeDrawer">
       <Tabs type="card">
         <TabPane label="接口说明">
@@ -93,7 +93,7 @@
             <FormItem label="返回参数">
               <Table border :columns="response_columns" :data="detail_info.response"></Table>
             </FormItem>
-            <FormItem label="返回示例">
+            <FormItem label="返回示例" v-if="code">
               <div style="width: 100%" v-highlight>
                 <pre><code>{{code}}</code></pre>
               </div>
@@ -137,7 +137,13 @@ export default {
         },
         {
           title: '类型',
-          key: 'data_type'
+          render: (h, params) => {
+            return h('Tag', {
+              props: {
+                'color': 'blue'
+              }
+            }, this.detail_info.dataType[params.row.data_type])
+          }
         },
         {
           title: '字段状态',
@@ -285,7 +291,8 @@ export default {
         }
       ],
       detail_info: {},
-      api_detail: {}
+      api_detail: {},
+      co: ''
     }
   },
   created () {
@@ -295,7 +302,8 @@ export default {
     getList () {
       let vm = this
       apiGroup().then(response => {
-        vm.groupInfo = response.data.data
+        vm.groupInfo = response.data.data.data
+        vm.co = response.data.data.co
       })
     },
     closeDrawer () {
@@ -313,6 +321,9 @@ export default {
         vm.show_loading = false
         vm.url = res.url
         vm.api_detail = res.apiList
+        if (res.apiList.return_str) {
+          vm.code = JSON.parse(res.apiList.return_str)
+        }
       })
     }
   }

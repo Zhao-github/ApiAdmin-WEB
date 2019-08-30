@@ -29,7 +29,7 @@
         <ABackTop :height="100" :bottom="80" :right="60" container=".wiki-error-code-layout-con"></ABackTop>
       </div>
     </Content>
-    <Footer class="wiki-footer-center">&copy; Powered  By ApiAdmin</Footer>
+    <Footer class="wiki-footer-center">&copy; Powered  By <Tag color="primary">{{co}}</Tag></Footer>
   </Layout>
 </template>
 <script>
@@ -66,14 +66,16 @@ export default {
           key: 'chinese'
         }
       ],
-      data: []
+      data: [],
+      co: ''
     }
   },
   methods: {
     error () {
       let vm = this
       errorCode().then(response => {
-        vm.data = response.data.data
+        vm.data = response.data.data.data
+        vm.co = response.data.data.co
       })
     }
   }
