@@ -34,7 +34,7 @@ export const detail = (params) => {
 }
 
 /**
- * 新增用户
+ * 用户登录
  * @param data
  * @returns {wx.RequestTask | never}
  */
@@ -43,5 +43,16 @@ export const login = (data) => {
     url: 'Api/login',
     method: 'post',
     data
+  })
+}
+
+/**
+ * 用户登出
+ * @returns {wx.RequestTask | never}
+ */
+export const logout = () => {
+  return axios.request({
+    url: 'Api/logout',
+    method: 'get'
   })
 }
