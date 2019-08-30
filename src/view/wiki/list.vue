@@ -40,6 +40,7 @@
         </div>
       </Card>
       <div class="wiki-layout-con">
+        <Spin size="large" fix v-if="show_loading"></Spin>
         <Collapse>
           <Panel  v-bind:key="index" v-for="(item, index) in groupInfo" :name="index.toString()">
             {{item.name}}【{{item.create_time}}】 <span style="float: right;margin-right: 20px;">接口数量{{item.api_info.length}} | 项目热度{{item.hot}}</span>
@@ -74,7 +75,7 @@
       </div>
     </Content>
     <Footer class="wiki-footer-center">&copy; Powered  By ApiAdmin</Footer>
-    <Drawer title="获取手机号/固定电话归属地" v-model="show_detail" width="820" :mask-closable="false">
+    <Drawer title="获取手机号/固定电话归属地" v-model="show_detail" width="820" :mask-closable="false" @on-close="closeDrawer">
       <Tabs type="card">
         <TabPane label="接口说明">
           <Form :label-width="80">
@@ -84,13 +85,13 @@
               <Tag v-if="api_detail.method === 0" color="warning">不限</Tag> <Alert class="url">{{url}}</Alert>
             </FormItem>
             <FormItem label="请求头部">
-              <Table border :columns="header_columns" :data="header_data"></Table>
+              <Table border :columns="header_columns" :data="detail_info.request"></Table>
             </FormItem>
             <FormItem label="请求参数">
-              <Table border :columns="request_columns" :data="request_data"></Table>
+              <Table border :columns="request_columns" :data="detail_info.request"></Table>
             </FormItem>
             <FormItem label="返回参数">
-              <Table border :columns="response_columns" :data="response_data"></Table>
+              <Table border :columns="response_columns" :data="detail_info.response"></Table>
             </FormItem>
             <FormItem label="返回示例">
               <div style="width: 100%" v-highlight>
@@ -124,6 +125,7 @@ export default {
   data () {
     return {
       show_detail: false,
+      show_loading: false,
       app_id: sessionStorage.getItem('ApiAdmin_AppInfo'),
       code: '',
       url: '',
@@ -143,7 +145,31 @@ export default {
         },
         {
           title: '字段说明',
-          key: 'info'
+          key: 'info',
+          width: 290,
+          render: (h, params) => {
+            let text = params.row.info.substring(0, 20) + '...'
+            if (params.row.info.length >= 20) {
+              return h('Tooltip', {
+                props: {
+                  transfer: true,
+                  maxWidth: 200
+                }
+              }, [
+                text,
+                h('div', {
+                  slot: 'content',
+                  style: {
+                    whiteSpace: 'normal',
+                    wordBreak: 'break-all',
+                    wordWrap: 'break-word'
+                  }
+                }, params.row.info)
+              ])
+            } else {
+              return h('span', params.row.info)
+            }
+          }
         }
       ],
       request_columns: [
@@ -153,11 +179,33 @@ export default {
         },
         {
           title: '类型',
-          key: 'data_type'
+          width: '100px',
+          render: (h, params) => {
+            return h('Tag', {
+              props: {
+                'color': 'blue'
+              }
+            }, this.detail_info.dataType[params.row.data_type])
+          }
         },
         {
           title: '字段属性',
-          key: 'is_must'
+          width: '90px',
+          render: (h, params) => {
+            if (params.row.is_must === 1) {
+              return h('Tag', {
+                props: {
+                  'color': 'red'
+                }
+              }, '必填')
+            } else {
+              return h('Tag', {
+                props: {
+                  'color': 'orange'
+                }
+              }, '选填')
+            }
+          }
         },
         {
           title: '默认值',
@@ -165,7 +213,31 @@ export default {
         },
         {
           title: '字段说明',
-          key: 'info'
+          key: 'info',
+          width: 290,
+          render: (h, params) => {
+            let text = params.row.info.substring(0, 20) + '...'
+            if (params.row.info.length >= 20) {
+              return h('Tooltip', {
+                props: {
+                  transfer: true,
+                  maxWidth: 200
+                }
+              }, [
+                text,
+                h('div', {
+                  slot: 'content',
+                  style: {
+                    whiteSpace: 'normal',
+                    wordBreak: 'break-all',
+                    wordWrap: 'break-word'
+                  }
+                }, params.row.info)
+              ])
+            } else {
+              return h('span', params.row.info)
+            }
+          }
         }
       ],
       response_columns: [
@@ -175,16 +247,44 @@ export default {
         },
         {
           title: '类型',
-          key: 'data_type'
+          render: (h, params) => {
+            return h('Tag', {
+              props: {
+                'color': 'blue'
+              }
+            }, this.detail_info.dataType[params.row.data_type])
+          }
         },
         {
           title: '字段说明',
-          key: 'info'
+          key: 'info',
+          width: 290,
+          render: (h, params) => {
+            let text = params.row.info.substring(0, 20) + '...'
+            if (params.row.info.length >= 20) {
+              return h('Tooltip', {
+                props: {
+                  transfer: true,
+                  maxWidth: 200
+                }
+              }, [
+                text,
+                h('div', {
+                  slot: 'content',
+                  style: {
+                    whiteSpace: 'normal',
+                    wordBreak: 'break-all',
+                    wordWrap: 'break-word'
+                  }
+                }, params.row.info)
+              ])
+            } else {
+              return h('span', params.row.info)
+            }
+          }
         }
       ],
-      header_data: [],
-      request_data: [],
-      response_data: [],
+      detail_info: {},
       api_detail: {}
     }
   },
@@ -198,13 +298,19 @@ export default {
         vm.groupInfo = response.data.data
       })
     },
+    closeDrawer () {
+      this.getList()
+    },
     showApiDetail (hash) {
       let vm = this
+      vm.show_loading = true
       detail({
         hash: hash
       }).then(response => {
         let res = response.data.data
+        vm.detail_info = res
         vm.show_detail = true
+        vm.show_loading = false
         vm.url = res.url
         vm.api_detail = res.apiList
       })
