@@ -88,6 +88,7 @@ export default {
             vm.$Spin.hide()
             vm.$store.commit('setUserInfo', response.data.data)
             vm.$store.commit('setToken', response.data.data.apiAuth)
+            sessionStorage.setItem('ApiAdmin_AppInfo', '管理员')
             vm.$router.push({
               name: 'home'
             })
@@ -98,6 +99,7 @@ export default {
             vm.$Spin.hide()
             vm.$store.commit('setUserInfo', response.data.data)
             vm.$store.commit('setToken', response.data.data.apiAuth)
+            sessionStorage.setItem('ApiAdmin_AppInfo', '管理员')
             vm.$router.push({
               name: 'home'
             })
@@ -120,6 +122,7 @@ export default {
       vm.$refs.loginForm.validate((valid) => {
         if (valid) {
           vm.handleLogin({ username, password }).then(res => {
+            sessionStorage.setItem('ApiAdmin_AppInfo', '管理员')
             vm.$router.push({
               name: 'home'
             })
