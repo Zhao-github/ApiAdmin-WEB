@@ -28,7 +28,7 @@ export default [
   },
   {
     path: '/login/:loginType',
-    name: 'login_three',
+    name: 'login',
     meta: {
       title: '登录',
       hideInMenu: true
