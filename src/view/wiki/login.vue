@@ -23,7 +23,7 @@
             </Input>
           </FormItem>
           <FormItem style="margin-bottom: 15px;">
-            <Button @click="handleSubmit" type="primary" long>登录</Button>
+            <Button type="primary" long :loading="loading" @click="handleSubmit">登录</Button>
           </FormItem>
         </Form>
         <div class="wiki-login-tip">
@@ -42,8 +42,8 @@ export default {
   data () {
     return {
       form: {
-        username: '',
-        password: ''
+        username: '49686770',
+        password: 'RdZsbOQNeylhdacRXGTxUpWlrCQuOOnG'
       },
       rules: {
         username: [
@@ -52,7 +52,8 @@ export default {
         password: [
           { required: true, message: 'AppSecret不能为空', trigger: 'blur' }
         ]
-      }
+      },
+      loading: false
     }
   },
   methods: {
@@ -60,6 +61,7 @@ export default {
       let vm = this
       this.$refs['loginForm'].validate((valid) => {
         if (valid) {
+          vm.loading = true
           login(vm.form).then(response => {
             vm.$Message.success(response.data.msg)
             setToken(response.data.data.apiAuth)
@@ -67,6 +69,9 @@ export default {
             vm.$router.push({
               name: 'wiki_list'
             })
+            vm.loading = false
+          }).catch(() => {
+            vm.loading = false
           })
         }
       })
