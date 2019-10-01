@@ -359,7 +359,7 @@ export default {
         id: 0
       },
       ruleValidate: {
-        apiClass: [
+        api_class: [
           { required: true, message: '真实类库不能为空', trigger: 'blur' }
         ],
         info: [
