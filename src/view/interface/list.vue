@@ -112,7 +112,7 @@
         <p>刷新路由是一个非常危险的操作，它有可能影响到您现有接口的访问，请确认无误后刷新！！</p>
       </div>
       <div slot="footer">
-        <Button type="error" size="large" long @click="refreshRoute">确定刷新</Button>
+        <Button type="error" size="large" long  :loading="refreshLoading" @click="refreshRoute">确定刷新</Button>
       </div>
     </Modal>
   </div>
@@ -223,6 +223,7 @@ export default {
   data () {
     return {
       confirmRefresh: false,
+      refreshLoading: false,
       columnsList: [
         {
           title: '序号',
@@ -359,7 +360,7 @@ export default {
         id: 0
       },
       ruleValidate: {
-        apiClass: [
+        api_class: [
           { required: true, message: '真实类库不能为空', trigger: 'blur' }
         ],
         info: [
@@ -450,11 +451,14 @@ export default {
     },
     refreshRoute () {
       let vm = this
+      vm.refreshLoading = true
       refresh().then(response => {
         vm.$Message.success(response.data.msg)
         vm.confirmRefresh = false
+        vm.refreshLoading = false
       }).catch(() => {
         vm.confirmRefresh = false
+        vm.refreshLoading = false
       })
     }
   }

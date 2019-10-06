@@ -47,16 +47,16 @@ export const del = (hash) => {
 /**
  * 启用/禁用接口
  * @param status
- * @param id
+ * @param hash
  * @returns {wx.RequestTask | never}
  */
-export const changeStatus = (status, id) => {
+export const changeStatus = (status, hash) => {
   return axios.request({
     url: 'InterfaceList/changeStatus',
     method: 'get',
     params: {
       status: status,
-      id: id
+      hash: hash
     }
   })
 }

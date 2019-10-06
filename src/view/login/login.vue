@@ -23,7 +23,7 @@
               </Input>
             </FormItem>
             <FormItem style="margin-bottom: 15px;">
-              <Button @click="handleSubmit" type="primary" long>登录</Button>
+              <Button type="primary" long :loading="loading" @click="handleSubmit">登录</Button>
             </FormItem>
           </Form>
           <div style="padding-top:10px;font-size: 11px;border-top: 1px solid #e9eaec;">
@@ -61,8 +61,8 @@ export default {
       qq_login,
       wx_login,
       form: {
-        username: '',
-        password: ''
+        username: 'root',
+        password: '123456'
       },
       rules: {
         username: [
@@ -73,7 +73,8 @@ export default {
         ]
       },
       wxQrModel: false,
-      wxQrUrl: ''
+      wxQrUrl: '',
+      loading: false
     }
   },
   created () {
@@ -121,11 +122,15 @@ export default {
       let password = vm.form.password
       vm.$refs.loginForm.validate((valid) => {
         if (valid) {
-          vm.handleLogin({ username, password }).then(res => {
+          vm.loading = true
+          vm.handleLogin({ username, password }).then(() => {
             sessionStorage.setItem('ApiAdmin_AppInfo', '管理员')
             vm.$router.push({
               name: 'home'
             })
+            vm.loading = false
+          }).catch(() => {
+            vm.loading = false
           })
         }
       })
