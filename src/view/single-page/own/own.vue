@@ -77,7 +77,7 @@
         <p>个人信息修改后，将会退出系统重新登录，请明确后修改！</p>
       </div>
       <div slot="footer">
-        <Button type="error" size="large" long @click="submit">确定修改</Button>
+        <Button type="error" size="large" long :loading="saveLoading" @click="submit">确定修改</Button>
       </div>
     </Modal>
   </div>
