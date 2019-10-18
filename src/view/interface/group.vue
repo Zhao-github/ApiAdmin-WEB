@@ -191,12 +191,12 @@ export default {
           title: '接口组标识',
           align: 'center',
           key: 'hash',
-          width: 130
+          width: 140
         },
         {
           title: '接口组状态',
           align: 'center',
-          width: 100,
+          width: 110,
           render: (h, params) => {
             let vm = this
             return h('i-switch', {
@@ -230,7 +230,7 @@ export default {
         {
           title: '操作',
           align: 'center',
-          width: 180,
+          width: 200,
           render: (h, params) => {
             return h('div', [
               editButton(this, h, params.row, params.index),
