@@ -105,9 +105,6 @@ import { getList, changeStatus, add, edit, del, getAppInfo, refreshAppSecretApi 
 import { getAll } from '@/api/app-group'
 
 const editButton = (vm, h, currentRow, index) => {
-  getAll().then(response => {
-    vm.appGroup = response.data.data.list
-  })
   return h('Button', {
     props: {
       type: 'primary'
@@ -117,41 +114,44 @@ const editButton = (vm, h, currentRow, index) => {
     },
     on: {
       'click': () => {
-        vm.formItem.id = currentRow.id
-        vm.formItem.app_name = currentRow.app_name
-        vm.formItem.app_info = currentRow.app_info
-        vm.formItem.app_id = currentRow.app_id
-        vm.formItem.app_secret = currentRow.app_secret
-        vm.formItem.app_group = currentRow.app_group
-        getAppInfo(currentRow.id).then(response => {
-          let res = response.data
-          vm.groupInfo = res.data.groupInfo
-          vm.groupList = res.data.apiList
-          for (let index in vm.groupInfo) {
-            if (res.data.app_detail === null || typeof (res.data.app_detail[index]) === 'undefined') {
-              vm.$set(vm.checkAllStatus, index, false)
-              vm.$set(vm.checkAllIndeterminate, index, false)
-              vm.$set(vm.formItem.app_api, index, [])
-            } else {
-              let hasLength = res.data.app_detail[index].length
-              if (hasLength === 0) {
+        getAll().then(response => {
+          vm.appGroup = response.data.data.list
+          vm.formItem.id = currentRow.id
+          vm.formItem.app_name = currentRow.app_name
+          vm.formItem.app_info = currentRow.app_info
+          vm.formItem.app_id = currentRow.app_id
+          vm.formItem.app_secret = currentRow.app_secret
+          vm.formItem.app_group = currentRow.app_group
+          getAppInfo(currentRow.id).then(response => {
+            let res = response.data
+            vm.groupInfo = res.data.groupInfo
+            vm.groupList = res.data.apiList
+            for (let index in vm.groupInfo) {
+              if (res.data.app_detail === null || typeof (res.data.app_detail[index]) === 'undefined') {
                 vm.$set(vm.checkAllStatus, index, false)
                 vm.$set(vm.checkAllIndeterminate, index, false)
                 vm.$set(vm.formItem.app_api, index, [])
-              } else if (vm.groupList[index].length === hasLength) {
-                vm.$set(vm.checkAllStatus, index, true)
-                vm.$set(vm.checkAllIndeterminate, index, false)
-                vm.$set(vm.formItem.app_api, index, res.data.app_detail[index])
               } else {
-                vm.$set(vm.checkAllStatus, index, false)
-                vm.$set(vm.checkAllIndeterminate, index, true)
-                vm.$set(vm.formItem.app_api, index, res.data.app_detail[index])
+                let hasLength = res.data.app_detail[index].length
+                if (hasLength === 0) {
+                  vm.$set(vm.checkAllStatus, index, false)
+                  vm.$set(vm.checkAllIndeterminate, index, false)
+                  vm.$set(vm.formItem.app_api, index, [])
+                } else if (vm.groupList[index].length === hasLength) {
+                  vm.$set(vm.checkAllStatus, index, true)
+                  vm.$set(vm.checkAllIndeterminate, index, false)
+                  vm.$set(vm.formItem.app_api, index, res.data.app_detail[index])
+                } else {
+                  vm.$set(vm.checkAllStatus, index, false)
+                  vm.$set(vm.checkAllIndeterminate, index, true)
+                  vm.$set(vm.formItem.app_api, index, res.data.app_detail[index])
+                }
               }
             }
-          }
+          })
+          vm.modalSetting.show = true
+          vm.modalSetting.index = index
         })
-        vm.modalSetting.show = true
-        vm.modalSetting.index = index
       }
     }
   }, vm.$t('edit_button'))
@@ -402,7 +402,7 @@ export default {
     },
     refreshAppSecret () {
       let vm = this
-      refreshAppSecretApi(vm.formItem.id).then(response => {
+      refreshAppSecretApi().then(response => {
         vm.formItem.app_secret = response.data.data.app_secret
       })
     },

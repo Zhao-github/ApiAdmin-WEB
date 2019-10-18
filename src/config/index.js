@@ -13,7 +13,7 @@ export default {
    * @description api请求基础路径
    */
   baseUrl: {
-    dev: 'https://api.our-dream.cn/',
+    dev: 'https://api.apiadmin.org/',
     pro: 'https://api.apiadmin.org/'
   },
   /**

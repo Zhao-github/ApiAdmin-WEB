@@ -16,11 +16,10 @@ export const getList = (params) => {
  * 刷新秘钥
  * @returns {wx.RequestTask | never}
  */
-export const refreshAppSecretApi = (id) => {
+export const refreshAppSecretApi = () => {
   return axios.request({
     url: 'App/refreshAppSecret',
-    method: 'get',
-    id: id
+    method: 'get'
   })
 }
 
