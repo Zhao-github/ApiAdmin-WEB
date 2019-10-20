@@ -321,7 +321,7 @@ export default {
         {
           title: '操作',
           align: 'center',
-          minWidth: 355,
+          minWidth: 375,
           render: (h, params) => {
             return h('div', [
               editButton(this, h, params.row, params.index),
