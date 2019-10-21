@@ -209,7 +209,7 @@ export default {
         },
         {
           title: '类型',
-          width: '100px',
+          width: 100,
           render: (h, params) => {
             return h('Tag', {
               props: {
@@ -220,7 +220,7 @@ export default {
         },
         {
           title: '字段属性',
-          width: '90px',
+          width: 100,
           render: (h, params) => {
             if (params.row.is_must === 1) {
               return h('Tag', {
