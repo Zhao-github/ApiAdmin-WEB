@@ -362,7 +362,7 @@ export default {
         }
         vm.header_data = [{
           is_must: res.apiList.access_token,
-          field_name: 'access_token',
+          field_name: 'access-token',
           info: 'APP认证秘钥【请在Header头里面传递】',
           data_type: 2
         }]
