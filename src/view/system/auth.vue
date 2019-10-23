@@ -236,7 +236,6 @@ export default {
                   changeStatus(status, params.row.id).then(response => {
                     vm.$Message.success(response.data.msg)
                     vm.getList()
-                    vm.cancel()
                   })
                 }
               }
@@ -400,7 +399,7 @@ export default {
               vm.getList()
               vm.cancel()
             }).catch(() => {
-              vm.cancel()
+              vm.modalSetting.loading = false
             })
           } else {
             edit(vm.formItem).then(response => {
@@ -408,7 +407,7 @@ export default {
               vm.getList()
               vm.cancel()
             }).catch(() => {
-              vm.cancel()
+              vm.modalSetting.loading = false
             })
           }
         }
