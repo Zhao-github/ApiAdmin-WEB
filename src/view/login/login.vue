@@ -61,8 +61,8 @@ export default {
       qq_login,
       wx_login,
       form: {
-        username: 'root',
-        password: '123456'
+        username: '',
+        password: ''
       },
       rules: {
         username: [

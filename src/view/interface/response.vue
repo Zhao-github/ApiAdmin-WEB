@@ -275,7 +275,7 @@ export default {
             vm.getList()
             vm.cancel()
           }).catch(() => {
-            vm.cancel()
+            vm.modalSetting.loading = false
           })
         }
       })
@@ -291,7 +291,7 @@ export default {
             vm.getList()
             vm.cancelUpload()
           }).catch(() => {
-            vm.cancelUpload()
+            vm.uploadModal.loading = false
           })
         }
       })
