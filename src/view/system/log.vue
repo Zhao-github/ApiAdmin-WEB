@@ -8,7 +8,7 @@
         <Card style="margin-bottom: 10px">
           <Form inline>
             <FormItem style="margin-bottom: 0">
-              <Select v-model="searchConf.type" clearable placeholder="请选择类别" style="width:100px">
+              <Select v-model="searchConf.type" clearable placeholder="请选择类别" style="width:120px">
                 <Option :value="1">操作URL</Option>
                 <Option :value="2">用户昵称</Option>
                 <Option :value="3">用户ID</Option>
