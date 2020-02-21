@@ -10,7 +10,7 @@
         个人信息
       </p>
       <div>
-        <Form ref="myForm" :rules="ruleValidate" :model="formItem" :label-width="80">
+        <Form ref="myForm" :rules="ruleValidate" :model="formItem" :label-width="90">
           <FormItem label="用户账号" prop="username">
             <div style="display:inline-block;width:300px">
               <Input v-model="username" disabled></Input>
@@ -18,7 +18,7 @@
           </FormItem>
           <FormItem label="用户昵称" prop="nickname">
             <div style="display:inline-block;width:300px">
-              <Input v-model="formItem.nickname"></Input>
+              <Input v-model="formItem.nickname" placeholder="请输入昵称"></Input>
             </div>
           </FormItem>
           <FormItem label="用户头像" prop="headImg">
@@ -77,7 +77,7 @@
         <p>个人信息修改后，将会退出系统重新登录，请明确后修改！</p>
       </div>
       <div slot="footer">
-        <Button type="error" size="large" long @click="submit">确定修改</Button>
+        <Button type="error" size="large" long :loading="saveLoading" @click="submit">确定修改</Button>
       </div>
     </Modal>
   </div>
@@ -127,7 +127,7 @@ export default {
       },
       ruleValidate: {
         nickname: [
-          { required: true, message: '请输入姓名', trigger: 'blur' }
+          { required: true, message: '请输入用户昵称', trigger: 'blur' }
         ],
         password: [
           { min: 6, message: '请至少输入6个字符', trigger: 'blur' },

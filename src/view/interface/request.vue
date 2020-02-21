@@ -145,9 +145,6 @@ export default {
             return h('Tag', {
               attrs: {
                 color: 'primary'
-              },
-              style: {
-                width: '60px'
               }
             }, this.tableShow.dataType[type])
           }
@@ -155,7 +152,7 @@ export default {
         {
           title: '是否必须',
           align: 'center',
-          width: 90,
+          width: 100,
           render: (h, params) => {
             if (params.row.is_must === 1) {
               return h('Tag', {
@@ -249,7 +246,7 @@ export default {
               vm.getList()
               vm.cancel()
             }).catch(() => {
-              vm.cancel()
+              vm.modalSetting.loading = false
             })
           } else {
             edit(vm.formItem).then(response => {
@@ -257,7 +254,7 @@ export default {
               vm.getList()
               vm.cancel()
             }).catch(() => {
-              vm.cancel()
+              vm.modalSetting.loading = false
             })
           }
         }

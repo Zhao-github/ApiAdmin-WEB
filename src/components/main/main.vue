@@ -12,7 +12,7 @@
     <Layout>
       <Header class="header-con">
         <header-bar :collapsed="collapsed" @on-coll-change="handleCollapsedChange">
-          <user :user-avator="userAvator"/>
+          <user :user-avator="userAvatar"/>
           <language v-if="$config.useI18n" @on-lang-change="setLocal" style="margin-right: 10px;" :lang="local"/>
           <fullscreen v-model="isFullscreen" style="margin-right: 10px;"/>
         </header-bar>
@@ -71,15 +71,11 @@ export default {
     tagNavList () {
       return this.$store.state.app.tagNavList
     },
-    tagRouter () {
-      return this.$store.state.app.tagRouter
-    },
-    userAvator () {
-      return typeof this.$store.state.user.userInfo.userData.head_img !== 'undefined' && this.$store.state.user.userInfo.userData.head_img ? this.$store.state.user.userInfo.userData.head_img : defaultImg
+    userAvatar () {
+      return JSON.stringify(this.$store.state.user.userInfo) !== '{}' && this.$store.state.user.userInfo.userData.head_img ? this.$store.state.user.userInfo.userData.head_img : defaultImg
     },
     cacheList () {
-      const list = ['ParentView', ...this.tagNavList.length ? this.tagNavList.filter(item => !(item.meta && item.meta.notCache)).map(item => item.name) : []]
-      return list
+      return ['ParentView', ...this.tagNavList.length ? this.tagNavList.filter(item => !(item.meta && item.meta.notCache)).map(item => item.name) : []]
     },
     menuList () {
       return this.$store.getters.menuList

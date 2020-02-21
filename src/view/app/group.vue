@@ -149,12 +149,12 @@ export default {
           title: '应用组标识',
           align: 'center',
           key: 'hash',
-          width: 130
+          width: 140
         },
         {
           title: '应用组状态',
           align: 'center',
-          width: 100,
+          width: 120,
           render: (h, params) => {
             let vm = this
             return h('i-switch', {
@@ -171,7 +171,6 @@ export default {
                   changeStatus(status, params.row.id).then(response => {
                     vm.$Message.success(response.data.msg)
                     vm.getList()
-                    vm.cancel()
                   })
                 }
               }
@@ -188,7 +187,7 @@ export default {
         {
           title: '操作',
           align: 'center',
-          width: 180,
+          width: 200,
           render: (h, params) => {
             return h('div', [
               editButton(this, h, params.row, params.index),
@@ -248,7 +247,7 @@ export default {
               vm.getList()
               vm.cancel()
             }).catch(() => {
-              vm.cancel()
+              vm.modalSetting.loading = false
             })
           } else {
             edit(vm.formItem).then(response => {
@@ -256,7 +255,7 @@ export default {
               vm.getList()
               vm.cancel()
             }).catch(() => {
-              vm.cancel()
+              vm.modalSetting.loading = false
             })
           }
         }

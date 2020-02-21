@@ -16,7 +16,7 @@
             <FormItem style="margin-bottom: 0">
               <Select v-model="searchConf.type" clearable placeholder="请选择类别" style="width:120px">
                 <Option :value="1">用户账号</Option>
-                <Option :value="2">真实姓名</Option>
+                <Option :value="2">用户昵称</Option>
               </Select>
             </FormItem>
             <FormItem style="margin-bottom: 0">
@@ -55,8 +55,8 @@
         <FormItem label="用户账号" prop="username">
           <Input v-model="formItem.username" placeholder="请输入账号"></Input>
         </FormItem>
-        <FormItem label="真实姓名" prop="nickname">
-          <Input v-model="formItem.nickname" placeholder="请输入账号"></Input>
+        <FormItem label="用户昵称" prop="nickname">
+          <Input v-model="formItem.nickname" placeholder="请输入昵称"></Input>
         </FormItem>
         <FormItem label="用户密码" prop="password">
           <Input v-model="formItem.password" type="password" placeholder="用户密码"></Input>
@@ -150,10 +150,10 @@ export default {
           minWidth: 120
         },
         {
-          title: '真实姓名',
+          title: '用户昵称',
           align: 'center',
           key: 'nickname',
-          width: 120
+          width: 160
         },
         {
           title: '登录次数',
@@ -161,7 +161,7 @@ export default {
           render: (h, params) => {
             return h('span', params.row.userData === null ? '' : params.row.userData.login_times)
           },
-          width: 90
+          width: 100
         },
         {
           title: '最后登录时间',
@@ -169,7 +169,7 @@ export default {
           render: (h, params) => {
             return h('span', params.row.userData === null ? '' : params.row.userData.last_login_time)
           },
-          width: 160
+          width: 170
         },
         {
           title: '最后登录IP',
@@ -250,7 +250,7 @@ export default {
       },
       ruleValidate: {
         username: [
-          { required: true, message: '用户名不能为空', trigger: 'blur' }
+          { required: true, message: '用户账号不能为空', trigger: 'blur' }
         ],
         nickname: [
           { required: true, message: '用户昵称不能为空', trigger: 'blur' }
@@ -283,7 +283,7 @@ export default {
               vm.getList()
               vm.cancel()
             }).catch(() => {
-              vm.cancel()
+              vm.modalSetting.loading = false
             })
           } else {
             edit(vm.formItem).then(response => {
@@ -291,7 +291,7 @@ export default {
               vm.getList()
               vm.cancel()
             }).catch(() => {
-              vm.cancel()
+              vm.modalSetting.loading = false
             })
           }
         }

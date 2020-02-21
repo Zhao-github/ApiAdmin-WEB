@@ -36,6 +36,7 @@
           <p slot="title" style="height: 32px">
             <Button type="primary" @click="alertAdd" icon="md-add">{{ $t('add_button') }}</Button>
             <Button type="warning" class="margin-left-5" @click="confirmRefresh = true" icon="md-refresh">刷新路由</Button>
+            <Button type="info" class="margin-left-5" to="/wiki/list" icon="md-bookmarks">接口文档</Button>
           </p>
           <div>
             <Table :columns="columnsList" :data="tableData" border disabled-hover></Table>
@@ -53,7 +54,7 @@
         <Icon type="md-alert"></Icon>
         <span>{{formItem.id ? '编辑' : '新增'}}接口</span>
       </p>
-      <Form ref="myForm" :rules="ruleValidate" :model="formItem" :label-width="80">
+      <Form ref="myForm" :rules="ruleValidate" :model="formItem" :label-width="90">
         <FormItem label="接口名称" prop="info">
           <Input v-model="formItem.info" placeholder="请输入接口名称"></Input>
         </FormItem>
@@ -111,7 +112,7 @@
         <p>刷新路由是一个非常危险的操作，它有可能影响到您现有接口的访问，请确认无误后刷新！！</p>
       </div>
       <div slot="footer">
-        <Button type="error" size="large" long @click="refreshRoute">确定刷新</Button>
+        <Button type="error" size="large" long  :loading="refreshLoading" @click="refreshRoute">确定刷新</Button>
       </div>
     </Modal>
   </div>
@@ -222,6 +223,7 @@ export default {
   data () {
     return {
       confirmRefresh: false,
+      refreshLoading: false,
       columnsList: [
         {
           title: '序号',
@@ -245,12 +247,12 @@ export default {
           title: '接口映射',
           align: 'center',
           key: 'hash',
-          width: 130
+          width: 140
         },
         {
           title: '请求方式',
           align: 'center',
-          width: 90,
+          width: 95,
           render: (h, params) => {
             if (params.row.isTest === 1) {
               return h('tag', {
@@ -302,7 +304,6 @@ export default {
                   changeStatus(status, params.row.hash).then(response => {
                     vm.$Message.success(response.data.msg)
                     vm.getList()
-                    vm.cancel()
                   })
                 }
               }
@@ -319,7 +320,7 @@ export default {
         {
           title: '操作',
           align: 'center',
-          minWidth: 355,
+          minWidth: 375,
           render: (h, params) => {
             return h('div', [
               editButton(this, h, params.row, params.index),
@@ -358,7 +359,7 @@ export default {
         id: 0
       },
       ruleValidate: {
-        apiClass: [
+        api_class: [
           { required: true, message: '真实类库不能为空', trigger: 'blur' }
         ],
         info: [
@@ -396,7 +397,7 @@ export default {
               vm.getList()
               vm.cancel()
             }).catch(() => {
-              vm.cancel()
+              vm.modalSetting.loading = false
             })
           } else {
             edit(vm.formItem).then(response => {
@@ -405,7 +406,7 @@ export default {
               vm.getList()
               vm.cancel()
             }).catch(() => {
-              vm.cancel()
+              vm.modalSetting.loading = false
             })
           }
         }
@@ -449,11 +450,14 @@ export default {
     },
     refreshRoute () {
       let vm = this
+      vm.refreshLoading = true
       refresh().then(response => {
         vm.$Message.success(response.data.msg)
         vm.confirmRefresh = false
+        vm.refreshLoading = false
       }).catch(() => {
         vm.confirmRefresh = false
+        vm.refreshLoading = false
       })
     }
   }

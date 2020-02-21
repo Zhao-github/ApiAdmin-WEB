@@ -1,14 +1,14 @@
 import config from '@/config'
 import axios from 'axios'
-import iView from 'iview'
+import iView from 'view-design'
 import { setToken, getToken } from '@/libs/util'
 import router from '@/router'
 
-export const baseUrl = process.env.NODE_ENV === 'development' ? config.baseUrl.dev : config.baseUrl.pro
+export const baseUrl = (process.env.NODE_ENV === 'development' ? config.baseUrl.dev : config.baseUrl.pro) + 'admin/'
 
 class HttpRequest {
   constructor (baseUrl) {
-    this.baseUrl = baseUrl + 'admin/'
+    this.baseUrl = baseUrl
   }
 
   interceptors (instance) {

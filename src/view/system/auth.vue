@@ -236,7 +236,6 @@ export default {
                   changeStatus(status, params.row.id).then(response => {
                     vm.$Message.success(response.data.msg)
                     vm.getList()
-                    vm.cancel()
                   })
                 }
               }
@@ -275,22 +274,22 @@ export default {
           key: 'username'
         },
         {
-          title: '真实姓名',
+          title: '用户昵称',
           align: 'center',
           key: 'nickname',
-          width: 90
+          width: 100
         },
         {
           title: '登录次数',
           align: 'center',
           key: 'login_times',
-          width: 90
+          width: 100
         },
         {
           title: '最后登录时间',
           align: 'center',
           key: 'last_login_time',
-          width: 160
+          width: 140
         },
         {
           title: '最后登录IP',
@@ -321,7 +320,7 @@ export default {
         {
           title: '操作',
           align: 'center',
-          width: 175,
+          width: 115,
           render: (h, params) => {
             return h('div', [
               memberDelButton(this, h, params.row, params.index)
@@ -400,7 +399,7 @@ export default {
               vm.getList()
               vm.cancel()
             }).catch(() => {
-              vm.cancel()
+              vm.modalSetting.loading = false
             })
           } else {
             edit(vm.formItem).then(response => {
@@ -408,7 +407,7 @@ export default {
               vm.getList()
               vm.cancel()
             }).catch(() => {
-              vm.cancel()
+              vm.modalSetting.loading = false
             })
           }
         }
