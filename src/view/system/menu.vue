@@ -11,7 +11,7 @@
             <Button type="primary" @click="alertAdd" icon="md-add">{{ $t('add_button') }}</Button>
           </p>
           <div>
-            <Table :columns="columnsList" :data="tableData" border disabled-hover></Table>
+            <Table row-key="id" :columns="columnsList" :data="tableData" border disabled-hover></Table>
           </div>
         </Card>
       </Col>
@@ -28,7 +28,7 @@
         <FormItem label="父级菜单" prop="fid">
           <Select v-model="formItem.fid" filterable>
             <Option :value="0">顶级菜单</Option>
-            <Option v-for="item in tableData" :value="item.id" :key="item.id">{{ item.showName }}</Option>
+            <Option v-for="item in selectOption" :value="item.id" :key="item.id">{{ item.showName }}</Option>
           </Select>
         </FormItem>
         <FormItem label="菜单URL" prop="url">
@@ -83,7 +83,7 @@ const deleteButton = (vm, h, currentRow, index) => {
     on: {
       'on-ok': () => {
         del(currentRow.id).then(response => {
-          vm.tableData.splice(index, 1)
+          vm.getList()
           vm.$Message.success(response.data.msg)
         })
         currentRow.loading = false
@@ -108,15 +108,10 @@ export default {
     return {
       columnsList: [
         {
-          title: '序号',
-          type: 'index',
-          width: 65,
-          align: 'center'
-        },
-        {
           title: '菜单名称',
           align: 'left',
-          key: 'showName'
+          key: 'name',
+          tree: true
         },
         {
           title: '排序',
@@ -178,6 +173,7 @@ export default {
         }
       ],
       tableData: [],
+      selectOption: [],
       modalSetting: {
         show: false,
         loading: false,
@@ -244,6 +240,7 @@ export default {
       let vm = this
       getList().then(response => {
         vm.tableData = response.data.data.list
+        vm.selectOption = response.data.data.choose
       })
     }
   }
