@@ -8,13 +8,13 @@
         <Card style="margin-bottom: 10px">
           <Form inline>
             <FormItem style="margin-bottom: 0">
-              <Select v-model="searchConf.status" clearable placeholder='请选择状态' style="width:100px">
+              <Select v-model="searchConf.status" clearable placeholder='请选择状态' style="width:120px">
                 <Option :value="1">启用</Option>
                 <Option :value="0">禁用</Option>
               </Select>
             </FormItem>
             <FormItem style="margin-bottom: 0">
-              <Select v-model="searchConf.type" clearable placeholder="请选择类别" style="width:100px">
+              <Select v-model="searchConf.type" clearable placeholder="请选择类别" style="width:120px">
                 <Option :value="1">用户账号</Option>
                 <Option :value="2">用户昵称</Option>
               </Select>
