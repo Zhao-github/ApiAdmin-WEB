@@ -7,9 +7,9 @@
     <Row>
       <Col span="24">
         <Card>
-          <p slot="title" style="height: 32px">
-            <Button type="primary" @click="alertAdd" icon="md-add">{{ $t('add_button') }}</Button>
-          </p>
+          <div class="margin-bottom-15">
+            <Button type="primary" v-has="'Menu/add'" @click="alertAdd" icon="md-add">{{ $t('add_button') }}</Button>
+          </div>
           <div>
             <Table row-key="id" :columns="columnsList" :data="tableData" border disabled-hover></Table>
           </div>
@@ -195,6 +195,7 @@ export default {
   },
   created () {
     this.getList()
+    console.log(this.hasRule('asd'))
   },
   methods: {
     alertAdd () {
