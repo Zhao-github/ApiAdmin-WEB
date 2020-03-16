@@ -24,6 +24,11 @@ const importDirective = Vue => {
    * 代码高亮指令
    */
   Vue.directive('highlight', directive.highlight)
+
+  /**
+   * 判定是否有权限
+   */
+  Vue.directive('has', directive.has)
 }
 
 export default importDirective
