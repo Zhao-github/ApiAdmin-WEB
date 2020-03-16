@@ -46,33 +46,35 @@ import expandRow from './table_expand.vue'
 import { getDate } from '@/libs/tools'
 
 const deleteButton = (vm, h, currentRow, index) => {
-  return h('Poptip', {
-    props: {
-      confirm: true,
-      title: '您确定要删除这条数据吗? ',
-      transfer: true
-    },
-    on: {
-      'on-ok': () => {
-        del(currentRow.id).then(response => {
-          vm.tableData.splice(index, 1)
-          vm.$Message.success(response.data.msg)
-        })
-        currentRow.loading = false
-      }
-    }
-  }, [
-    h('Button', {
-      style: {
-        margin: '0 5px'
-      },
+  if (vm.buttonShow.del) {
+    return h('Poptip', {
       props: {
-        type: 'error',
-        placement: 'top',
-        loading: currentRow.isDeleting
+        confirm: true,
+        title: '您确定要删除这条数据吗? ',
+        transfer: true
+      },
+      on: {
+        'on-ok': () => {
+          del(currentRow.id).then(response => {
+            vm.tableData.splice(index, 1)
+            vm.$Message.success(response.data.msg)
+          })
+          currentRow.loading = false
+        }
       }
-    }, vm.$t('delete_button'))
-  ])
+    }, [
+      h('Button', {
+        style: {
+          margin: '0 5px'
+        },
+        props: {
+          type: 'error',
+          placement: 'top',
+          loading: currentRow.isDeleting
+        }
+      }, vm.$t('delete_button'))
+    ])
+  }
 }
 
 export default {
@@ -149,11 +151,18 @@ export default {
         show: false,
         loading: false,
         index: 0
+      },
+      buttonShow: {
+        del: true
       }
     }
   },
   created () {
-    this.getList()
+    let vm = this
+    vm.getList()
+    vm.hasRule('Log/del').then(res => {
+      vm.buttonShow.del = res
+    })
   },
   methods: {
     changePage (page) {
