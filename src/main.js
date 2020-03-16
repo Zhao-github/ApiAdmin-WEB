@@ -30,11 +30,13 @@ Vue.directive('clickOutside', clickOutside)
 
 // 挂载全局使用的方法
 Vue.prototype.hasRule = (access) => {
-  store.dispatch('getUserInfo').then(user => {
-    if (user.access && user.access.includes('admin/' + access)) {
-      return true
-    } else {
-      return false
+  return new Promise((resolve, reject) => {
+    try {
+      store.dispatch('getUserInfo').then(user => {
+        resolve(user.access && user.access.includes('admin/' + access))
+      })
+    } catch (error) {
+      reject(error)
     }
   })
 }
