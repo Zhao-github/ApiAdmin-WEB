@@ -212,7 +212,7 @@ export default {
     vm.hasRule('Menu/del').then(res => {
       vm.buttonShow.del = res
     })
-    vm.hasRule('Menu/hangeStatus').then(res => {
+    vm.hasRule('Menu/changeStatus').then(res => {
       vm.buttonShow.changeStatus = res
     })
   },

@@ -32,9 +32,9 @@
     <Row>
       <Col span="24">
         <Card>
-          <p slot="title" style="height: 32px">
-            <Button type="primary" @click="alertAdd" icon="md-add">{{ $t('add_button') }}</Button>
-          </p>
+          <div class="margin-bottom-15">
+            <Button type="primary" v-has="'User/add'" @click="alertAdd" icon="md-add">{{ $t('add_button') }}</Button>
+          </div>
           <div>
             <Table :columns="columnsList" :data="tableData" border disabled-hover></Table>
           </div>
@@ -79,57 +79,61 @@ import { getUserIndex, changeStatus, add, edit, del } from '@/api/user'
 import { getGroups } from '@/api/auth'
 
 const editButton = (vm, h, currentRow, index) => {
-  return h('Button', {
-    props: {
-      type: 'primary'
-    },
-    style: {
-      margin: '0 5px'
-    },
-    on: {
-      'click': () => {
-        vm.formItem.id = currentRow.id
-        vm.formItem.username = currentRow.username
-        vm.formItem.nickname = currentRow.nickname
-        vm.formItem.password = 'ApiAdmin'
-        getGroups().then(response => {
-          vm.groupList = response.data.data.list
-        })
-        vm.formItem.group_id = currentRow.group_id
-        vm.modalSetting.show = true
-        vm.modalSetting.index = index
-      }
-    }
-  }, vm.$t('edit_button'))
-}
-const deleteButton = (vm, h, currentRow, index) => {
-  return h('Poptip', {
-    props: {
-      confirm: true,
-      title: '您确定要删除这条数据吗? ',
-      transfer: true
-    },
-    on: {
-      'on-ok': () => {
-        del(currentRow.id).then(response => {
-          vm.tableData.splice(index, 1)
-          vm.$Message.success(response.data.msg)
-        })
-        currentRow.loading = false
-      }
-    }
-  }, [
-    h('Button', {
+  if (vm.buttonShow.edit) {
+    return h('Button', {
+      props: {
+        type: 'primary'
+      },
       style: {
         margin: '0 5px'
       },
-      props: {
-        type: 'error',
-        placement: 'top',
-        loading: currentRow.isDeleting
+      on: {
+        'click': () => {
+          vm.formItem.id = currentRow.id
+          vm.formItem.username = currentRow.username
+          vm.formItem.nickname = currentRow.nickname
+          vm.formItem.password = 'ApiAdmin'
+          getGroups().then(response => {
+            vm.groupList = response.data.data.list
+          })
+          vm.formItem.group_id = currentRow.group_id
+          vm.modalSetting.show = true
+          vm.modalSetting.index = index
+        }
       }
-    }, vm.$t('delete_button'))
-  ])
+    }, vm.$t('edit_button'))
+  }
+}
+const deleteButton = (vm, h, currentRow, index) => {
+  if (vm.buttonShow.del) {
+    return h('Poptip', {
+      props: {
+        confirm: true,
+        title: '您确定要删除这条数据吗? ',
+        transfer: true
+      },
+      on: {
+        'on-ok': () => {
+          del(currentRow.id).then(response => {
+            vm.tableData.splice(index, 1)
+            vm.$Message.success(response.data.msg)
+          })
+          currentRow.loading = false
+        }
+      }
+    }, [
+      h('Button', {
+        style: {
+          margin: '0 5px'
+        },
+        props: {
+          type: 'error',
+          placement: 'top',
+          loading: currentRow.isDeleting
+        }
+      }, vm.$t('delete_button'))
+    ])
+  }
 }
 
 export default {
@@ -192,7 +196,8 @@ export default {
               props: {
                 'true-value': 1,
                 'false-value': 0,
-                value: params.row.status
+                value: params.row.status,
+                disabled: !vm.buttonShow.changeStatus
               },
               on: {
                 'on-change': function (status) {
@@ -258,11 +263,26 @@ export default {
         password: [
           { required: true, message: '用户密码不能为空', trigger: 'blur' }
         ]
+      },
+      buttonShow: {
+        edit: true,
+        del: true,
+        changeStatus: true
       }
     }
   },
   created () {
-    this.getList()
+    let vm = this
+    vm.getList()
+    vm.hasRule('User/edit').then(res => {
+      vm.buttonShow.edit = res
+    })
+    vm.hasRule('User/del').then(res => {
+      vm.buttonShow.del = res
+    })
+    vm.hasRule('User/changeStatus').then(res => {
+      vm.buttonShow.changeStatus = res
+    })
   },
   methods: {
     alertAdd () {
