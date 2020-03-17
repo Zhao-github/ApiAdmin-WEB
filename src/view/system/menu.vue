@@ -11,7 +11,7 @@
             <Button type="primary" v-has="'Menu/add'" @click="alertAdd" icon="md-add">{{ $t('add_button') }}</Button>
           </div>
           <div>
-            <Table row-key="id" :columns="columnsList" :data="tableData" border disabled-hover></Table>
+            <Table :loading="listLoading" row-key="id" :columns="columnsList" :data="tableData" border disabled-hover></Table>
           </div>
         </Card>
       </Col>
@@ -200,7 +200,8 @@ export default {
         edit: true,
         del: true,
         changeStatus: true
-      }
+      },
+      listLoading: false
     }
   },
   created () {
@@ -258,9 +259,11 @@ export default {
     },
     getList () {
       let vm = this
+      vm.listLoading = true
       getList().then(response => {
         vm.tableData = response.data.data.list
         vm.selectOption = response.data.data.choose
+        vm.listLoading = false
       })
     }
   }

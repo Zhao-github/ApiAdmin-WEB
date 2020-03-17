@@ -15,7 +15,7 @@
             <span slot="desc"></span>
           </Alert>
           <div>
-            <Table :columns="columnsList" :data="tableData" border disabled-hover></Table>
+            <Table :loading="listLoading" :columns="columnsList" :data="tableData" border disabled-hover></Table>
           </div>
           <div class="margin-top-15" style="text-align: center">
             <Page :total="tableShow.listCount" :current="tableShow.currentPage"
@@ -249,7 +249,8 @@ export default {
         jsonStr: [
           { required: true, message: '数据模板不能为空', trigger: 'blur' }
         ]
-      }
+      },
+      listLoading: false
     }
   },
   created () {
@@ -316,6 +317,7 @@ export default {
     },
     getList () {
       let vm = this
+      vm.listLoading = true
       getResponse({
         page: vm.tableShow.currentPage,
         size: vm.tableShow.pageSize,
@@ -325,6 +327,7 @@ export default {
         vm.tableShow.listCount = response.data.data.count
         vm.tableShow.dataType = response.data.data.dataType
         vm.apiInfo = response.data.data.apiInfo
+        vm.listLoading = false
       })
     },
     doCancel (data) {

@@ -28,7 +28,7 @@
       <Col span="24">
         <Card>
           <div>
-            <Table :columns="columnsList" :data="tableData" border disabled-hover></Table>
+            <Table :loading="listLoading" :columns="columnsList" :data="tableData" border disabled-hover></Table>
           </div>
           <div class="margin-top-15" style="text-align: center">
             <Page :total="tableShow.listCount" :current="tableShow.currentPage"
@@ -154,7 +154,8 @@ export default {
       },
       buttonShow: {
         del: true
-      }
+      },
+      listLoading: false
     }
   },
   created () {
@@ -185,9 +186,11 @@ export default {
         type: vm.searchConf.type,
         keywords: vm.searchConf.keywords
       }
+      vm.listLoading = true
       getList(params).then(response => {
         vm.tableData = response.data.data.list
         vm.tableShow.listCount = response.data.data.count
+        vm.listLoading = false
       })
     }
   }

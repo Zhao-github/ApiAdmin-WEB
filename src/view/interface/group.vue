@@ -36,7 +36,7 @@
             <Button type="primary" v-has="'InterfaceGroup/add'" @click="alertAdd" icon="md-add">{{ $t('add_button') }}</Button>
           </div>
           <div>
-            <Table :columns="columnsList" :data="tableData" border disabled-hover></Table>
+            <Table :loading="listLoading" :columns="columnsList" :data="tableData" border disabled-hover></Table>
           </div>
           <div class="margin-top-15" style="text-align: center">
             <Page :total="tableShow.listCount" :current="tableShow.currentPage"
@@ -275,7 +275,8 @@ export default {
         edit: true,
         del: true,
         changeStatus: true
-      }
+      },
+      listLoading: false
     }
   },
   created () {
@@ -341,6 +342,7 @@ export default {
     },
     getList () {
       let vm = this
+      vm.listLoading = true
       getList({
         page: vm.tableShow.currentPage,
         size: vm.tableShow.pageSize,
@@ -350,6 +352,7 @@ export default {
       }).then(response => {
         vm.tableData = response.data.data.list
         vm.tableShow.listCount = response.data.data.count
+        vm.listLoading = false
       })
     },
     handleImgFormatError (file) {

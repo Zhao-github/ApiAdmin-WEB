@@ -30,7 +30,7 @@
             <Button type="primary" v-has="'Auth/add'" @click="alertAdd" icon="md-add">{{ $t('add_button') }}</Button>
           </div>
           <div>
-            <Table :columns="columnsList" :data="tableData" border disabled-hover></Table>
+            <Table :loading="listLoading" :columns="columnsList" :data="tableData" border disabled-hover></Table>
           </div>
           <div class="margin-top-15" style="text-align: center">
             <Page :total="tableShow.listCount" :current="tableShow.currentPage"
@@ -69,7 +69,7 @@
         <span>组成员列表</span>
       </p>
       <div>
-        <Table :columns="memberColumns" :data="memberData" border disabled-hover></Table>
+        <Table :loading="memberLoading" :columns="memberColumns" :data="memberData" border disabled-hover></Table>
       </div>
       <div class="margin-top-15" style="text-align: center">
         <Page :total="memberShow.listCount" :current="memberShow.currentPage"
@@ -381,7 +381,9 @@ export default {
         changeStatus: true,
         memberDel: true,
         memberList: true
-      }
+      },
+      listLoading: false,
+      memberLoading: false
     }
   },
   created () {
@@ -484,9 +486,11 @@ export default {
         keywords: vm.searchConf.keywords,
         status: vm.searchConf.status
       }
+      vm.listLoading = true
       getList(params).then(response => {
         vm.tableData = response.data.data.list
         vm.tableShow.listCount = response.data.data.count
+        vm.listLoading = false
       })
     },
     getMemberList () {
@@ -496,9 +500,11 @@ export default {
         size: vm.memberShow.pageSize,
         gid: vm.memberShow.gid
       }
+      vm.memberLoading = true
       getUsers(params).then(response => {
         vm.memberData = response.data.data.list
         vm.memberShow.listCount = response.data.data.count
+        vm.memberLoading = false
       })
     }
   }
