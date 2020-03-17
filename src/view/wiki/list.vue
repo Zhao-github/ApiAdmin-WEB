@@ -49,7 +49,7 @@
         <Spin size="large" fix v-if="show_loading"></Spin>
         <Collapse>
           <Panel v-bind:key="index" v-for="(item, index) in groupInfo" :name="index.toString()">
-            {{item.name}}【{{item.create_time}}】 <span style="float: right;margin-right: 20px;">接口数量{{item.api_info ? item.api_info.length : 0}} | 项目热度{{item.hot}}</span>
+            {{item.name}}【{{item.create_time}}】 <span style="float: right;" class="margin-right-20">接口数量{{item.api_info ? item.api_info.length : 0}} | 项目热度{{item.hot}}</span>
             <p slot="content" v-if="item.api_info">
               <span v-bind:key="api_index" v-for="(api_item, api_index) in item.api_info" @click="showApiDetail(api_item.hash)" style="cursor:pointer">
                 <Alert type="warning" v-if="api_item.method === 0">

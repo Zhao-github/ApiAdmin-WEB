@@ -5,24 +5,24 @@
   <div>
     <Row>
       <Col span="24">
-        <Card style="margin-bottom: 10px">
+        <Card class="margin-bottom-10">
           <Form inline>
-            <FormItem style="margin-bottom: 0">
+            <FormItem class="margin-bottom-0">
               <Select v-model="searchConf.status" clearable placeholder='请选择状态' style="width:120px">
                 <Option :value="1">启用</Option>
                 <Option :value="0">禁用</Option>
               </Select>
             </FormItem>
-            <FormItem style="margin-bottom: 0">
+            <FormItem class="margin-bottom-0">
               <Select v-model="searchConf.type" clearable placeholder="请选择类别" style="width:120px">
                 <Option :value="1">AppId</Option>
                 <Option :value="2">应用名称</Option>
               </Select>
             </FormItem>
-            <FormItem style="margin-bottom: 0">
+            <FormItem class="margin-bottom-0">
               <Input v-model="searchConf.keywords" placeholder=""></Input>
             </FormItem>
-            <FormItem style="margin-bottom: 0">
+            <FormItem class="margin-bottom-0">
               <Button type="primary" @click="search">{{ $t('find_button') }}/{{ $t('refresh_button') }}</Button>
             </FormItem>
           </Form>
@@ -94,7 +94,7 @@
         </FormItem>
       </Form>
       <div slot="footer">
-        <Button type="text" @click="cancel" style="margin-right: 8px">取消</Button>
+        <Button type="text" @click="cancel" class="margin-right-10">取消</Button>
         <Button type="primary" @click="submit" :loading="modalSetting.loading">确定</Button>
       </div>
     </Modal>

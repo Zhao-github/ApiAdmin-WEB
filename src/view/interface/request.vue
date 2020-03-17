@@ -57,7 +57,7 @@
         </FormItem>
       </Form>
       <div slot="footer">
-        <Button type="text" @click="cancel" style="margin-right: 8px">取消</Button>
+        <Button type="text" @click="cancel" class="margin-right-10">取消</Button>
         <Button type="primary" @click="submit" :loading="modalSetting.loading">确定</Button>
       </div>
     </Modal>

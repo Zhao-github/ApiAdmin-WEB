@@ -22,7 +22,7 @@
                 </span>
             </Input>
           </FormItem>
-          <FormItem style="margin-bottom: 15px;">
+          <FormItem class="margin-bottom-15">
             <Button type="primary" long :loading="loading" @click="handleSubmit">登录</Button>
           </FormItem>
         </Form>

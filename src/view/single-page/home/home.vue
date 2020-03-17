@@ -8,13 +8,13 @@
         </infor-card>
       </i-col>
     </Row>
-    <Row :gutter="20" style="margin-top: 10px;">
-      <i-col :md="24" :lg="8" style="margin-bottom: 20px;">
+    <Row :gutter="20" class="margin-top-10">
+      <i-col :md="24" :lg="8" class="margin-bottom-20">
         <Card shadow>
           <chart-pie style="height: 300px;" :value="pieData" text="用户访问来源"></chart-pie>
         </Card>
       </i-col>
-      <i-col :md="24" :lg="16" style="margin-bottom: 20px;">
+      <i-col :md="24" :lg="16" class="margin-bottom-20">
         <Card shadow>
           <chart-bar style="height: 300px;" :value="barData" text="每周用户活跃量"/>
         </Card>

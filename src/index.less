@@ -4,34 +4,23 @@
 @menu-dark-active-bg: #000c17;
 @layout-sider-background: #001529;
 
-.margin-top-15 {
-  margin-top: 15px;
+.margin-loop (@i) when (@i > 0) {
+  .margin-top-@{i} {
+    margin-top: ~"@{i}px";
+  }
+  .margin-bottom-@{i} {
+    margin-bottom: ~"@{i}px";
+  }
+  .margin-left-@{i} {
+    margin-left: ~"@{i}px";
+  }
+  .margin-right-@{i} {
+    margin-right: ~"@{i}px";
+  }
+  .margin-loop(@i - 5);
 }
+.margin-loop (25);
 
-.margin-bottom-15 {
-  margin-bottom: 15px;
-}
-
-.margin-left-15 {
-  margin-left: 15px;
-}
-
-.margin-right-15 {
-  margin-right: 15px;
-}
-
-.margin-left-5 {
-  margin-left: 5px;
-}
-
-.margin-right-5 {
-  margin-right: 5px;
-}
-
-.margin-top-5 {
-  margin-top: 5px;
-}
-
-.margin-bottom-5 {
-  margin-bottom: 5px;
+.margin-bottom-0 {
+  margin-bottom: 0
 }
