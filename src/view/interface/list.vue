@@ -34,8 +34,8 @@
       <Col span="24">
         <Card>
           <div class="margin-bottom-15">
-            <Button type="primary" @click="alertAdd" icon="md-add">{{ $t('add_button') }}</Button>
-            <Button type="warning" class="margin-left-5" @click="confirmRefresh = true" icon="md-refresh">刷新路由</Button>
+            <Button type="primary" v-has="'InterfaceList/add'" @click="alertAdd" icon="md-add">{{ $t('add_button') }}</Button>
+            <Button type="warning" v-has="'InterfaceList/refresh'" class="margin-left-5" @click="confirmRefresh = true" icon="md-refresh">刷新路由</Button>
             <Button type="info" class="margin-left-5" to="/wiki/list" icon="md-bookmarks">接口文档</Button>
           </div>
           <div>
@@ -91,6 +91,19 @@
             </div>
           </Tooltip>
         </FormItem>
+        <FormItem label="路由模式" prop="hash_type">
+          <Select v-model="formItem.hash_type" style="width:200px">
+            <Option :value="1" :key="1"> 普通模式</Option>
+            <Option :value="2" :key="2"> 加密模式</Option>
+          </Select>
+          <Tooltip placement="right" max-width="800">
+            <Icon type="md-help-circle" class="margin-left-5" color="#2d8cf0" size="20"/>
+            <div slot="content">
+              <p>普通模式：接口将不采用hash映射，会直接使用真实类库来请求。</p>
+              <p>加密模式：接口将采用hash映射，以达到隐藏真实类库的目的。</p>
+            </div>
+          </Tooltip>
+        </FormItem>
         <FormItem label="测试模式" prop="is_test">
           <Select v-model="formItem.is_test" style="width:200px">
             <Option :value="0" :key="0"> 生产模式</Option>
@@ -122,100 +135,108 @@ import { getList, changeStatus, add, edit, del, getHash, refresh } from '@/api/i
 import { getAll } from '@/api/interface-group'
 
 const editButton = (vm, h, currentRow, index) => {
-  return h('Button', {
-    props: {
-      type: 'primary'
-    },
-    style: {
-      margin: '0 5px'
-    },
-    on: {
-      'click': () => {
-        vm.formItem.id = currentRow.id
-        vm.formItem.api_class = currentRow.api_class
-        vm.formItem.info = currentRow.info
-        vm.formItem.method = currentRow.method
-        vm.formItem.hash = currentRow.hash
-        vm.formItem.group_hash = currentRow.group_hash
-        vm.formItem.access_token = currentRow.access_token
-        vm.formItem.is_test = currentRow.is_test
-        vm.formItem.need_login = currentRow.need_login
-        vm.modalSetting.show = true
-        vm.modalSetting.index = index
+  if (vm.buttonShow.edit) {
+    return h('Button', {
+      props: {
+        type: 'primary'
+      },
+      style: {
+        margin: '0 5px'
+      },
+      on: {
+        'click': () => {
+          vm.formItem.id = currentRow.id
+          vm.formItem.api_class = currentRow.api_class
+          vm.formItem.info = currentRow.info
+          vm.formItem.method = currentRow.method
+          vm.formItem.hash = currentRow.hash
+          vm.formItem.group_hash = currentRow.group_hash
+          vm.formItem.access_token = currentRow.access_token
+          vm.formItem.is_test = currentRow.is_test
+          vm.formItem.hash_type = currentRow.hash_type
+          vm.modalSetting.show = true
+          vm.modalSetting.index = index
+        }
       }
-    }
-  }, vm.$t('edit_button'))
+    }, vm.$t('edit_button'))
+  }
 }
 const deleteButton = (vm, h, currentRow, index) => {
-  return h('Poptip', {
-    props: {
-      confirm: true,
-      title: '您确定要删除这条数据吗? ',
-      transfer: true
-    },
-    on: {
-      'on-ok': () => {
-        del(currentRow.hash).then(response => {
-          currentRow.loading = false
-          vm.tableData.splice(index, 1)
-          vm.$Message.success(response.data.msg)
-        })
+  if (vm.buttonShow.del) {
+    return h('Poptip', {
+      props: {
+        confirm: true,
+        title: '您确定要删除这条数据吗? ',
+        transfer: true
+      },
+      on: {
+        'on-ok': () => {
+          del(currentRow.hash).then(response => {
+            currentRow.loading = false
+            vm.tableData.splice(index, 1)
+            vm.$Message.success(response.data.msg)
+          })
+        }
       }
-    }
-  }, [
-    h('Button', {
+    }, [
+      h('Button', {
+        style: {
+          margin: '0 5px'
+        },
+        props: {
+          type: 'error',
+          placement: 'top',
+          loading: currentRow.isDeleting
+        }
+      }, vm.$t('delete_button'))
+    ])
+  }
+}
+const requestButton = (vm, h, currentRow, index) => {
+  if (vm.buttonShow.request) {
+    return h('Button', {
       style: {
         margin: '0 5px'
       },
       props: {
-        type: 'error',
+        type: 'info',
         placement: 'top',
         loading: currentRow.isDeleting
+      },
+      on: {
+        click: () => {
+          let hash = currentRow.hash
+          vm.$router.push({
+            name: 'interface_request',
+            params: { hash: hash }
+          })
+        }
       }
-    }, vm.$t('delete_button'))
-  ])
-}
-const requestButton = (vm, h, currentRow, index) => {
-  return h('Button', {
-    style: {
-      margin: '0 5px'
-    },
-    props: {
-      type: 'info',
-      placement: 'top',
-      loading: currentRow.isDeleting
-    },
-    on: {
-      click: () => {
-        let hash = currentRow.hash
-        vm.$router.push({
-          name: 'interface_request',
-          params: { hash: hash }
-        })
-      }
-    }
-  }, '请求参数')
+    }, '请求参数')
+  }
 }
 const responseButton = (vm, h, currentRow, index) => {
-  return h('Button', {
-    style: {
-      margin: '0 5px'
-    },
-    props: {
-      type: 'warning',
-      placement: 'top',
-      loading: currentRow.isDeleting
-    },
-    on: {
-      click: () => {
-        let hash = currentRow.hash
-        vm.$router.push({
-          name: 'interface_response',
-          params: { hash: hash }
-        })
+  if (vm.buttonShow.response) {
+    return h('Button', {
+      style: {
+        margin: '0 5px'
+      },
+      props: {
+        type: 'warning',
+        placement: 'top',
+        loading: currentRow.isDeleting
+      },
+      on: {
+        click: () => {
+          let hash = currentRow.hash
+          vm.$router.push({
+            name: 'interface_response',
+            params: { hash: hash }
+          })
+        }
       }
-    }
-  }, '返回参数')
+    }, '返回参数')
+  }
 }
 
 export default {
@@ -297,7 +318,8 @@ export default {
               props: {
                 'true-value': 1,
                 'false-value': 0,
-                value: params.row.status
+                value: params.row.status,
+                disabled: !vm.buttonShow.changeStatus
               },
               on: {
                 'on-change': function (status) {
@@ -353,6 +375,7 @@ export default {
         info: '',
         group_hash: 'default',
         method: 2,
+        hash_type: 2,
         hash: '',
         access_token: 0,
         is_test: 0,
@@ -365,11 +388,34 @@ export default {
         info: [
           { required: true, message: '接口名称不能为空', trigger: 'blur' }
         ]
+      },
+      buttonShow: {
+        edit: true,
+        request: true,
+        response: true,
+        del: true,
+        changeStatus: true
       }
     }
   },
   created () {
-    this.getList()
+    let vm = this
+    vm.getList()
+    vm.hasRule('InterfaceList/edit').then(res => {
+      vm.buttonShow.edit = res
+    })
+    vm.hasRule('InterfaceList/del').then(res => {
+      vm.buttonShow.del = res
+    })
+    vm.hasRule('InterfaceList/changeStatus').then(res => {
+      vm.buttonShow.changeStatus = res
+    })
+    vm.hasRule('Fields/response').then(res => {
+      vm.buttonShow.response = res
+    })
+    vm.hasRule('Fields/request').then(res => {
+      vm.buttonShow.request = res
+    })
   },
   activated () {
     let vm = this
