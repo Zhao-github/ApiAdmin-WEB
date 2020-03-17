@@ -32,9 +32,9 @@
     <Row>
       <Col span="24">
         <Card>
-          <p slot="title" style="height: 32px">
-            <Button type="primary" @click="alertAdd" icon="md-add">{{ $t('add_button') }}</Button>
-          </p>
+          <div class="margin-bottom-15">
+            <Button type="primary" v-has="'InterfaceGroup/add'" @click="alertAdd" icon="md-add">{{ $t('add_button') }}</Button>
+          </div>
           <div>
             <Table :columns="columnsList" :data="tableData" border disabled-hover></Table>
           </div>
@@ -101,54 +101,58 @@ import { getToken } from '@/libs/util'
 import { getHash } from '@/api/interface'
 
 const editButton = (vm, h, currentRow, index) => {
-  return h('Button', {
-    props: {
-      type: 'primary'
-    },
-    style: {
-      margin: '0 5px'
-    },
-    on: {
-      'click': () => {
-        vm.formItem.id = currentRow.id
-        vm.formItem.name = currentRow.name
-        vm.formItem.hash = currentRow.hash
-        vm.formItem.image = currentRow.image
-        vm.formItem.description = currentRow.description
-        vm.modalSetting.show = true
-        vm.modalSetting.index = index
-      }
-    }
-  }, vm.$t('edit_button'))
-}
-const deleteButton = (vm, h, currentRow, index) => {
-  return h('Poptip', {
-    props: {
-      confirm: true,
-      title: '您确定要删除此接口分组么? 如当前分组下仍有接口，将自动划归于默认分组！',
-      transfer: true
-    },
-    on: {
-      'on-ok': () => {
-        del(currentRow.hash).then(response => {
-          vm.tableData.splice(index, 1)
-          vm.$Message.success(response.data.msg)
-        })
-        currentRow.loading = false
-      }
-    }
-  }, [
-    h('Button', {
+  if (vm.buttonShow.edit) {
+    return h('Button', {
+      props: {
+        type: 'primary'
+      },
       style: {
         margin: '0 5px'
       },
-      props: {
-        type: 'error',
-        placement: 'top',
-        loading: currentRow.isDeleting
+      on: {
+        'click': () => {
+          vm.formItem.id = currentRow.id
+          vm.formItem.name = currentRow.name
+          vm.formItem.hash = currentRow.hash
+          vm.formItem.image = currentRow.image
+          vm.formItem.description = currentRow.description
+          vm.modalSetting.show = true
+          vm.modalSetting.index = index
+        }
       }
-    }, vm.$t('delete_button'))
-  ])
+    }, vm.$t('edit_button'))
+  }
+}
+const deleteButton = (vm, h, currentRow, index) => {
+  if (vm.buttonShow.del) {
+    return h('Poptip', {
+      props: {
+        confirm: true,
+        title: '您确定要删除此接口分组么? 如当前分组下仍有接口，将自动划归于默认分组！',
+        transfer: true
+      },
+      on: {
+        'on-ok': () => {
+          del(currentRow.hash).then(response => {
+            vm.tableData.splice(index, 1)
+            vm.$Message.success(response.data.msg)
+          })
+          currentRow.loading = false
+        }
+      }
+    }, [
+      h('Button', {
+        style: {
+          margin: '0 5px'
+        },
+        props: {
+          type: 'error',
+          placement: 'top',
+          loading: currentRow.isDeleting
+        }
+      }, vm.$t('delete_button'))
+    ])
+  }
 }
 
 export default {
@@ -206,7 +210,8 @@ export default {
               props: {
                 'true-value': 1,
                 'false-value': 0,
-                value: params.row.status
+                value: params.row.status,
+                disabled: !vm.buttonShow.changeStatus
               },
               on: {
                 'on-change': function (status) {
@@ -265,11 +270,26 @@ export default {
         name: [
           { required: true, message: '接口组名称不能为空', trigger: 'blur' }
         ]
+      },
+      buttonShow: {
+        edit: true,
+        del: true,
+        changeStatus: true
       }
     }
   },
   created () {
-    this.getList()
+    let vm = this
+    vm.getList()
+    vm.hasRule('InterfaceGroup/edit').then(res => {
+      vm.buttonShow.edit = res
+    })
+    vm.hasRule('InterfaceGroup/del').then(res => {
+      vm.buttonShow.del = res
+    })
+    vm.hasRule('InterfaceGroup/changeStatus').then(res => {
+      vm.buttonShow.changeStatus = res
+    })
   },
   methods: {
     alertAdd () {
