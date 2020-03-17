@@ -32,9 +32,9 @@
     <Row>
       <Col span="24">
         <Card>
-          <p slot="title" style="height: 32px">
-            <Button type="primary" @click="alertAdd" icon="md-add">{{ $t('add_button') }}</Button>
-          </p>
+          <div class="margin-bottom-15">
+            <Button type="primary" v-has="'App/add'" @click="alertAdd" icon="md-add">{{ $t('add_button') }}</Button>
+          </div>
           <div>
             <Table :columns="columnsList" :data="tableData" border disabled-hover></Table>
           </div>
@@ -105,85 +105,89 @@ import { getList, changeStatus, add, edit, del, getAppInfo, refreshAppSecretApi 
 import { getAll } from '@/api/app-group'
 
 const editButton = (vm, h, currentRow, index) => {
-  return h('Button', {
-    props: {
-      type: 'primary'
-    },
-    style: {
-      margin: '0 5px'
-    },
-    on: {
-      'click': () => {
-        getAll().then(response => {
-          vm.appGroup = response.data.data.list
-          vm.formItem.id = currentRow.id
-          vm.formItem.app_name = currentRow.app_name
-          vm.formItem.app_info = currentRow.app_info
-          vm.formItem.app_id = currentRow.app_id
-          vm.formItem.app_secret = currentRow.app_secret
-          vm.formItem.app_group = currentRow.app_group
-          getAppInfo(currentRow.id).then(response => {
-            let res = response.data
-            vm.groupInfo = res.data.groupInfo
-            vm.groupList = res.data.apiList
-            for (let index in vm.groupInfo) {
-              if (res.data.app_detail === null || typeof (res.data.app_detail[index]) === 'undefined') {
-                vm.$set(vm.checkAllStatus, index, false)
-                vm.$set(vm.checkAllIndeterminate, index, false)
-                vm.$set(vm.formItem.app_api, index, [])
-              } else {
-                let hasLength = res.data.app_detail[index].length
-                if (hasLength === 0) {
-                  vm.$set(vm.checkAllStatus, index, false)
-                  vm.$set(vm.checkAllIndeterminate, index, false)
-                  vm.$set(vm.formItem.app_api, index, [])
-                } else if (vm.groupList[index].length === hasLength) {
-                  vm.$set(vm.checkAllStatus, index, true)
-                  vm.$set(vm.checkAllIndeterminate, index, false)
-                  vm.$set(vm.formItem.app_api, index, res.data.app_detail[index])
-                } else {
-                  vm.$set(vm.checkAllStatus, index, false)
-                  vm.$set(vm.checkAllIndeterminate, index, true)
-                  vm.$set(vm.formItem.app_api, index, res.data.app_detail[index])
-                }
-              }
-            }
-          })
-          vm.modalSetting.show = true
-          vm.modalSetting.index = index
-        })
-      }
-    }
-  }, vm.$t('edit_button'))
-}
-const deleteButton = (vm, h, currentRow, index) => {
-  return h('Poptip', {
-    props: {
-      confirm: true,
-      title: '您确定要删除这条数据吗? ',
-      transfer: true
-    },
-    on: {
-      'on-ok': () => {
-        del(currentRow.id).then(response => {
-          vm.tableData.splice(index, 1)
-          vm.$Message.success(response.data.msg)
-        })
-        currentRow.loading = false
-      }
-    }
-  }, [
-    h('Button', {
+  if (vm.buttonShow.edit) {
+    return h('Button', {
+      props: {
+        type: 'primary'
+      },
       style: {
         margin: '0 5px'
       },
-      props: {
-        type: 'error',
-        placement: 'top',
-        loading: currentRow.isDeleting
+      on: {
+        'click': () => {
+          getAll().then(response => {
+            vm.appGroup = response.data.data.list
+            vm.formItem.id = currentRow.id
+            vm.formItem.app_name = currentRow.app_name
+            vm.formItem.app_info = currentRow.app_info
+            vm.formItem.app_id = currentRow.app_id
+            vm.formItem.app_secret = currentRow.app_secret
+            vm.formItem.app_group = currentRow.app_group
+            getAppInfo(currentRow.id).then(response => {
+              let res = response.data
+              vm.groupInfo = res.data.groupInfo
+              vm.groupList = res.data.apiList
+              for (let index in vm.groupInfo) {
+                if (res.data.app_detail === null || typeof (res.data.app_detail[index]) === 'undefined') {
+                  vm.$set(vm.checkAllStatus, index, false)
+                  vm.$set(vm.checkAllIndeterminate, index, false)
+                  vm.$set(vm.formItem.app_api, index, [])
+                } else {
+                  let hasLength = res.data.app_detail[index].length
+                  if (hasLength === 0) {
+                    vm.$set(vm.checkAllStatus, index, false)
+                    vm.$set(vm.checkAllIndeterminate, index, false)
+                    vm.$set(vm.formItem.app_api, index, [])
+                  } else if (vm.groupList[index].length === hasLength) {
+                    vm.$set(vm.checkAllStatus, index, true)
+                    vm.$set(vm.checkAllIndeterminate, index, false)
+                    vm.$set(vm.formItem.app_api, index, res.data.app_detail[index])
+                  } else {
+                    vm.$set(vm.checkAllStatus, index, false)
+                    vm.$set(vm.checkAllIndeterminate, index, true)
+                    vm.$set(vm.formItem.app_api, index, res.data.app_detail[index])
+                  }
+                }
+              }
+            })
+            vm.modalSetting.show = true
+            vm.modalSetting.index = index
+          })
+        }
       }
-    }, vm.$t('delete_button'))
-  ])
+    }, vm.$t('edit_button'))
+  }
+}
+const deleteButton = (vm, h, currentRow, index) => {
+  if (vm.buttonShow.del) {
+    return h('Poptip', {
+      props: {
+        confirm: true,
+        title: '您确定要删除这条数据吗? ',
+        transfer: true
+      },
+      on: {
+        'on-ok': () => {
+          del(currentRow.id).then(response => {
+            vm.tableData.splice(index, 1)
+            vm.$Message.success(response.data.msg)
+          })
+          currentRow.loading = false
+        }
+      }
+    }, [
+      h('Button', {
+        style: {
+          margin: '0 5px'
+        },
+        props: {
+          type: 'error',
+          placement: 'top',
+          loading: currentRow.isDeleting
+        }
+      }, vm.$t('delete_button'))
+    ])
+  }
 }
 
 export default {
@@ -235,7 +239,8 @@ export default {
               props: {
                 'true-value': 1,
                 'false-value': 0,
-                value: params.row.app_status
+                value: params.row.app_status,
+                disabled: !vm.buttonShow.changeStatus
               },
               on: {
                 'on-change': function (status) {
@@ -300,11 +305,26 @@ export default {
         ]
       },
       checkAllStatus: {},
-      checkAllIndeterminate: {}
+      checkAllIndeterminate: {},
+      buttonShow: {
+        edit: true,
+        del: true,
+        changeStatus: true
+      }
     }
   },
   created () {
-    this.getList()
+    let vm = this
+    vm.getList()
+    vm.hasRule('App/edit').then(res => {
+      vm.buttonShow.edit = res
+    })
+    vm.hasRule('App/del').then(res => {
+      vm.buttonShow.del = res
+    })
+    vm.hasRule('App/changeStatus').then(res => {
+      vm.buttonShow.changeStatus = res
+    })
   },
   methods: {
     alertAdd () {
