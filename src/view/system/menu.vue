@@ -22,7 +22,7 @@
         </Dropdown>
       </Row>
       <Row>
-        <Col :md="8" :lg="8" :xl="6">
+        <Col :md="8" :lg="8" :xl="11" :xxl="8">
           <Alert show-icon>
             当前选择编辑：
             <span class="select-title">{{editTitle}}</span>
@@ -48,20 +48,8 @@
             <Spin size="large" fix v-if="loading"></Spin>
           </div>
         </Col>
-        <Col :md="15" :lg="13" :xl="9" style="margin-left:10px;">
+        <Col :md="15" :lg="13" :xl="11" :xxl="9" style="margin-left:10px;">
           <Form ref="form" :model="form" :label-width="100" :rules="formValidate">
-            <FormItem label="上级节点" prop="parentTitle">
-              <div style="display:flex;">
-                <Input v-model="form.parentTitle" readonly style="margin-right:10px;" />
-                <Poptip transfer trigger="click" placement="right-start" title="选择上级节点" width="250">
-                  <Button icon="md-list">选择分类</Button>
-                  <div slot="content" style="position:relative;min-height:5vh">
-                    <Tree :data="dataEdit" :load-data="loadData" @on-select-change="selectTreeEdit"></Tree>
-                    <Spin size="large" fix v-if="loadingEdit"></Spin>
-                  </div>
-                </Poptip>
-              </div>
-            </FormItem>
             <FormItem label="节点名称" prop="title">
               <Input v-model="form.title" />
             </FormItem>
@@ -74,7 +62,7 @@
               </Tooltip>
             </FormItem>
             <FormItem label="是否启用" prop="status">
-              <i-switch size="large" v-model="form.status" :true-value="0" :false-value="-1">
+              <i-switch size="large" :true-value="0" :false-value="-1">
                 <span slot="open">启用</span>
                 <span slot="close">禁用</span>
               </i-switch>
@@ -179,41 +167,41 @@ export default {
     },
     handleDropdown (name) {
       if (name === 'expandOne') {
-        this.expandMenu(1)
-        console.log(this.data)
+        this.getList(1)
       } else if (name === 'expandTwo') {
-        this.expandLevel = 2
+        this.getList(2)
       } else if (name === 'expandAll') {
-        this.expandLevel = 4
+        this.getList(3)
       } else if (name === 'refresh') {
         this.getList()
       }
     },
-    expandMenu (level) {
-      this.data.forEach(function (e) {
-        if (e.level >= level) {
-          e.expand = false
-        } else {
-          e.expand = true
-        }
-        if (e.children && e.children.length > 0) {
-          e.children.forEach(function (c) {
-            if (c.level >= level) {
-              c.expand = false
-            } else {
-              e.expand = true
-            }
-          })
-        }
-      })
-    },
-    getList () {
+    getList (level) {
       let vm = this
-      vm.loading = true
-      getList().then(response => {
-        vm.data = response.data.data.list
-        vm.loading = false
+      level = level || 0
+      let data = sessionStorage.getItem('menuList')
+      if (data === null || level === 0) {
+        vm.loading = true
+        getList().then(response => {
+          sessionStorage.setItem('menuList', JSON.stringify(response.data.data.list))
+          vm.data = vm.reBuildMenu(response.data.data.list, level)
+          vm.loading = false
+        })
+      } else {
+        vm.data = vm.reBuildMenu(JSON.parse(data), level)
+      }
+    },
+    reBuildMenu (data, level) {
+      let vm = this
+      data.forEach(function (e) {
+        if (e.children && e.children.length > 0) {
+          if (e.level < level) {
+            e.expand = true
+          }
+          e.children = vm.reBuildMenu(e.children, level)
+        }
       })
+      return data
     },
     loadData (item, callback) {
       // 异步加载树子节点数据
