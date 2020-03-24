@@ -61,8 +61,8 @@
             <FormItem label="菜单图标" prop="icon">
               <icon-choose v-model="form.icon"></icon-choose>
             </FormItem>
-            <FormItem label="后端类库" prop="class_name">
-              <Input v-model="form.class_name" />
+            <FormItem label="后端类库" prop="url">
+              <Input v-model="form.url" />
             </FormItem>
             <FormItem label="前端路由" prop="router">
               <Input v-model="form.router" />
@@ -116,8 +116,8 @@
         <FormItem label="菜单图标" prop="icon">
           <icon-choose v-model="formAdd.icon"></icon-choose>
         </FormItem>
-        <FormItem label="后端类库" prop="class_name">
-          <Input v-model="formAdd.class_name" />
+        <FormItem label="后端类库" prop="url">
+          <Input v-model="formAdd.url" />
         </FormItem>
         <FormItem label="前端路由" prop="router">
           <Input v-model="formAdd.router" />
@@ -170,7 +170,7 @@ export default {
         level: '',
         icon: '',
         router: '',
-        class_name: '',
+        url: '',
         component: '',
         show: 1,
         sort: 0
@@ -180,7 +180,7 @@ export default {
         level: '',
         icon: '',
         router: '',
-        class_name: '',
+        url: '',
         component: '',
         show: 1,
         sort: 0
@@ -273,7 +273,7 @@ export default {
         level: (parseInt(this.form.level) + 1).toString(),
         icon: '',
         router: '',
-        class_name: '',
+        url: '',
         component: '',
         show: 1,
         sort: 0
@@ -289,7 +289,7 @@ export default {
         level: '1',
         icon: '',
         router: '',
-        class_name: '',
+        url: '',
         component: '',
         show: 1,
         sort: 0
@@ -305,7 +305,7 @@ export default {
       vm.$refs.formAdd.validate(valid => {
         if (valid) {
           vm.submitLoading = true
-          add(vm.formItem).then(response => {
+          add(vm.formAdd).then(response => {
             vm.$Message.success(response.data.msg)
             vm.getList()
             vm.submitLoading = false
