@@ -51,36 +51,34 @@
             <FormItem label="菜单名称" prop="title">
               <Input v-model="form.title" />
             </FormItem>
-            <FormItem label="菜单类型" prop="title">
-              <Input v-model="form.title" />
+            <FormItem label="菜单类型" prop="level">
+              <RadioGroup v-model="form.level">
+                <Radio label="1" border disabled>顶级菜单</Radio>
+                <Radio label="2" border disabled>二级菜单</Radio>
+                <Radio label="3" border disabled>页内按钮</Radio>
+              </RadioGroup>
             </FormItem>
             <FormItem label="菜单图标" prop="icon">
-              <icon-choose v-model="formAdd.icon"></icon-choose>
+              <icon-choose v-model="form.icon"></icon-choose>
             </FormItem>
-            <FormItem label="后端类库" prop="icon">
-              <Input v-model="form.title" />
+            <FormItem label="后端类库" prop="class_name">
+              <Input v-model="form.class_name" />
             </FormItem>
-            <FormItem label="前端路由" prop="icon">
-              <Input v-model="form.title" />
+            <FormItem label="前端路由" prop="router">
+              <Input v-model="form.router" />
             </FormItem>
-            <FormItem label="前端组件" prop="icon">
-              <Input v-model="form.title" />
+            <FormItem label="前端组件" prop="component">
+              <Input v-model="form.component" />
             </FormItem>
-            <FormItem label="菜单排序" prop="sortOrder">
+            <FormItem label="菜单排序" prop="sort">
               <Tooltip trigger="hover" placement="right" content="值越小越靠前，支持小数">
-                <InputNumber :max="1000" :min="0" v-model="form.sortOrder"></InputNumber>
+                <InputNumber :max="1000" :min="0" v-model="form.sort"></InputNumber>
               </Tooltip>
             </FormItem>
-            <FormItem label="是否显示" prop="status">
-              <i-switch size="large" :true-value="0" :false-value="-1">
-                <span slot="open">启用</span>
-                <span slot="close">禁用</span>
-              </i-switch>
-            </FormItem>
-            <FormItem label="是否启用" prop="status">
-              <i-switch size="large" :true-value="0" :false-value="-1">
-                <span slot="open">启用</span>
-                <span slot="close">禁用</span>
+            <FormItem label="是否显示" prop="show">
+              <i-switch v-model="form.show" size="large" :true-value="1" :false-value="0">
+                <span slot="open">显示</span>
+                <span slot="close">隐藏</span>
               </i-switch>
             </FormItem>
             <Form-item>
@@ -89,7 +87,7 @@
                 :loading="submitLoading"
                 type="primary"
                 icon="ios-create-outline"
-                style="margin-right:5px"
+                class="margin-right-5"
               >修改并保存</Button>
               <Button @click="handleReset">重置</Button>
             </Form-item>
@@ -101,20 +99,41 @@
     <Modal :title="modalTitle" v-model="modalVisible" :mask-closable="false" :width="500">
       <Form ref="formAdd" :model="formAdd" :label-width="100" :rules="formValidate">
         <div v-if="showParent">
-          <FormItem label="上级节点">{{form.title}}</FormItem>
+          <FormItem label="上级菜单">
+            <Tag size="medium" color="blue">{{form.title}}</Tag>
+          </FormItem>
         </div>
-        <FormItem label="节点名称" prop="title">
+        <FormItem label="菜单名称" prop="title">
           <Input v-model="formAdd.title" />
         </FormItem>
-        <FormItem label="节点排序" prop="sortOrder">
+        <FormItem label="菜单类型" prop="level">
+          <RadioGroup v-model="formAdd.level">
+            <Radio label="1" border disabled>顶级菜单</Radio>
+            <Radio label="2" border disabled>二级菜单</Radio>
+            <Radio label="3" border disabled>页内按钮</Radio>
+          </RadioGroup>
+        </FormItem>
+        <FormItem label="菜单图标" prop="icon">
+          <icon-choose v-model="formAdd.icon"></icon-choose>
+        </FormItem>
+        <FormItem label="后端类库" prop="class_name">
+          <Input v-model="formAdd.class_name" />
+        </FormItem>
+        <FormItem label="前端路由" prop="router">
+          <Input v-model="formAdd.router" />
+        </FormItem>
+        <FormItem label="前端组件" prop="component">
+          <Input v-model="formAdd.component" />
+        </FormItem>
+        <FormItem label="菜单排序" prop="sort">
           <Tooltip trigger="hover" placement="right" content="值越小越靠前，支持小数">
-            <InputNumber :max="1000" :min="0" v-model="formAdd.sortOrder"></InputNumber>
+            <InputNumber :max="1000" :min="0" v-model="formAdd.sort"></InputNumber>
           </Tooltip>
         </FormItem>
-        <FormItem label="是否启用" prop="status">
-          <i-switch size="large" v-model="formAdd.status" :true-value="0" :false-value="-1">
-            <span slot="open">启用</span>
-            <span slot="close">禁用</span>
+        <FormItem label="是否显示" prop="show">
+          <i-switch v-model="formAdd.show" size="large" :true-value="1" :false-value="0">
+            <span slot="open">显示</span>
+            <span slot="close">隐藏</span>
           </i-switch>
         </FormItem>
       </Form>
@@ -139,7 +158,6 @@ export default {
     return {
       loading: false, // 树加载状态
       maxHeight: '',
-      loadingEdit: false, // 编辑上级树加载状态
       modalVisible: false, // 添加显示
       selectList: [], // 多选数据
       selectCount: 0, // 多选计数
@@ -148,27 +166,31 @@ export default {
       editTitle: '', // 编辑节点名称
       searchKey: '', // 搜索树
       form: {
-        // 编辑对象初始化数据
         id: '',
-        title: '',
-        parentId: '',
-        parentTitle: '',
-        sortOrder: 0,
-        status: 0
+        level: '',
+        icon: '',
+        router: '',
+        class_name: '',
+        component: '',
+        show: 1,
+        sort: 0
       },
       formAdd: {
-        // 添加对象初始化数据
+        title: '',
+        level: '',
+        icon: '',
+        router: '',
+        class_name: '',
+        component: '',
+        show: 1,
+        sort: 0
       },
       formValidate: {
-        // 表单验证规则
-        title: [{ required: true, message: '名称不能为空', trigger: 'blur' }],
-        sortOrder: [
-          {
-            required: true,
-            type: 'number',
-            message: '排序值不能为空',
-            trigger: 'blur'
-          }
+        title: [
+          { required: true, message: '名称不能为空', trigger: 'blur' }
+        ],
+        sort: [
+          { required: true, type: 'number', message: '排序值不能为空', trigger: 'blur' }
         ]
       },
       submitLoading: false,
@@ -218,6 +240,69 @@ export default {
       })
       return data
     },
+    selectTree (v) {
+      if (v[0] && v[0].id !== this.form.id) {
+        this.form = JSON.parse(JSON.stringify(v[0]))
+        this.form.level = this.form.level.toString()
+        this.editTitle = this.form.title
+      } else {
+        this.cancelEdit()
+      }
+    },
+    cancelEdit () {
+      let data = this.$refs.tree.getSelectedNodes()[0]
+      if (data) {
+        data.selected = false
+      }
+      this.$refs.form.resetFields()
+      this.form.id = ''
+      this.form.level = ''
+      this.editTitle = ''
+    },
+    handleReset () {
+      this.$refs.form.resetFields()
+      this.form.level = ''
+    },
+    add () {
+      if (!this.form.id) {
+        this.$Message.warning('请先点击选择一个菜单')
+        return
+      }
+      this.modalTitle = '添加子菜单'
+      this.showParent = true
+      this.formAdd = {
+        fid: this.form.id,
+        title: '',
+        level: (parseInt(this.form.level) + 1).toString(),
+        icon: '',
+        router: '',
+        class_name: '',
+        component: '',
+        show: 1,
+        sort: 0
+      }
+      this.modalVisible = true
+    },
+    addRoot () {
+      this.modalTitle = '添加顶级菜单'
+      this.showParent = false
+      this.formAdd = {
+        fid: 0,
+        title: '',
+        level: '1',
+        icon: '',
+        router: '',
+        class_name: '',
+        component: '',
+        show: 1,
+        sort: 0
+      }
+      this.modalVisible = true
+    },
+    changeSelect (v) {
+      this.selectCount = v.length
+      this.selectList = v
+    },
 
     search () {
       // 搜索树
@@ -258,47 +343,6 @@ export default {
         // 为空重新加载
         this.getList()
       }
-    },
-    selectTree (v) {
-      if (v.length > 0) {
-        for (let attr in v[0]) {
-          if (v[0][attr] == null) {
-            v[0][attr] = ''
-          }
-        }
-        let str = JSON.stringify(v[0])
-        let data = JSON.parse(str)
-        this.form = data
-        this.editTitle = data.title
-      } else {
-        this.cancelEdit()
-      }
-    },
-    cancelEdit () {
-      let data = this.$refs.tree.getSelectedNodes()[0]
-      if (data) {
-        data.selected = false
-      }
-      this.$refs.form.resetFields()
-      this.form.id = ''
-      this.editTitle = ''
-    },
-    selectTreeEdit (v) {
-      if (v.length > 0) {
-        for (let attr in v[0]) {
-          if (v[0][attr] == null) {
-            v[0][attr] = ''
-          }
-        }
-        let str = JSON.stringify(v[0])
-        let data = JSON.parse(str)
-        this.form.parentId = data.id
-        this.form.parentTitle = data.title
-      }
-    },
-    handleReset () {
-      this.$refs.form.resetFields()
-      this.form.status = 0
     },
     submitEdit () {
       this.$refs.form.validate(valid => {
@@ -342,34 +386,6 @@ export default {
           this.modalVisible = false
         }
       })
-    },
-    add () {
-      if (!this.form.id) {
-        this.$Message.warning('请先点击选择一个节点')
-        return
-      }
-      this.modalTitle = '添加子节点'
-      this.showParent = true
-      this.formAdd = {
-        parentId: this.form.id,
-        sortOrder: 0,
-        status: 0
-      }
-      this.modalVisible = true
-    },
-    addRoot () {
-      this.modalTitle = '添加一级节点'
-      this.showParent = false
-      this.formAdd = {
-        parentId: 0,
-        sortOrder: 0,
-        status: 0
-      }
-      this.modalVisible = true
-    },
-    changeSelect (v) {
-      this.selectCount = v.length
-      this.selectList = v
     },
     delAll () {
       if (this.selectCount <= 0) {
