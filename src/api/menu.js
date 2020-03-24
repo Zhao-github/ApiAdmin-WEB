@@ -4,10 +4,14 @@ import axios from '@/libs/api.request'
  * 获取菜单列表数据
  * @returns {wx.RequestTask | never}
  */
-export const getList = () => {
+export const getList = (keywords) => {
+  keywords = keywords || ''
   return axios.request({
     url: 'Menu/index',
-    method: 'get'
+    method: 'get',
+    params: {
+      keywords: keywords
+    }
   })
 }
 
