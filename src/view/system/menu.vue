@@ -147,7 +147,7 @@
 
 <script>
 import IconChoose from '_c/icon-choose'
-import { getList } from '@/api/menu'
+import { getList, add } from '@/api/menu'
 
 export default {
   name: 'system_menu',
@@ -199,9 +199,6 @@ export default {
     }
   },
   methods: {
-    init () {
-      this.getList()
-    },
     handleDropdown (name) {
       if (name === 'expandOne') {
         this.getList(1)
@@ -303,6 +300,46 @@ export default {
       this.selectCount = v.length
       this.selectList = v
     },
+    submitAdd () {
+      let vm = this
+      vm.$refs.formAdd.validate(valid => {
+        if (valid) {
+          vm.submitLoading = true
+          add(vm.formItem).then(response => {
+            vm.$Message.success(response.data.msg)
+            vm.getList()
+            vm.submitLoading = false
+            vm.modalVisible = false
+          }).catch(() => {
+            vm.submitLoading = false
+          })
+        }
+      })
+    },
+    submitEdit () {
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          if (!this.form.id) {
+            this.$Message.warning('请先点击选择要修改的节点')
+            return
+          }
+          this.submitLoading = true
+          // 避免传入null字符串
+          // this.postRequest("请求路径，如/tree/edit", this.form).then(res => {
+          //   this.submitLoading = false;
+          //   if (res.success) {
+          //     this.$Message.success("编辑成功");
+          //     this.init();
+          //     this.modalVisible = false;
+          //   }
+          // });
+          // 模拟成功
+          this.submitLoading = false
+          this.$Message.success('编辑成功')
+          this.modalVisible = false
+        }
+      })
+    },
 
     search () {
       // 搜索树
@@ -344,49 +381,7 @@ export default {
         this.getList()
       }
     },
-    submitEdit () {
-      this.$refs.form.validate(valid => {
-        if (valid) {
-          if (!this.form.id) {
-            this.$Message.warning('请先点击选择要修改的节点')
-            return
-          }
-          this.submitLoading = true
-          // 避免传入null字符串
-          // this.postRequest("请求路径，如/tree/edit", this.form).then(res => {
-          //   this.submitLoading = false;
-          //   if (res.success) {
-          //     this.$Message.success("编辑成功");
-          //     this.init();
-          //     this.modalVisible = false;
-          //   }
-          // });
-          // 模拟成功
-          this.submitLoading = false
-          this.$Message.success('编辑成功')
-          this.modalVisible = false
-        }
-      })
-    },
-    submitAdd () {
-      this.$refs.formAdd.validate(valid => {
-        if (valid) {
-          this.submitLoading = true
-          // this.postRequest("请求路径，如/tree/add", this.formAdd).then(res => {
-          //   this.submitLoading = false;
-          //   if (res.success) {
-          //     this.$Message.success("添加成功");
-          //     this.init();
-          //     this.modalVisible = false;
-          //   }
-          // });
-          // 模拟成功
-          this.submitLoading = false
-          this.$Message.success('添加成功')
-          this.modalVisible = false
-        }
-      })
-    },
+
     delAll () {
       if (this.selectCount <= 0) {
         this.$Message.warning('您还未勾选要删除的数据')
@@ -425,7 +420,7 @@ export default {
     // 计算高度
     let height = document.documentElement.clientHeight
     this.maxHeight = Number(height - 310) + 'px'
-    this.init()
+    this.getList()
   }
 }
 </script>
