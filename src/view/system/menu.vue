@@ -32,34 +32,50 @@
             v-model="searchKey"
             suffix="ios-search"
             @on-change="search"
-            placeholder="输入节点名搜索"
+            placeholder="输入菜单名搜索"
             clearable
           />
           <div class="tree-bar" :style="{maxHeight: maxHeight}">
             <Tree
               ref="tree"
               :data="data"
-              :load-data="loadData"
               show-checkbox
               @on-check-change="changeSelect"
               @on-select-change="selectTree"
-              :check-strictly="!strict"
             ></Tree>
             <Spin size="large" fix v-if="loading"></Spin>
           </div>
         </Col>
         <Col :md="15" :lg="13" :xl="11" :xxl="9" style="margin-left:10px;">
           <Form ref="form" :model="form" :label-width="100" :rules="formValidate">
-            <FormItem label="节点名称" prop="title">
+            <FormItem label="菜单名称" prop="title">
               <Input v-model="form.title" />
             </FormItem>
-            <FormItem label="节点图标" prop="icon">
+            <FormItem label="菜单类型" prop="title">
+              <Input v-model="form.title" />
+            </FormItem>
+            <FormItem label="菜单图标" prop="icon">
               <icon-choose v-model="formAdd.icon"></icon-choose>
             </FormItem>
-            <FormItem label="节点排序" prop="sortOrder">
+            <FormItem label="后端类库" prop="icon">
+              <Input v-model="form.title" />
+            </FormItem>
+            <FormItem label="前端路由" prop="icon">
+              <Input v-model="form.title" />
+            </FormItem>
+            <FormItem label="前端组件" prop="icon">
+              <Input v-model="form.title" />
+            </FormItem>
+            <FormItem label="菜单排序" prop="sortOrder">
               <Tooltip trigger="hover" placement="right" content="值越小越靠前，支持小数">
                 <InputNumber :max="1000" :min="0" v-model="form.sortOrder"></InputNumber>
               </Tooltip>
+            </FormItem>
+            <FormItem label="是否显示" prop="status">
+              <i-switch size="large" :true-value="0" :false-value="-1">
+                <span slot="open">启用</span>
+                <span slot="close">禁用</span>
+              </i-switch>
             </FormItem>
             <FormItem label="是否启用" prop="status">
               <i-switch size="large" :true-value="0" :false-value="-1">
@@ -123,7 +139,6 @@ export default {
     return {
       loading: false, // 树加载状态
       maxHeight: '',
-      strict: true,
       loadingEdit: false, // 编辑上级树加载状态
       modalVisible: false, // 添加显示
       selectList: [], // 多选数据
@@ -203,20 +218,7 @@ export default {
       })
       return data
     },
-    loadData (item, callback) {
-      // 异步加载树子节点数据
-      // this.getRequest("请求路径，如/tree/getByParentId/" + item.id).then(res => {
-      //   if (res.success) {
-      //     res.result.forEach(function(e) {
-      //       if (e.isParent) {
-      //         e.loading = false;
-      //         e.children = [];
-      //       }
-      //     });
-      //     callback(res.result);
-      //   }
-      // });
-    },
+
     search () {
       // 搜索树
       if (this.searchKey) {
