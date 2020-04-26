@@ -52,15 +52,23 @@
         <FormItem label="组描述" prop="description">
           <Input type="textarea" v-model="formItem.description" placeholder="请输入权限组描述"></Input>
         </FormItem>
-        <FormItem label="组授权" prop="rules">
-          <div class="rule-list">
-            <Tree ref="formTree" :data="ruleList" show-checkbox multiple></Tree>
-          </div>
-        </FormItem>
       </Form>
       <div slot="footer">
         <Button type="text" @click="cancel" class="margin-right-10">取消</Button>
         <Button type="primary" @click="submit" :loading="modalSetting.loading">确定</Button>
+      </div>
+    </Modal>
+    <Modal v-model="authSetting.show" width="668" :styles="{top: '30px'}" @on-visible-change="doCancel">
+      <p slot="header" style="color:#2d8cf0">
+        <Icon type="md-alert"></Icon>
+        <span>{{formItem.id ? '编辑' : '新增'}}权限</span>
+      </p>
+      <div style="max-height: 560px;overflow: auto;">
+        <Tree ref="formTree" :data="ruleList" show-checkbox multiple></Tree>
+      </div>
+      <div slot="footer">
+        <Button type="text" @click="authSetting.show = false" class="margin-right-10">取消</Button>
+        <Button type="primary" @click="submit" :loading="authSetting.loading">确定</Button>
       </div>
     </Modal>
     <Modal v-model="memberSetting.show" width="998" :styles="{top: '30px'}">
@@ -98,14 +106,34 @@ const editButton = (vm, h, currentRow, index) => {
           vm.formItem.id = currentRow.id
           vm.formItem.name = currentRow.name
           vm.formItem.description = currentRow.description
-          getRuleList({ 'group_id': currentRow.id }).then(response => {
-            vm.ruleList = response.data.data.list
-          })
           vm.modalSetting.show = true
           vm.modalSetting.index = index
         }
       }
     }, vm.$t('edit_button'))
+  }
+}
+const authButton = (vm, h, currentRow, index) => {
+  if (vm.buttonShow.edit) {
+    return h('Button', {
+      props: {
+        type: 'info',
+        ghost: true
+      },
+      style: {
+        margin: '0 5px'
+      },
+      on: {
+        'click': () => {
+          vm.formItem.id = currentRow.id
+          getRuleList({ 'group_id': currentRow.id }).then(response => {
+            vm.ruleList = response.data.data.list
+          })
+          vm.authSetting.show = true
+          vm.authSetting.index = index
+        }
+      }
+    }, '权限编辑')
   }
 }
 const deleteButton = (vm, h, currentRow, index) => {
@@ -261,9 +289,10 @@ export default {
         {
           title: '操作',
           align: 'center',
-          width: 200,
+          width: 285,
           render: (h, params) => {
             return h('div', [
+              authButton(this, h, params.row, params.index),
               editButton(this, h, params.row, params.index),
               deleteButton(this, h, params.row, params.index)
             ])
@@ -355,6 +384,11 @@ export default {
         status: ''
       },
       modalSetting: {
+        show: false,
+        loading: false,
+        index: 0
+      },
+      authSetting: {
         show: false,
         loading: false,
         index: 0
