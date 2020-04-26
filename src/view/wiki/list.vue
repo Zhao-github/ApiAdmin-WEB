@@ -53,21 +53,21 @@
             <p slot="content" v-if="item.api_info">
               <span v-bind:key="api_index" v-for="(api_item, api_index) in item.api_info" @click="showApiDetail(api_item.hash)" style="cursor:pointer">
                 <Alert type="warning" v-if="api_item.method === 0">
-                  <h3>/api/{{api_item.hash}}</h3>
+                  <h3>/api/{{api_item.hash_type === 1 ? api_item.api_class : api_item.hash}}</h3>
                   <template slot="desc">
                     <Tag color="warning">不限</Tag>
                     {{api_item.info}}
                   </template>
                 </Alert>
                 <Alert v-if="api_item.method === 2">
-                  <h3>/api/{{api_item.hash}}</h3>
+                  <h3>/api/{{api_item.hash_type === 1 ? api_item.api_class : api_item.hash}}</h3>
                   <template slot="desc">
                     <Tag color="primary">GET</Tag>
                     {{api_item.info}}
                   </template>
                 </Alert>
                 <Alert type="success" v-if="api_item.method === 1">
-                  <h3>/api/{{api_item.hash}}</h3>
+                  <h3>/api/{{api_item.hash_type === 1 ? api_item.api_class : api_item.hash}}</h3>
                   <template slot="desc">
                     <Tag color="success">POST</Tag>
                     {{api_item.info}}

@@ -46,7 +46,7 @@
             <Spin size="large" fix v-if="loading"></Spin>
           </div>
         </Col>
-        <Col :md="15" :lg="13" :xl="11" :xxl="9" style="margin-left:10px;">
+        <Col :md="15" :lg="13" :xl="12" :xxl="9" style="margin-left:10px;">
           <Form ref="form" :model="form" :label-width="100" :rules="formValidate">
             <FormItem label="菜单名称" prop="title">
               <Input v-model="form.title" />
@@ -62,7 +62,9 @@
               <icon-choose v-model="form.icon"></icon-choose>
             </FormItem>
             <FormItem label="后端类库" prop="url">
-              <Input v-model="form.url" />
+              <Input v-model="form.url">
+                <span slot="prepend">admin/</span>
+              </Input>
             </FormItem>
             <FormItem label="前端路由" prop="router">
               <Input v-model="form.router" />
@@ -117,7 +119,9 @@
           <icon-choose v-model="formAdd.icon"></icon-choose>
         </FormItem>
         <FormItem label="后端类库" prop="url">
-          <Input v-model="formAdd.url" />
+          <Input v-model="formAdd.url" >
+            <span slot="prepend">admin/</span>
+          </Input>
         </FormItem>
         <FormItem label="前端路由" prop="router">
           <Input v-model="formAdd.router" />
@@ -147,7 +151,7 @@
 
 <script>
 import IconChoose from '_c/icon-choose'
-import { getList, add } from '@/api/menu'
+import { getList, add, edit, del } from '@/api/menu'
 
 export default {
   name: 'system_menu',
@@ -194,8 +198,7 @@ export default {
         ]
       },
       submitLoading: false,
-      data: [],
-      dataEdit: []
+      data: []
     }
   },
   methods: {
@@ -224,6 +227,8 @@ export default {
       } else {
         vm.data = vm.reBuildMenu(JSON.parse(data), level)
       }
+      vm.selectCount = 0
+      vm.selectList = []
     },
     reBuildMenu (data, level) {
       let vm = this
@@ -241,6 +246,7 @@ export default {
       if (v[0] && v[0].id !== this.form.id) {
         this.form = JSON.parse(JSON.stringify(v[0]))
         this.form.level = this.form.level.toString()
+        this.form.url = this.form.url.slice(6)
         this.editTitle = this.form.title
       } else {
         this.cancelEdit()
@@ -317,71 +323,25 @@ export default {
       })
     },
     submitEdit () {
-      this.$refs.form.validate(valid => {
+      let vm = this
+      vm.$refs.form.validate(valid => {
         if (valid) {
-          if (!this.form.id) {
-            this.$Message.warning('请先点击选择要修改的节点')
+          if (!vm.form.id) {
+            vm.$Message.warning('请先点击选择要修改的节点')
             return
           }
-          this.submitLoading = true
-          // 避免传入null字符串
-          // this.postRequest("请求路径，如/tree/edit", this.form).then(res => {
-          //   this.submitLoading = false;
-          //   if (res.success) {
-          //     this.$Message.success("编辑成功");
-          //     this.init();
-          //     this.modalVisible = false;
-          //   }
-          // });
-          // 模拟成功
-          this.submitLoading = false
-          this.$Message.success('编辑成功')
-          this.modalVisible = false
+          vm.submitLoading = true
+          edit(vm.form).then(response => {
+            vm.$Message.success(response.data.msg)
+            vm.getList()
+            vm.submitLoading = false
+            vm.modalVisible = false
+          }).catch(() => {
+            vm.submitLoading = false
+          })
         }
       })
     },
-
-    search () {
-      // 搜索树
-      if (this.searchKey) {
-        // 模拟请求
-        // this.loading = true;
-        // this.getRequest("搜索请求路径", { title: this.searchKey }).then(res => {
-        //   this.loading = false;
-        //   if (res.success) {
-        //     this.data = res.result;
-        //   }
-        // });
-        // 模拟请求成功
-        this.data = [
-          {
-            title: '这里需要请求后端接口',
-            id: '1',
-            parentId: '0',
-            parentTitle: '一级节点',
-            status: 0
-          },
-          {
-            title: '所以这里是假数据',
-            id: '4',
-            parentId: '0',
-            parentTitle: '一级节点',
-            status: 0
-          },
-          {
-            title: '我是被禁用的节点',
-            id: '5',
-            parentId: '0',
-            parentTitle: '一级节点',
-            status: -1
-          }
-        ]
-      } else {
-        // 为空重新加载
-        this.getList()
-      }
-    },
-
     delAll () {
       if (this.selectCount <= 0) {
         this.$Message.warning('您还未勾选要删除的数据')
@@ -392,28 +352,32 @@ export default {
         content: '您确认要删除所选的 ' + this.selectCount + ' 条数据及其下级所有数据?',
         loading: true,
         onOk: () => {
-          this.selectList.forEach(function (e) {
+          let vm = this
+          let ids = ''
+          vm.selectList.forEach(function (e) {
             ids += e.id + ','
           })
           ids = ids.substring(0, ids.length - 1)
-          // this.deleteRequest("请求路径，如/tree/delByIds/" + ids).then(res => {
-          //   this.$Modal.remove();
-          //   if (res.success) {
-          //     this.$Message.success("删除成功");
-          //     this.selectList = [];
-          //     this.selectCount = 0;
-          //     this.cancelEdit();
-          //     this.init();
-          //   }
-          // });
-          // 模拟成功
-          this.$Modal.remove()
-          this.$Message.success('删除成功')
-          this.selectList = []
-          this.selectCount = 0
-          this.cancelEdit()
+          del(ids).then(response => {
+            vm.getList()
+            vm.$Message.success(response.data.msg)
+            vm.$Modal.remove()
+            vm.cancelEdit()
+          })
         }
       })
+    },
+    search () {
+      let vm = this
+      if (vm.searchKey) {
+        vm.loading = true
+        getList(vm.searchKey).then(response => {
+          vm.data = response.data.data.list
+          vm.loading = false
+        })
+      } else {
+        vm.getList(1)
+      }
     }
   },
   mounted () {
