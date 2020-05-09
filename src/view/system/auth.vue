@@ -61,7 +61,7 @@
     <Modal v-model="authSetting.show" width="668" :styles="{top: '30px'}" @on-visible-change="doCancel">
       <p slot="header" style="color:#2d8cf0">
         <Icon type="md-alert"></Icon>
-        <span>{{formItem.id ? '编辑' : '新增'}}权限</span>
+        <span>{{formItem.id ? '设置' : '新增'}}权限</span>
       </p>
       <div style="max-height: 560px;overflow: auto;">
         <Tree ref="formTree" :data="ruleList" show-checkbox multiple></Tree>
@@ -133,7 +133,7 @@ const authButton = (vm, h, currentRow, index) => {
           vm.authSetting.index = index
         }
       }
-    }, '权限编辑')
+    }, '设置权限')
   }
 }
 const deleteButton = (vm, h, currentRow, index) => {
