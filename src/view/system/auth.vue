@@ -68,7 +68,7 @@
       </div>
       <div slot="footer">
         <Button type="text" @click="authSetting.show = false" class="margin-right-10">取消</Button>
-        <Button type="primary" @click="authEdit" :loading="authSetting.loading">确2定</Button>
+        <Button type="primary" @click="authEdit" :loading="authSetting.loading">确定</Button>
       </div>
     </Modal>
     <Modal v-model="memberSetting.show" width="998" :styles="{top: '30px'}">
