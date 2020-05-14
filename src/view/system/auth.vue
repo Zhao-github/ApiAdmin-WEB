@@ -68,7 +68,7 @@
       </div>
       <div slot="footer">
         <Button type="text" @click="authSetting.show = false" class="margin-right-10">取消</Button>
-        <Button type="primary" @click="submit" :loading="authSetting.loading">确定</Button>
+        <Button type="primary" @click="authEdit" :loading="authSetting.loading">确2定</Button>
       </div>
     </Modal>
     <Modal v-model="memberSetting.show" width="998" :styles="{top: '30px'}">
@@ -90,7 +90,7 @@
 </template>
 <script>
 import { getUsers } from '@/api/user'
-import { getList, add, edit, del, delMember, getRuleList, changeStatus } from '@/api/auth'
+import { getList, add, edit, del, delMember, getRuleList, changeStatus, editRule } from '@/api/auth'
 
 const editButton = (vm, h, currentRow, index) => {
   if (vm.buttonShow.edit) {
@@ -440,16 +440,10 @@ export default {
     })
   },
   methods: {
-    alertAdd () {
+    authEdit () {
       let vm = this
-      getRuleList().then(response => {
-        vm.ruleList = response.data.data.list
-      })
-      this.modalSetting.show = true
-    },
-    submit () {
-      this.formItem.rules = []
-      let ruleNodes = this.$refs['formTree'].getCheckedNodes()
+      vm.formItem.rules = []
+      let ruleNodes = vm.$refs['formTree'].getCheckedNodes()
       let ruleLength = ruleNodes.length
       if (ruleLength) {
         for (let i = 0; i <= ruleLength - 1; i++) {
@@ -457,6 +451,18 @@ export default {
         }
       }
 
+      vm.authSetting.loading = true
+      editRule(vm.formItem).then(response => {
+        vm.$Message.success(response.data.msg)
+        vm.authSetting.show = false
+      }).catch(() => {
+        vm.authSetting.loading = false
+      })
+    },
+    alertAdd () {
+      this.modalSetting.show = true
+    },
+    submit () {
       let vm = this
       this.$refs['myForm'].validate((valid) => {
         if (valid) {

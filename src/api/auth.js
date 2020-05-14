@@ -19,6 +19,14 @@ export const getList = (params) => {
   })
 }
 
+export const editRule = (data) => {
+  return axios.request({
+    url: 'Auth/editRule',
+    method: 'post',
+    data
+  })
+}
+
 /**
  * 获取权限细节列表数据
  * @returns {wx.RequestTask | never}
