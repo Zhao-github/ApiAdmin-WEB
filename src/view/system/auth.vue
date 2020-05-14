@@ -455,6 +455,7 @@ export default {
       editRule(vm.formItem).then(response => {
         vm.$Message.success(response.data.msg)
         vm.authSetting.show = false
+        vm.authSetting.loading = false
       }).catch(() => {
         vm.authSetting.loading = false
       })
