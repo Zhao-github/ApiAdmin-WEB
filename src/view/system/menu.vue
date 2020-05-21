@@ -51,6 +51,11 @@
             <FormItem label="菜单名称" prop="title">
               <Input v-model="form.title" />
             </FormItem>
+            <FormItem label="菜单鉴权" prop="permission">
+              <Checkbox true-value="1" false-value="0" border v-model="form.auth"> 是否需要登录 </Checkbox>
+              <Checkbox true-value="1" false-value="0" border v-model="form.permission"> 是否需要鉴权 </Checkbox>
+              <Checkbox true-value="1" false-value="0" border v-model="form.log"> 是否记录日志 </Checkbox>
+            </FormItem>
             <FormItem label="菜单类型" prop="level">
               <RadioGroup v-model="form.level">
                 <Radio label="1" border disabled>顶级菜单</Radio>
@@ -176,6 +181,9 @@ export default {
         router: '',
         url: '',
         component: '',
+        auth: 1,
+        log: 1,
+        permission: 1,
         show: 1,
         sort: 0
       },
@@ -186,6 +194,9 @@ export default {
         router: '',
         url: '',
         component: '',
+        auth: 1,
+        log: 1,
+        permission: 1,
         show: 1,
         sort: 0
       },
@@ -248,6 +259,8 @@ export default {
         this.form.level = this.form.level.toString()
         this.form.url = this.form.url.slice(6)
         this.editTitle = this.form.title
+
+        console.log(this.form)
       } else {
         this.cancelEdit()
       }
