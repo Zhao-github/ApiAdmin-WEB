@@ -263,9 +263,8 @@ export default {
       if (data) {
         data.selected = false
       }
-      this.$refs.form.resetFields()
+      this.handleReset()
       this.form.id = ''
-      this.form.level = ''
       this.editTitle = ''
     },
     handleReset () {
