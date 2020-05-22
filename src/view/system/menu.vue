@@ -52,9 +52,10 @@
               <Input v-model="form.title" />
             </FormItem>
             <FormItem label="菜单鉴权" prop="permission">
-              <Checkbox true-value="1" false-value="0" border v-model="form.auth"> 是否需要登录 </Checkbox>
-              <Checkbox true-value="1" false-value="0" border v-model="form.permission"> 是否需要鉴权 </Checkbox>
-              <Checkbox true-value="1" false-value="0" border v-model="form.log"> 是否记录日志 </Checkbox>
+              <Checkbox :true-value="1" :false-value="0" border v-model="form.auth"> 需要登录 </Checkbox>
+              <Checkbox :true-value="1" :false-value="0" border v-model="form.permission"> 访问鉴权 </Checkbox>
+              <Checkbox :true-value="1" :false-value="0" border v-model="form.log"> 记录日志 </Checkbox>
+              <Checkbox :true-value="1" :false-value="0" border v-model="form.show"> 显示与否 </Checkbox>
             </FormItem>
             <FormItem label="菜单类型" prop="level">
               <RadioGroup v-model="form.level">
@@ -81,12 +82,6 @@
               <Tooltip trigger="hover" placement="right" content="值越小越靠前，支持小数">
                 <InputNumber :max="1000" :min="0" v-model="form.sort"></InputNumber>
               </Tooltip>
-            </FormItem>
-            <FormItem label="是否显示" prop="show">
-              <i-switch v-model="form.show" size="large" :true-value="1" :false-value="0">
-                <span slot="open">显示</span>
-                <span slot="close">隐藏</span>
-              </i-switch>
             </FormItem>
             <Form-item>
               <Button
@@ -181,9 +176,9 @@ export default {
         router: '',
         url: '',
         component: '',
-        auth: 1,
-        log: 1,
-        permission: 1,
+        auth: 0,
+        log: 0,
+        permission: 0,
         show: 1,
         sort: 0
       },
@@ -259,8 +254,6 @@ export default {
         this.form.level = this.form.level.toString()
         this.form.url = this.form.url.slice(6)
         this.editTitle = this.form.title
-
-        console.log(this.form)
       } else {
         this.cancelEdit()
       }
@@ -278,6 +271,10 @@ export default {
     handleReset () {
       this.$refs.form.resetFields()
       this.form.level = ''
+      this.form.auth = 0
+      this.form.log = 0
+      this.form.permission = 0
+      this.form.show = 1
     },
     add () {
       if (!this.form.id) {
