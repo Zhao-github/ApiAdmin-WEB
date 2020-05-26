@@ -64,6 +64,14 @@
                 <Radio label="3" border disabled>页内按钮</Radio>
               </RadioGroup>
             </FormItem>
+            <FormItem label="请求方式" prop="method">
+              <RadioGroup v-model="form.method">
+                <Radio :label="1" border > GET </Radio>
+                <Radio :label="2" border > POST </Radio>
+                <Radio :label="3" border > PUT </Radio>
+                <Radio :label="4" border > DELETE </Radio>
+              </RadioGroup>
+            </FormItem>
             <FormItem label="菜单图标" prop="icon">
               <icon-choose v-model="form.icon"></icon-choose>
             </FormItem>
@@ -98,7 +106,7 @@
       </Row>
     </Card>
 
-    <Modal :title="modalTitle" v-model="modalVisible" :mask-closable="false" :width="500">
+    <Modal :title="modalTitle" v-model="modalVisible" :mask-closable="false" :width="600">
       <Form ref="formAdd" :model="formAdd" :label-width="100" :rules="formValidate">
         <div v-if="showParent">
           <FormItem label="上级菜单">
@@ -108,11 +116,25 @@
         <FormItem label="菜单名称" prop="title">
           <Input v-model="formAdd.title" />
         </FormItem>
+        <FormItem label="菜单鉴权" prop="permission">
+          <Checkbox :true-value="1" :false-value="0" border v-model="formAdd.auth"> 需要登录 </Checkbox>
+          <Checkbox :true-value="1" :false-value="0" border v-model="formAdd.permission"> 访问鉴权 </Checkbox>
+          <Checkbox :true-value="1" :false-value="0" border v-model="formAdd.log"> 记录日志 </Checkbox>
+          <Checkbox :true-value="1" :false-value="0" border v-model="formAdd.show"> 显示与否 </Checkbox>
+        </FormItem>
         <FormItem label="菜单类型" prop="level">
           <RadioGroup v-model="formAdd.level">
             <Radio label="1" border disabled>顶级菜单</Radio>
             <Radio label="2" border disabled>二级菜单</Radio>
             <Radio label="3" border disabled>页内按钮</Radio>
+          </RadioGroup>
+        </FormItem>
+        <FormItem label="请求方式" prop="method">
+          <RadioGroup v-model="formAdd.method">
+            <Radio :label="1" border > GET </Radio>
+            <Radio :label="2" border > POST </Radio>
+            <Radio :label="3" border > PUT </Radio>
+            <Radio :label="4" border > DELETE </Radio>
           </RadioGroup>
         </FormItem>
         <FormItem label="菜单图标" prop="icon">
@@ -133,12 +155,6 @@
           <Tooltip trigger="hover" placement="right" content="值越小越靠前，支持小数">
             <InputNumber :max="1000" :min="0" v-model="formAdd.sort"></InputNumber>
           </Tooltip>
-        </FormItem>
-        <FormItem label="是否显示" prop="show">
-          <i-switch v-model="formAdd.show" size="large" :true-value="1" :false-value="0">
-            <span slot="open">显示</span>
-            <span slot="close">隐藏</span>
-          </i-switch>
         </FormItem>
       </Form>
       <div slot="footer">
@@ -174,6 +190,7 @@ export default {
         level: '',
         icon: '',
         router: '',
+        method: 1,
         url: '',
         component: '',
         auth: 0,
@@ -187,6 +204,7 @@ export default {
         level: '',
         icon: '',
         router: '',
+        method: 1,
         url: '',
         component: '',
         auth: 1,
@@ -289,7 +307,11 @@ export default {
         icon: '',
         router: '',
         url: '',
+        method: 1,
         component: '',
+        auth: 1,
+        log: 1,
+        permission: 1,
         show: 1,
         sort: 0
       }
@@ -305,7 +327,11 @@ export default {
         icon: '',
         router: '',
         url: '',
+        method: 1,
         component: '',
+        auth: 1,
+        log: 1,
+        permission: 1,
         show: 1,
         sort: 0
       }
