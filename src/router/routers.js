@@ -1,4 +1,5 @@
 import Main from '@/components/main'
+import { dynamicRouterAdd } from '@/libs/router-utils'
 
 /**
  * iview-admin中meta除了原生参数外可配置的参数:
@@ -16,7 +17,7 @@ import Main from '@/components/main'
  * }
  */
 
-export default [
+export const otherRouter = [
   {
     path: '/login',
     name: 'login',
@@ -67,141 +68,6 @@ export default [
           access: 'admin/User/own'
         },
         component: () => import('@/view/single-page/own/own.vue')
-      }
-    ]
-  },
-  {
-    path: '/system',
-    name: 'system_setting',
-    meta: {
-      icon: 'ios-build',
-      title: '系统配置',
-      access: ['admin/Menu/index', 'admin/User/index', 'admin/Auth/index', 'admin/Log/index']
-    },
-    component: Main,
-    children: [
-      {
-        path: 'menu',
-        name: 'menu_setting',
-        meta: {
-          icon: 'md-menu',
-          title: '菜单维护',
-          access: 'admin/Menu/index'
-        },
-        component: () => import('@/view/system/menu.vue')
-      },
-      {
-        path: 'user',
-        name: 'user_setting',
-        meta: {
-          icon: 'ios-people',
-          title: '用户管理',
-          access: 'admin/User/index'
-        },
-        component: () => import('@/view/system/user.vue')
-      },
-      {
-        path: 'auth',
-        name: 'auth_setting',
-        meta: {
-          icon: 'md-lock',
-          title: '权限管理',
-          access: 'admin/Auth/index'
-        },
-        component: () => import('@/view/system/auth.vue')
-      },
-      {
-        path: 'log',
-        name: 'logs',
-        meta: {
-          icon: 'md-clipboard',
-          title: '操作日志',
-          access: 'admin/Log/index'
-        },
-        component: () => import('@/view/system/log.vue')
-      }
-    ]
-  },
-  {
-    path: '/apps',
-    name: 'apps_setting',
-    meta: {
-      icon: 'md-cloud',
-      title: '应用接入',
-      access: ['admin/AppGroup/index', 'admin/App/index']
-    },
-    component: Main,
-    children: [
-      {
-        path: 'appsGroup',
-        name: 'apps_group',
-        meta: {
-          icon: 'ios-archive',
-          title: '应用分组',
-          access: 'admin/AppGroup/index'
-        },
-        component: () => import('@/view/app/group.vue')
-      },
-      {
-        path: 'appsList',
-        name: 'apps_list',
-        meta: {
-          icon: 'md-list-box',
-          title: '应用列表',
-          access: 'admin/App/index'
-        },
-        component: () => import('@/view/app/list.vue')
-      }
-    ]
-  },
-  {
-    path: '/interface',
-    name: 'interface_setting',
-    meta: {
-      icon: 'ios-link',
-      title: '接口管理',
-      access: ['admin/InterfaceList/index', 'admin/InterfaceGroup/index']
-    },
-    component: Main,
-    children: [
-      {
-        path: 'interfaceGroup',
-        name: 'interface_group',
-        meta: {
-          icon: 'md-archive',
-          title: '接口分组',
-          access: 'admin/InterfaceGroup/index'
-        },
-        component: () => import('@/view/interface/group.vue')
-      },
-      {
-        path: 'interfaceList',
-        name: 'interface_list',
-        meta: {
-          icon: 'md-infinite',
-          title: '接口列表',
-          access: 'admin/InterfaceList/index'
-        },
-        component: () => import('@/view/interface/list.vue')
-      },
-      {
-        path: 'request/:hash',
-        meta: {
-          title: '请求参数',
-          hideInMenu: true
-        },
-        name: 'interface_request',
-        component: () => import('@/view/interface/request.vue')
-      },
-      {
-        path: 'response/:hash',
-        hideInMenu: true,
-        meta: {
-          hideInMenu: true,
-          title: '返回参数'
-        },
-        name: 'interface_response',
-        component: () => import('@/view/interface/response.vue')
       }
     ]
   },
@@ -266,3 +132,13 @@ export default [
     component: () => import('@/view/wiki/login.vue')
   }
 ]
+
+export const appRouter = [...dynamicRouterAdd()]
+
+export const routes = [
+  ...otherRouter,
+  ...appRouter
+]
+
+// 所有上面定义的路由都要写在下面输出
+export default routes

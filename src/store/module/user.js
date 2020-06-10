@@ -39,6 +39,7 @@ export default {
         logout().then(() => {
           commit('setToken', '')
           commit('setUserInfo', {})
+          sessionStorage.removeItem('dynamicRouter')
           resolve()
         }).catch(err => {
           reject(err)

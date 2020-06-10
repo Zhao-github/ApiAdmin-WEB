@@ -5,6 +5,7 @@ import store from '@/store'
 import iView from 'view-design'
 import { setToken, getToken, setTitle } from '@/libs/util'
 import { oneOf } from '@/libs/tools'
+import { initRouter } from '@/libs/router-utils'
 
 Vue.use(Router)
 const router = new Router({
@@ -29,6 +30,7 @@ router.beforeEach((to, from, next) => {
         name: 'home'
       })
     } else {
+      initRouter()
       store.dispatch('getUserInfo').then(user => {
         // 路由中有相关配置才会识别并且鉴权，否则认为不需要鉴权
         if (to.meta && to.meta.access) {

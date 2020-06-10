@@ -12,7 +12,7 @@ import {
   localRead
 } from '@/libs/util'
 import router from '@/router'
-import routers from '@/router/routers'
+import { dynamicRouterAdd } from '@/libs/router-utils'
 
 const closePage = (state, route) => {
   const nextRoute = getNextRoute(state.tagNavList, route)
@@ -32,12 +32,17 @@ export default {
     hasReadErrorPage: false
   },
   getters: {
-    menuList: (state, getters, rootState) => getMenuByRouter(routers, rootState.user.userInfo.access),
+    // menuList: (state, getters, rootState) => getMenuByRouter(routers, rootState.user.userInfo.access),
+    menuList: (state, getters, rootState) => getMenuByRouter(dynamicRouterAdd(), rootState.user.access),
     errorCount: state => state.errorList.length
   },
   mutations: {
     setBreadCrumb (state, route) {
       state.breadCrumbList = getBreadCrumbList(route, state.homeRoute)
+    },
+    updateMenuList (state, routers) {
+      router.addRoutes(routers)
+      state.menuList = routers
     },
     setHomeRoute (state, routes) {
       state.homeRoute = getHomeRoute(routes, 'home')

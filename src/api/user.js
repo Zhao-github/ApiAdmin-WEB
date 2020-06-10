@@ -12,7 +12,7 @@ export const login = ({ username, password }) => {
     password
   }
   return axios.request({
-    url: 'login/index',
+    url: 'Login/index',
     data,
     method: 'post'
   })
@@ -32,7 +32,7 @@ export const getUsers = (params) => {
  */
 export const getUserInfo = () => {
   return axios.request({
-    url: 'login/getUserInfo',
+    url: 'Login/getUserInfo',
     method: 'get'
   })
 }
@@ -43,7 +43,7 @@ export const getUserInfo = () => {
  */
 export const logout = () => {
   return axios.request({
-    url: 'login/logout',
+    url: 'Login/logout',
     method: 'get'
   })
 }
@@ -117,6 +117,17 @@ export const del = (id) => {
     params: {
       id: id
     }
+  })
+}
+
+/**
+ * 获取权限菜单
+ * @returns {*}
+ */
+export const getAccessMenu = () => {
+  return axios.request({
+    url: 'Login/getAccessMenu',
+    method: 'get'
   })
 }
 
