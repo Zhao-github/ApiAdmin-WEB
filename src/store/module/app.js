@@ -39,9 +39,9 @@ export default {
     setBreadCrumb (state, route) {
       state.breadCrumbList = getBreadCrumbList(route, state.homeRoute)
     },
-    updateMenuList (state, routers) {
-      router.addRoutes(routers)
-      state.menuList = routers
+    updateMenuList (state, r) {
+      router.addRoutes(r)
+      state.menuList = r
     },
     setHomeRoute (state, routes) {
       state.homeRoute = getHomeRoute(routes, 'home')

@@ -29,6 +29,7 @@ export default {
         login({ username, password }).then(res => {
           commit('setUserInfo', res.data.data)
           commit('setToken', res.data.data.apiAuth)
+        }).then(() => {
           getAccessMenu().then(res => {
             if (res.data.code === 1) {
               let data = JSON.stringify(res.data.data) // 后台拿到路由
@@ -36,8 +37,8 @@ export default {
               data = filterAsyncRouter(JSON.parse(data))
               commit('updateMenuList', data)
             }
+            resolve()
           })
-          resolve()
         }).catch(err => {
           reject(err)
         })

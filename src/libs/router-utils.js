@@ -2,28 +2,14 @@
  * ①添
  * @@新增 定义初始化菜单
  */
-import store from '@/store'
 import lazyLoading from './lazy-loading'
-import { getAccessMenu } from '@/api/user'
 import Main from '@/components/main' // Main 是架构组件，不在后台返回，在文件里单独引入
-
-// 初始化路由
-export const initRouter = () => {
-  return dynamicRouterAdd()
-}
 
 // 加载路由菜单,从localStorage拿到路由,在创建路由时使用
 export const dynamicRouterAdd = () => {
   let data = sessionStorage.getItem('dynamicRouter')
   if (!data) {
-    getAccessMenu().then(res => {
-      if (res.data.code === 1) {
-        data = JSON.stringify(res.data.data) // 后台拿到路由
-        sessionStorage.setItem('dynamicRouter', data) // 存储路由到localStorage
-        data = filterAsyncRouter(JSON.parse(data))
-        store.commit('updateMenuList', data)
-      }
-    })
+    return []
   }
   return filterAsyncRouter(JSON.parse(data))
 }
