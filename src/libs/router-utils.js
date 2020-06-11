@@ -28,15 +28,13 @@ export const filterAsyncRouter = (asyncRouterMap) => {
           title: route.title,
           hideInMenu: false
         }
-        if (route.component) {
-          if (route.component === '') {
-            accessedRouter.component = Main
-          } else {
-            if (route.component === 'interface/request' || route.component === 'interface/response') {
-              accessedRouter.meta.hideInMenu = true
-            }
-            accessedRouter.component = lazyLoading(route.component)
+        if (route.component === '') {
+          accessedRouter.component = Main
+        } else {
+          if (route.component === 'interface/request' || route.component === 'interface/response') {
+            accessedRouter.meta.hideInMenu = true
           }
+          accessedRouter.component = lazyLoading(route.component)
         }
         if (route.children && route.children.length) {
           accessedRouter.children = filterAsyncRouter(route.children)
