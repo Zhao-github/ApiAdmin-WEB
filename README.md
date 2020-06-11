@@ -7,9 +7,9 @@
 # ApiAdmin-WEB
 [![](https://img.shields.io/badge/build-passing-brightgreen.svg)]()
 [![ApiAdmin](https://img.shields.io/hexpm/l/plug.svg)](http://www.apiadmin.org/)
-[![ApiAdmin](https://img.shields.io/badge/ApiAdmin-v4.0.0-brightgreen.svg)](https://gitee.com/apiadmin/ApiAdmin)
+[![ApiAdmin](https://img.shields.io/badge/ApiAdmin-4.1.2-brightgreen.svg)](https://gitee.com/apiadmin/ApiAdmin)
 [![vue](https://img.shields.io/badge/vue-2.6.10-brightgreen.svg?style=flat-square)](https://github.com/vuejs/vue)
-[![iview ui](https://img.shields.io/badge/iview-3.4.2-brightgreen.svg?style=flat-square)](https://github.com/iview/iview)
+[![iview ui](https://img.shields.io/badge/view_design-4.2.0-brightgreen.svg?style=flat-square)](https://github.com/iview/iview)
 
 # 特别提示
 本项目依赖于[ApiAdmin](https://gitee.com/apiadmin/ApiAdmin)，请确保您同时具备PHP和Vue的技能，否则使用本项目存在技术性障碍！
@@ -53,7 +53,7 @@ npm run build
  5. 支持三方Api无缝融合
  6. 本地二次开发友好
  7. ...
- 
+
  ```
  ApiAdmin（PHP部分）
  ├─ 系统维护
