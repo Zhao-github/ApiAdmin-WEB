@@ -20,6 +20,7 @@ export const dynamicRouterAdd = () => {
       if (res.data.code === 1) {
         data = JSON.stringify(res.data.data) // 后台拿到路由
         sessionStorage.setItem('dynamicRouter', data) // 存储路由到localStorage
+        data = filterAsyncRouter(JSON.parse(data))
         store.commit('updateMenuList', data)
       }
     })

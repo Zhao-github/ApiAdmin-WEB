@@ -1,9 +1,11 @@
 import {
   login,
   logout,
-  getUserInfo
+  getUserInfo,
+  getAccessMenu
 } from '@/api/user'
 import { setToken, getToken } from '@/libs/util'
+import { filterAsyncRouter } from '@/libs/router-utils'
 
 export default {
   state: {
@@ -27,6 +29,14 @@ export default {
         login({ username, password }).then(res => {
           commit('setUserInfo', res.data.data)
           commit('setToken', res.data.data.apiAuth)
+          getAccessMenu().then(res => {
+            if (res.data.code === 1) {
+              let data = JSON.stringify(res.data.data) // 后台拿到路由
+              sessionStorage.setItem('dynamicRouter', data) // 存储路由到localStorage
+              data = filterAsyncRouter(JSON.parse(data))
+              commit('updateMenuList', data)
+            }
+          })
           resolve()
         }).catch(err => {
           reject(err)
