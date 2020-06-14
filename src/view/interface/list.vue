@@ -415,6 +415,9 @@ export default {
     vm.hasRule('Fields/request').then(res => {
       vm.buttonShow.request = res
     })
+    getAll().then(response => {
+      vm.apiGroup = response.data.data.list
+    })
   },
   activated () {
     let vm = this
