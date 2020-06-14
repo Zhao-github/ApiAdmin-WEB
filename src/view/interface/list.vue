@@ -207,8 +207,7 @@ const requestButton = (vm, h, currentRow, index) => {
         click: () => {
           let hash = currentRow.hash
           vm.$router.push({
-            name: 'interface_request',
-            params: { hash: hash }
+            path: `request/${hash}`
           })
         }
       }
@@ -230,8 +229,7 @@ const responseButton = (vm, h, currentRow, index) => {
         click: () => {
           let hash = currentRow.hash
           vm.$router.push({
-            name: 'interface_response',
-            params: { hash: hash }
+            path: `response/${hash}`
           })
         }
       }
