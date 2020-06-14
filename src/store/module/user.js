@@ -3,6 +3,7 @@ import {
   logout,
   getUserInfo
 } from '@/api/user'
+import { resetRouter } from '@/router'
 import { setToken, getToken } from '@/libs/util'
 import { filterAsyncRouter } from '@/libs/router-utils'
 
@@ -42,6 +43,7 @@ export default {
         logout().then(() => {
           commit('setToken', '')
           commit('setUserInfo', {})
+          resetRouter()
           sessionStorage.removeItem('dynamicRouter')
           resolve()
         }).catch(err => {

@@ -7,9 +7,11 @@ import { setToken, getToken, setTitle } from '@/libs/util'
 import { oneOf } from '@/libs/tools'
 
 Vue.use(Router)
-const router = new Router({
+const createRouter = () => new Router({
   routes
 })
+
+const router = createRouter()
 
 router.beforeEach((to, from, next) => {
   iView.LoadingBar.start()
@@ -74,5 +76,10 @@ router.afterEach(to => {
   iView.LoadingBar.finish()
   window.scrollTo(0, 0)
 })
+
+export function resetRouter () {
+  const newRouter = createRouter()
+  router.matcher = newRouter.matcher // the relevant part
+}
 
 export default router

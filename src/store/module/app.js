@@ -12,7 +12,6 @@ import {
   localRead
 } from '@/libs/util'
 import router from '@/router'
-import routes from '@/router/routers'
 
 const closePage = (state, route) => {
   const nextRoute = getNextRoute(state.tagNavList, route)
@@ -26,13 +25,14 @@ export default {
   state: {
     breadCrumbList: [],
     tagNavList: [],
+    menuList: [],
     homeRoute: {},
     local: localRead('local'),
     errorList: [],
     hasReadErrorPage: false
   },
   getters: {
-    menuList: (state, getters, rootState) => getMenuByRouter(routes, rootState.user.userInfo.access),
+    menuList: (state, getters, rootState) => getMenuByRouter(state.menuList, rootState.user.userInfo.access),
     errorCount: state => state.errorList.length
   },
   mutations: {
