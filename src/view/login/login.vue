@@ -54,7 +54,6 @@ import { mapActions } from 'vuex'
 import { loginByQQ, wx, getQQCode, getQr, checkWxLogin, getWxCode } from '@/api/third-login'
 import qq_login from '@/assets/images/qq-login.png'
 import wx_login from '@/assets/images/wx-login.png'
-import { getAccessMenu } from '@/api/user'
 import { filterAsyncRouter } from '@/libs/router-utils'
 
 export default {
@@ -91,18 +90,9 @@ export default {
             vm.$Spin.hide()
             vm.$store.commit('setUserInfo', response.data.data)
             vm.$store.commit('setToken', response.data.data.apiAuth)
+            vm.$store.commit('updateMenuList', filterAsyncRouter(res.data.data.menu))
+            sessionStorage.setItem('dynamicRouter', JSON.stringify(res.data.data.menu))
             sessionStorage.setItem('ApiAdmin_AppInfo', '管理员')
-            getAccessMenu().then(res => {
-              if (res.data.code === 1) {
-                let data = JSON.stringify(res.data.data) // 后台拿到路由
-                sessionStorage.setItem('dynamicRouter', data) // 存储路由到localStorage
-                data = filterAsyncRouter(JSON.parse(data))
-                vm.$store.commit('updateMenuList', data)
-              }
-              vm.$router.push({
-                name: 'home'
-              })
-            })
           })
           break
         case 'wx':
@@ -110,18 +100,9 @@ export default {
             vm.$Spin.hide()
             vm.$store.commit('setUserInfo', response.data.data)
             vm.$store.commit('setToken', response.data.data.apiAuth)
+            vm.$store.commit('updateMenuList', filterAsyncRouter(res.data.data.menu))
+            sessionStorage.setItem('dynamicRouter', JSON.stringify(res.data.data.menu))
             sessionStorage.setItem('ApiAdmin_AppInfo', '管理员')
-            getAccessMenu().then(res => {
-              if (res.data.code === 1) {
-                let data = JSON.stringify(res.data.data) // 后台拿到路由
-                sessionStorage.setItem('dynamicRouter', data) // 存储路由到localStorage
-                data = filterAsyncRouter(JSON.parse(data))
-                vm.$store.commit('updateMenuList', data)
-              }
-              vm.$router.push({
-                name: 'home'
-              })
-            })
           })
           break
         default :
