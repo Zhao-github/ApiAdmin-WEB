@@ -34,7 +34,7 @@ export default {
   },
   getters: {
     menuList: (state, getters, rootState) => {
-      if (state.menuList === []) {
+      if (state.menuList.length > 0) {
         return getMenuByRouter(state.menuList, rootState.user.userInfo.access)
       } else {
         return getMenuByRouter(routes, rootState.user.userInfo.access)
